@@ -18,6 +18,9 @@
           <v-list-item-subtitle>
             Vincent Simard-Schmidt
           </v-list-item-subtitle>
+          <v-list-item-subtitle>
+            Vincent Lamy
+          </v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
     </v-navigation-drawer>
