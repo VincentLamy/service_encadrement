@@ -12,6 +12,7 @@
           <v-list-item-subtitle>
             Philippe Lacasse
             Steve Jr Dion
+            Vincent Simard-Schmidt
           </v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
