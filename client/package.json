@@ -4,8 +4,7 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "initiate": "npm install -g @vue/cli \n vue add vuetify"
+    "build": "vue-cli-service build"
   },
   "dependencies": {
     "axios": "^0.27.2",

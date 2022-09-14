@@ -9,18 +9,23 @@
           <v-list-item-title>
             Hello World
           </v-list-item-title>
+          
           <v-list-item-subtitle>
             Philippe Lacasse
           </v-list-item-subtitle>
+
           <v-list-item-subtitle>
             Steve Jr Dion
           </v-list-item-subtitle>
+
           <v-list-item-subtitle>
             Vincent Simard-Schmidt
           </v-list-item-subtitle>
+
           <v-list-item-subtitle>
             Vincent Lamy
           </v-list-item-subtitle>
+
         </v-list-item-content>
       </v-list-item>
     </v-navigation-drawer>
