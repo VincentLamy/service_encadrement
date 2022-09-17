@@ -1,0 +1,222 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Session {
+  id     Int      @id @default(autoincrement())
+  code   String   @db.VarChar(5)
+  Groupe Groupe[]
+}
+
+model Employe {
+  no_employe      Int           @id
+  type_employe    TypeEmploye   @relation(fields: [id_type_employe], references: [id])
+  id_type_employe Int
+  prenom          String        @db.VarChar(64)
+  nom             String        @db.VarChar(64)
+  Groupe          Groupe[]
+  Utilisateur     Utilisateur[]
+  Commentaire     Commentaire[]
+}
+
+model TypeEmploye {
+  id          Int       @id @default(autoincrement())
+  nom         String    @db.VarChar(64)
+  description String    @db.VarChar(255)
+  Employe     Employe[]
+}
+
+model Groupe {
+  id                Int                 @id @default(autoincrement())
+  no_groupe         Int
+  employe           Employe             @relation(fields: [no_employe], references: [no_employe])
+  no_employe        Int
+  cours             Cours               @relation(fields: [code_cours], references: [code])
+  code_cours        String              @db.VarChar(10)
+  session           Session             @relation(fields: [sessionId], references: [id])
+  sessionId         Int
+  Commentaire       Commentaire[]
+  TA_EtudiantGroupe TA_EtudiantGroupe[]
+}
+
+model Utilisateur {
+  id                  Int             @id @default(autoincrement())
+  employe             Employe         @relation(fields: [no_employe], references: [no_employe])
+  no_employe          Int
+  type_utilisateur    TypeUtilisateur @relation(fields: [id_type_utilisateur], references: [id])
+  id_type_utilisateur Int
+  courriel            String          @db.VarChar(255)
+  mdp                 String          @db.VarChar(255)
+  date_activation     DateTime
+  date_desactivation  DateTime
+  actif               Boolean
+}
+
+model TypeUtilisateur {
+  id          Int           @id @default(autoincrement())
+  nom         String        @db.VarChar(64)
+  description String        @db.VarChar(255)
+  Utilisateur Utilisateur[]
+}
+
+model Commentaire {
+  id               Int          @id @default(autoincrement())
+  no_etudiant      Int
+  employe          Employe      @relation(fields: [no_employe], references: [no_employe])
+  no_employe       Int
+  groupe           Groupe       @relation(fields: [id_groupe], references: [id])
+  id_groupe        Int
+  code_remarque    CodeRemarque @relation(fields: [id_code_remarque], references: [id])
+  id_code_remarque Int
+  type_remarque    TypeRemarque @relation(fields: [id_type_remarque], references: [id])
+  id_type_remarque Int
+  titre            String       @db.VarChar(64)
+  contenu          String       @db.VarChar(255)
+  date_creation    DateTime
+}
+
+model CodeRemarque {
+  id          Int           @id @default(autoincrement())
+  nom         String        @db.VarChar(4)
+  Commentaire Commentaire[]
+}
+
+model TypeRemarque {
+  id          Int           @id @default(autoincrement())
+  nom         String        @db.VarChar(64)
+  Commentaire Commentaire[]
+}
+
+model Cours {
+  code      String   @id @db.VarChar(10)
+  nom       String   @db.VarChar(64)
+  campus    Campus   @relation(fields: [id_campus], references: [id])
+  id_campus Int
+  duree     Int
+  Groupe    Groupe[]
+}
+
+model Campus {
+  id    Int     @id @default(autoincrement())
+  ville String  @db.VarChar(64)
+  Cours Cours[]
+}
+
+model TA_EtudiantGroupe {
+  etudiant                     Etudiant               @relation(fields: [no_etudiant], references: [no_etudiant])
+  no_etudiant                  Int
+  groupe                       Groupe                 @relation(fields: [id_groupe], references: [id])
+  id_groupe                    Int
+  code_remarque_note_finale    CodeRemarqueNoteFinale @relation(fields: [id_code_remarque_note_finale], references: [id])
+  id_code_remarque_note_finale Int
+  note_ponderee                Float
+  pourcentage_note_cumulee     Float
+  duree_absence                Float
+
+  @@unique([no_etudiant, id_groupe])
+}
+
+model CodeRemarqueNoteFinale {
+  id                Int                 @id @default(autoincrement())
+  nom               String              @db.VarChar(64)
+  TA_EtudiantGroupe TA_EtudiantGroupe[]
+}
+
+model Etudiant {
+  no_etudiant           Int                     @id
+  code_permanent        String                  @db.VarChar(12)
+  prenom                String                  @db.VarChar(64)
+  nom                   String                  @db.VarChar(64)
+  programme             Programme               @relation(fields: [code_programme], references: [code])
+  code_programme        String                  @db.VarChar(10)
+  session_actuelle      Int
+  TA_EtudiantGroupe     TA_EtudiantGroupe[]
+  TA_EtuStatut          TA_EtuStatut[]
+  FormulaireMath        FormulaireMath[]
+  TA_EtudiantPaysStatut TA_EtudiantPaysStatut[]
+}
+
+model TA_EtuStatut {
+  statut_etudiant    StatutEtudiant @relation(fields: [id_statut_etudiant], references: [id])
+  id_statut_etudiant Int
+  etudiant           Etudiant       @relation(fields: [no_etudiant], references: [no_etudiant])
+  no_etudiant        Int
+
+  @@unique([no_etudiant, id_statut_etudiant])
+}
+
+model StatutEtudiant {
+  id           Int            @id @default(autoincrement())
+  code         String         @db.VarChar(64)
+  description  String         @db.VarChar(255)
+  TA_EtuStatut TA_EtuStatut[]
+}
+
+model Programme {
+  code        String     @id @db.VarChar(10)
+  nom         String     @db.VarChar(64)
+  description String     @db.VarChar(255)
+  id_api      Int
+  Etudiant    Etudiant[]
+}
+
+model FormulaireMath {
+  id                      Int       @id @default(autoincrement())
+  heure_debut             DateTime
+  heure_fin               DateTime
+  effort_fourni           String    @db.VarChar(255)
+  experience_informatique String    @db.VarChar(255)
+  etudiant                Etudiant  @relation(fields: [no_etudiant], references: [no_etudiant])
+  no_etudiant             Int
+  TA_Math                 TA_Math[]
+}
+
+model CoursMath {
+  id      Int       @id @db.SmallInt()
+  nom     String    @db.VarChar(64)
+  code    String    @db.VarChar(10)
+  annee   Int       @db.SmallInt()
+  TA_Math TA_Math[]
+}
+
+model TA_Math {
+  cours_math         CoursMath      @relation(fields: [id_cours_math], references: [id])
+  id_cours_math      Int            @db.SmallInt()
+  formulaire_math    FormulaireMath @relation(fields: [id_formulaire_math], references: [id])
+  id_formulaire_math Int
+  note_obtenue       Float
+
+  @@unique([id_cours_math, id_formulaire_math])
+}
+
+model Pays {
+  code                  String                  @id @db.VarChar(4)
+  nom                   String                  @db.VarChar(64)
+  TA_EtudiantPaysStatut TA_EtudiantPaysStatut[]
+}
+
+model Statut {
+  id                    Int                     @id @default(autoincrement())
+  nom                   String                  @db.VarChar(64)
+  description           String                  @db.VarChar(255)
+  TA_EtudiantPaysStatut TA_EtudiantPaysStatut[]
+}
+
+model TA_EtudiantPaysStatut {
+  pays        Pays     @relation(fields: [code_pays], references: [code])
+  code_pays   String   @db.VarChar(4)
+  statut      Statut   @relation(fields: [id_statut], references: [id])
+  id_statut   Int
+  etudiant    Etudiant @relation(fields: [no_etudiant], references: [no_etudiant])
+  no_etudiant Int
+
+  @@unique([code_pays, id_statut, no_etudiant])
+}
