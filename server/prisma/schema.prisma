@@ -164,7 +164,6 @@ model Programme {
   code        String     @id @db.VarChar(10)
   nom         String     @db.VarChar(64)
   description String     @db.VarChar(255)
-  id_api      Int
   Etudiant    Etudiant[]
 }
 
