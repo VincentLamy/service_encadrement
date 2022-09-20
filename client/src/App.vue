@@ -42,8 +42,9 @@
     data: () => ({
       drawer: null,
       items: [
-        { text: 'Liste des étudiants',    icon: 'mdi-account-multiple', link: "/student_list" },
-        { text: 'Liste des responsables', icon: 'mdi-account-multiple', link: "/user_list" },
+        { text: 'Liste des étudiants',     icon: 'mdi-account-multiple', link: "/student_list" },
+        { text: 'Liste des responsables',  icon: 'mdi-account-multiple', link: "/user_list" },
+        { text: 'Importer un fichier CSV', icon: 'mdi-attachment', link: "/csv_import" },
       ],
       responsable: [
         { name: "Vincent Lamy", programme: "Programmation"} // TODO Modifier pour aller chercher les données dans la BD
