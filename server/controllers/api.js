@@ -22,4 +22,20 @@ module.exports = class API {
         const sessions = await prisma.session.findMany();
         res.json(sessions);
     };
+
+    static async addRapportEncadrement(req, res) {
+        const {
+            noDossier, codePermanent, prenomEtudiant, nomEtudiant, codeProgramme, sessionActuelle,  // Table Etudiant
+            villeCampus,                                                                            // Campus
+            codeCours, nomCours, duree,                                                             // Cours, besoin de l'id Campus
+            prenomEnseignant, nomEnseignant,                                                        // Employe, besoin de l'id Type Employe
+            numeroGroupe,                                                                           // Groupe, besoin de l'id Cours, Session, Employe
+            codeRemarqueNoteFinale, notePonderee, pourcentageNoteCumulee, nbHeuresAbsences,         // TA Etudiant Groupe, garder juste l'id du code remarque
+            typeRemarque, contenuRemarque,                                                          // Type Remarque
+            codeRemarque, contenuCommentaire, date_creation,                                        // Commentaire, besoin de l'id Etudiant, Employe, Groupe, Type Remarque, garder juste l'id du code remarque                                                                         
+            codeStatutEtudiant,                                                                     // TA Etu Statut, garder juste l'id du statut etudiant        
+        } = req.body;
+
+        // Manque le nom du cours
+    };
 };
