@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import FicheEtudiante from '../views/FicheEtudiante.vue'
+import StudentFormView from '../views/StudentFormView.vue'
 
 Vue.use(VueRouter)
 
@@ -22,7 +22,7 @@ const routes = [
   {
     path: '/etudiant',
     name: 'etudiant',
-    component: FicheEtudiante
+    component: StudentFormView
   }
 ]
 
