@@ -1,9 +1,11 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import DatetimePicker from 'vuetify-datetime-picker'
 import HomeView from '../views/HomeView.vue'
 import StudentFormView from '../views/StudentFormView.vue'
 
 Vue.use(VueRouter)
+Vue.use(DatetimePicker)
 
 const routes = [
   {

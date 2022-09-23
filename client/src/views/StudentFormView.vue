@@ -79,62 +79,11 @@
       <v-card-text>
         <h2 class="d-flex justify-center">Questionnaire de mathématiques</h2>
         <v-row>
-          <v-col>
-            <!-- Heure de début -->
-            <v-menu
-              ref="math_st_menu"
-              :close-on-content-click="false"
-              :nudge-right="40"
-              :return-value.sync="math_form.start_time"
-              transition="scale-transition"
-              offset-y
-              max-width="290px"
-              min-width="290px"
-            >
-              <template v-slot:activator="{ on, attrs }">
-                <v-text-field
-                  v-model="math_form.start_time"
-                  label="Heure de début"
-                  prepend-icon="mdi-clock-time-four-outline"
-                  readonly
-                  v-bind="attrs"
-                  v-on="on"
-                ></v-text-field>
-              </template>
-              <v-time-picker
-                v-model="math_form.start_time"
-                full-width
-                @click:minute="$refs.math_st_menu.save(math_form.start_time)"
-              />
-            </v-menu>
 
-            <!-- Heure de fin -->
-            <v-menu
-              ref="math_et_menu"
-              :close-on-content-click="false"
-              :nudge-right="40"
-              :return-value.sync="math_form.end_time"
-              transition="scale-transition"
-              offset-y
-              max-width="290px"
-              min-width="290px"
-            >
-              <template v-slot:activator="{ on, attrs }">
-                <v-text-field
-                  v-model="math_form.end_time"
-                  label="Heure de début"
-                  prepend-icon="mdi-clock-time-four-outline"
-                  readonly
-                  v-bind="attrs"
-                  v-on="on"
-                ></v-text-field>
-              </template>
-              <v-time-picker
-                v-model="math_form.end_time"
-                full-width
-                @click:minute="$refs.math_et_menu.save(math_form.end_time)"
-              />
-            </v-menu>
+          <!-- Heure de début & fin -->
+          <v-col>
+            <v-datetime-picker label="Heure de début" />
+            <v-datetime-picker label="Heure de fin" />
           </v-col>
 
           <!-- Effort fourni -->
