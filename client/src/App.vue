@@ -11,7 +11,7 @@
       <v-divider></v-divider>
 
       <v-list nav dense>
-        <v-list-item-group v-model="selectedItem" color="primary">
+        <v-list-item-group color="primary">
           <v-list-item v-for="(item, i) in items" :key="i" :to="item.link" link>
             <v-list-item-icon>
               <v-icon v-text="item.icon"></v-icon>
@@ -32,7 +32,7 @@
     </v-app-bar>
 
     <v-main>
-      <!--  -->
+      <router-view></router-view>
     </v-main>
   </v-app>
 </template>
@@ -46,8 +46,12 @@
         { text: 'Liste des responsables', icon: 'mdi-account-multiple', link: "/user_list" },
       ],
       responsable: [
-        { name: "Vincent Lamy", programme: "Programmation"} // TODO Modifier pour aller chercher les données dans la BD
+        { name: "Vincent Lamy", programme: "Programmation" } // TODO Modifier pour aller chercher les données dans la BD
       ]
     }),
   }
 </script>
+
+<style>
+  @import './assets/styles/style.css';
+</style>
