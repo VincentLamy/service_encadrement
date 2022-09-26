@@ -30,10 +30,11 @@ module.exports = class API {
     static async addRapportEncadrement(req, res) {
         const file = req.body;
 
-        //console.log(file['Numéro du programme'][0]);
+
         //console.log(file.StatutEtuCours[5]);
-        console.log(file);
+        //console.log(file);
         for (let i = 0; i < Object.keys(file).length; i++) {
+            console.log(file['Numéro du programme'][i]);
             //const etudiant = await prisma.session.create({
             //    data: {
 

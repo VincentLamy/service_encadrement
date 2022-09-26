@@ -62,7 +62,7 @@
           */
           // To Object
           
-          reader.addEventListener("loadend", () => {
+          reader.addEventListener("loadend", async () => {
             let temp = reader.result.split("\r\n");
             for (let i in temp) {
               temp[i] = temp[i].split(";");
@@ -75,7 +75,7 @@
                 data[temp[0][i]].push(temp[j][i]);
               }
             }
-            const response = API.addRapportEncadrement(data);
+            const response = await API.addRapportEncadrement(data);
             this.$router.push({ name:'home', params: {message: response.message} });
           });
           
