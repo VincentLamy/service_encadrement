@@ -29,17 +29,47 @@ module.exports = class API {
 
     static async addRapportEncadrement(req, res) {
         const file = req.body;
+        const fileSize = file['Numéro de dossier'].length - 1;
 
+        for (let i = 0; i < fileSize; i++) {
+            // Insert Programme
+            const programme = await prisma.programme.upsert({
+                where: { code: file['Numéro du programme'][i] || 0 },
+                update: {
+                    code: file['Numéro du programme'][i],
+                    nom: '',
+                    description: '',
+                },
+                create: {
+                    code: file['Numéro du programme'][i],
+                    nom: '',
+                    description: '',
+                },
+            });
 
-        //console.log(file.StatutEtuCours[5]);
-        //console.log(file);
-        for (let i = 0; i < Object.keys(file).length; i++) {
-            console.log(file['Numéro du programme'][i]);
-            //const etudiant = await prisma.session.create({
-            //    data: {
+            // Split Etudiant name
+            const nomEtudiant = file['Nom de l\'étudiant'][i].split(',');
 
-            //    }
-            //});
+            // Insert Etudiant
+            const etudiant = await prisma.etudiant.upsert({
+                where: { no_etudiant: Number(file['Numéro de dossier'][i]) || 0 },
+                update: {
+                    no_etudiant: Number(file['Numéro de dossier'][i]),
+                    code_permanent: file['Code permanent'][i],
+                    nom: nomEtudiant[0],
+                    prenom: nomEtudiant[1],
+                    session_actuelle: Number(file['Session du programme d\'études'][i]),
+                    code_programme: programme.code,
+                },
+                create: {
+                    no_etudiant: Number(file['Numéro de dossier'][i]),
+                    code_permanent: file['Code permanent'][i],
+                    nom: nomEtudiant[0],
+                    prenom: nomEtudiant[1],
+                    session_actuelle: Number(file['Session du programme d\'études'][i]),
+                    code_programme: programme.code,
+                },
+            });
         }
         res.status(201).json({ message: 'Rapport d\'encadrement ajouté avec succès' });
         /*const {
