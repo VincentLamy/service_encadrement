@@ -1,9 +1,12 @@
 <template>
-
+    <hello-world />
 </template>
 
 <script>
-import API from '../api';
+
+export default {
+    name: 'CSVImport',
+}
 
 
 </script>

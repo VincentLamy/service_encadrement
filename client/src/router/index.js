@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import CSVImportView from '../views/CSVImportView.vue'
+import CommentsView from '../views/CommentsView.vue'
 
 Vue.use(VueRouter)
 
@@ -15,6 +16,11 @@ const routes = [
     path: '/csv_import',
     name: 'csv-import',
     component: CSVImportView
+  },
+  {
+    path: '/comments',
+    name: 'comments',
+    component: CommentsView
   },
   {
     path: '/about',
