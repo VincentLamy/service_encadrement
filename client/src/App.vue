@@ -11,14 +11,14 @@
       <v-divider></v-divider>
 
       <v-list nav dense>
-        <v-list-item-group v-model="selectedItem" color="primary">
+        <v-list-item-group color="primary">
           <v-list-item v-for="(item, i) in items" :key="i" :to="item.link" link>
             <v-list-item-icon>
               <v-icon v-text="item.icon"></v-icon>
             </v-list-item-icon>
 
             <v-list-item-content>
-              <v-list-item-title v-text="item.text"></v-list-item-title>
+              <v-list-item-title v-text="item.title"></v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </v-list-item-group>
@@ -32,7 +32,7 @@
     </v-app-bar>
 
     <v-main>
-      <!--  -->
+      <router-view></router-view>
     </v-main>
   </v-app>
 </template>
@@ -42,9 +42,9 @@
     data: () => ({
       drawer: null,
       items: [
-        { text: 'Liste des étudiants',     icon: 'mdi-account-multiple', link: "/student_list" },
-        { text: 'Liste des responsables',  icon: 'mdi-account-multiple', link: "/user_list" },
-        { text: 'Importer un fichier CSV', icon: 'mdi-attachment', link: "/csv_import" },
+        { title: 'Liste des étudiants',     icon: 'mdi-account-multiple', link: "/student_list" },
+        { title: 'Liste des responsables',  icon: 'mdi-account-multiple', link: "/user_list" },
+        { title: 'Importer un fichier CSV', icon: 'mdi-attachment', link: "/csv_import" },
       ],
       responsable: [
         { name: "Vincent Lamy", programme: "Programmation"} // TODO Modifier pour aller chercher les données dans la BD

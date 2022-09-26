@@ -2,6 +2,10 @@ const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient();
 
+const fs = require("fs");
+const csvParser = require("csv-parser");
+
+
 module.exports = class API {
     // Hello World
     static async HelloWorld(req, res) {
@@ -24,7 +28,20 @@ module.exports = class API {
     };
 
     static async addRapportEncadrement(req, res) {
-        const {
+        const file = req.body;
+
+        //console.log(file['Numéro du programme'][0]);
+        //console.log(file.StatutEtuCours[5]);
+        console.log(file);
+        for (let i = 0; i < Object.keys(file).length; i++) {
+            //const etudiant = await prisma.session.create({
+            //    data: {
+
+            //    }
+            //});
+        }
+        res.status(201).json({ message: 'Rapport d\'encadrement ajouté avec succès' });
+        /*const {
             noDossier, codePermanent, prenomEtudiant, nomEtudiant, codeProgramme, sessionActuelle,  // Table Etudiant
             villeCampus,                                                                            // Campus
             codeCours, nomCours, duree,                                                             // Cours, besoin de l'id Campus
@@ -34,7 +51,7 @@ module.exports = class API {
             typeRemarque, contenuRemarque,                                                          // Type Remarque
             codeRemarque, contenuCommentaire, date_creation,                                        // Commentaire, besoin de l'id Etudiant, Employe, Groupe, Type Remarque, garder juste l'id du code remarque                                                                         
             codeStatutEtudiant,                                                                     // TA Etu Statut, garder juste l'id du statut etudiant        
-        } = req.body;
+        } = req.body;*/
 
         // Manque le nom du cours
     };
