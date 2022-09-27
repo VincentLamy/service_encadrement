@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import CSVImportView from '../views/CSVImportView.vue'
+import StudentListView from '../views/StudentListView.vue'
 
 Vue.use(VueRouter)
 
@@ -15,6 +16,11 @@ const routes = [
     path: '/csv_import',
     name: 'csv-import',
     component: CSVImportView
+  },
+  {
+    path: '/student_list',
+    name: 'student_list',
+    component: StudentListView
   },
   {
     path: '/about',

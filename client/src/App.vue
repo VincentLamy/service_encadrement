@@ -47,8 +47,12 @@
         { title: 'Importer un fichier CSV', icon: 'mdi-attachment', link: "/csv_import" },
       ],
       responsable: [
-        { name: "Vincent Lamy", programme: "Programmation"} // TODO Modifier pour aller chercher les données dans la BD
+        { name: "Vincent Lamy", programme: "Programmation" } // TODO Modifier pour aller chercher les données dans la BD
       ]
     }),
   }
 </script>
+
+<style>
+  @import './assets/styles/style.css';
+</style>
