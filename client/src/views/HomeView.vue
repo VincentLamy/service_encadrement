@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-alert close-text="Close Alert" color="green accent-4" dark dismissible v-if="this.$route.params.message">
+    <v-alert close-text="Close Alert" color="green accent-4 red--text" type="success" text dark dismissible v-if="this.$route.params.message">
       {{ this.$route.params.message }}
     </v-alert>
   </v-container>
