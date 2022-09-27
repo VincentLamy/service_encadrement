@@ -1,25 +1,49 @@
 <template>
-  <div>
-      <!-- 1. Create the button that will be clicked to select a file -->
+  <v-container>
+    <v-col class="text-center">
+      <!-- Rapport d'encadrement -->
       <v-btn 
-          color="primary" 
-          rounded 
-          dark 
-          :loading="isSelecting" 
-          @click="handleFileImport"
+        color="primary" 
+        class="ma-2"
+        dark 
+        :loading="isSelecting" 
+        @click="handleFileImport"
       >
-          Upload File
+        Télécharger Rapport d'encadrement
       </v-btn>
 
-      <!-- Create a File Input that will be hidden but triggered with JavaScript -->
+      <!-- File input for Rapport d'encadrement -->
       <input 
-          ref="uploader" 
-          class="d-none" 
-          type="file"
-          accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-          @change="onFileChanged"
+        ref="uploader" 
+        class="d-none" 
+        type="file"
+        accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+        @change="rapportEncadrement"
       >
-  </div>
+
+    </v-col>
+    <v-col class="text-center">
+      <!-- Sondage mathématiques -->
+      <v-btn 
+        color="primary" 
+        class="ma-2"
+        dark 
+        :loading="isSelecting" 
+        @click="handleFileImport"
+      >
+        Télécharger Sondage mathématiques
+      </v-btn>
+
+      <!-- File input for Sondage mathématiques -->
+      <input 
+        ref="uploader" 
+        class="d-none" 
+        type="file"
+        accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+        @change="sondageMathematiques"
+      >
+    </v-col>
+  </v-container>
 </template>
 
 <script>
@@ -45,21 +69,22 @@
           // Trigger click on the FileInput
           this.$refs.uploader.click();
         },
-        onFileChanged(e) {
+        rapportEncadrement(e) {
           this.selectedFile = e.target.files[0];
           let reader = new FileReader();
           
           // To Array
           /*
-          reader.addEventListener("loadend", () => {
+          reader.addEventListener("loadend", async () => {
             let data = reader.result.split("\r\n");
             for (let i in data) {
               data[i] = data[i].split(";");
             }
-            const response = API.addRapportEncadrement(data);
+            const response = await API.addRapportEncadrement(data);
             this.$router.push({ name:'home', params: {message: response.message} });
           });
           */
+
           // To Object
           
           reader.addEventListener("loadend", async () => {
@@ -78,8 +103,11 @@
             const response = await API.addRapportEncadrement(data);
             this.$router.push({ name:'home', params: {message: response.message} });
           });
-          
           reader.readAsText(this.selectedFile);
+        },
+        sondageMathematiques(e) {
+          console.log("Sondage mathématiques");
+          this.$router.push({ name:'home', params: {} });
         },
       }
   }
