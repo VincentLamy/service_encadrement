@@ -6,17 +6,29 @@ h1, h2, h3, h4, h5, h6 {
     text-align: center;
 }
 
-thead span {
+#list_student thead span {
     color: #FC8D33;
     font-size: large;
 }
 
-tbody tr:nth-of-type(odd) {
+#list_student tr:nth-of-type(odd) {
     /* 'teal lighten-5' basides on material design color */
     background-color: #FFFFFF;
 }
 
-tbody tr:nth-of-type(even) {
+#list_student tr:nth-of-type(even) {
     /* 'deep-orange lighten-5' basides on material design color */
     background-color: #dddddd;
+}
+
+#list_student tr:hover {
+    cursor: pointer;
+}
+
+#list_student tr:active {
+    cursor: grabbing;
+}
+
+#list_student td {
+    padding: 0px 16px;
 }
