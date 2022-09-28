@@ -1,4 +1,10 @@
+/*
 * {
+    color: #0169B0;
+}
+*/
+
+h2 {
     color: #0169B0;
 }
 
@@ -6,7 +12,20 @@ h1, h2, h3, h4, h5, h6 {
     text-align: center;
 }
 
-thead span {
+thead span, h3 {
     color: #FC8D33;
     font-size: large;
+}
+
+.outlined {
+    border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.text-light {
+    color: #C0C0C0;
+}
+
+p, .v-list-item__title
+{
+    color: black;
 }
