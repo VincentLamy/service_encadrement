@@ -4,6 +4,7 @@ const prisma = new PrismaClient();
 
 const fs = require("fs");
 const csvParser = require("csv-parser");
+const { type } = require('os');
 
 
 module.exports = class API {
@@ -30,6 +31,17 @@ module.exports = class API {
     static async addRapportEncadrement(req, res) {
         const file = req.body;
         const fileSize = file['Numéro de dossier'].length - 1;
+
+        // Type employé
+        const type_employe = await prisma.typeEmploye.upsert({
+            where: { id: 1 || 0 },
+            update: {},
+            create: {
+                id: 1,
+                nom : 'Enseignant',
+                description: 'Cet employé est un enseignant dans le département d\'informatique',
+            },
+        });
 
         //  try {
         for (let i = 0; i < fileSize; i++) {
@@ -89,7 +101,35 @@ module.exports = class API {
                 },
             });
 
-            
+            /*
+            const nomEnseignant = file['Nom de l\'enseignant'][i].split(',');
+
+            // Insert Enseignant
+            const employe = await prisma.employe.upsert({
+                where: {nom: nomEnseignant[0], prenom: nomEnseignant[1]  || 0},
+                update: {},
+                create: {
+                    id : Noemploye[],
+                    id_type_employe : type_employe.id,
+                    nom: nomEnseignant[0],
+                    prenom: nomEnseignant[1],
+                },
+            });
+            */
+
+
+            /*
+            model Employe {
+                no_employe      Int           @id
+                type_employe    TypeEmploye   @relation(fields: [id_type_employe], references: [id])
+                id_type_employe Int
+                prenom          String        @db.VarChar(64)
+                nom             String        @db.VarChar(64)
+                Groupe          Groupe[]
+                Utilisateur     Utilisateur[]
+                Commentaire     Commentaire[]
+            */
+
         }
         
         res.status(201).json({ message: 'Rapport d\'encadrement ajouté avec succès' });
