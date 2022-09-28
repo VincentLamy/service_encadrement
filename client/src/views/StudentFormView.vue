@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <h1 class="my-2">Nom de l'étudiant</h1>
+    <h1 class="my-2 d-flex justify-center">Nom de l'étudiant</h1>
 
     <!--
       ************************************************
@@ -138,20 +138,37 @@
                   <v-expansion-panel-content>
                     <!-- Commentaires d'un cours -->
                     <v-list>
-                      <v-list-item v-for="k in 3" :key="k">
-                        <v-list-item-content>
-                          <v-list-item-title>
-                            Commentaire #{{ k }}
-                          </v-list-item-title>
+                      <template v-for="k in 3">
+                        <v-list-item class="py-3">
+                          <v-row class="align-center">
+                            <!-- Titre + commentaire -->
+                            <v-list-item-content :key="k">
+                              <v-list-item-title>
+                                Commentaire sur la session #{{ k }}
+                              </v-list-item-title>
+                              <v-list-item-subtitle>
+                                Informations additionnelles
+                              </v-list-item-subtitle>
+                            </v-list-item-content>
 
-                          <v-list-item-subtitle>
-                            Informations supplémentaires
-                          </v-list-item-subtitle>
-                        </v-list-item-content>
-                        <v-list-item-action>
-                          <v-icon>mdi-pencil-outline</v-icon>
-                        </v-list-item-action>
-                      </v-list-item>
+                            <!-- Catégories du commentaire + date de publication -->
+                            <v-list-item-action
+                              class="d-flex flex-column justify-space-between"
+                            >
+                              <v-list-item-action-text>
+                                <div class="d-flex justify-end">
+                                  <v-chip class="ms-1" x-small>Remarque</v-chip>
+                                  <v-chip class="ms-1" x-small>AUTN</v-chip>
+                                </div>
+                                <p class="ma-0">
+                                  Lapalme, Jocelyn 24 sept. 2021 10:15
+                                </p>
+                              </v-list-item-action-text>
+                            </v-list-item-action>
+                          </v-row>
+                        </v-list-item>
+                        <v-divider v-if="k < 3" :key="k"></v-divider>
+                      </template>
                     </v-list>
                   </v-expansion-panel-content>
                 </v-expansion-panel>
@@ -160,28 +177,40 @@
               <!-- Commentaires de la session -->
               <v-list>
                 <template v-for="k in 3">
-                  <v-list-item>
-                    <v-list-item-content :key="k">
-                      <v-list-item-title
-                        >Commentaire sur la session #{{ k }}</v-list-item-title
+                  <v-list-item class="py-3">
+                    <v-row class="align-center">
+                      <!-- Titre + commentaire -->
+                      <v-list-item-content :key="k">
+                        <v-list-item-title>
+                          Commentaire sur la session #{{ k }}
+                        </v-list-item-title>
+                        <v-list-item-subtitle>
+                          Informations additionnelles
+                        </v-list-item-subtitle>
+                      </v-list-item-content>
+
+                      <!-- Catégories du commentaire + date de publication -->
+                      <v-list-item-action
+                        class="d-flex flex-column justify-space-between"
                       >
-                      <v-list-item-subtitle
-                        >Informations additionnelles</v-list-item-subtitle
-                      >
-                    </v-list-item-content>
-                    <v-list-item-action>
-                      <div class="d-flex justify-end">
-                        <v-chip class="ms-1" x-small>Remarque</v-chip>
-                        <v-chip class="ms-1" x-small>AUTN</v-chip>
-                      </div>
-                      <p>Lapalme, Jocelyn 24 sept. 2021 10:15</p>
-                      <!--<v-icon>mdi-pencil-outline</v-icon>-->
-                    </v-list-item-action>
+                        <v-list-item-action-text>
+                          <div class="d-flex justify-end">
+                            <v-chip class="ms-1" x-small>Remarque</v-chip>
+                            <v-chip class="ms-1" x-small>AUTN</v-chip>
+                          </div>
+                          <p class="ma-0">
+                            Lapalme, Jocelyn 24 sept. 2021 10:15
+                          </p>
+                        </v-list-item-action-text>
+                      </v-list-item-action>
+
+                      <!-- Boutons de modification -->
+                      <v-btn class="ms-2" text icon>
+                        <v-icon>mdi-pencil-outline</v-icon>
+                      </v-btn>
+                    </v-row>
                   </v-list-item>
-                  <v-divider
-                    v-if="k < 3"
-                    :key="k"
-                  ></v-divider>
+                  <v-divider v-if="k < 3" :key="k"></v-divider>
                 </template>
               </v-list>
             </v-tab-item>
