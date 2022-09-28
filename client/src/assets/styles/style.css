@@ -10,3 +10,13 @@ thead span {
     color: #FC8D33;
     font-size: large;
 }
+
+tbody tr:nth-of-type(odd) {
+    /* 'teal lighten-5' basides on material design color */
+    background-color: #FFFFFF;
+}
+
+tbody tr:nth-of-type(even) {
+    /* 'deep-orange lighten-5' basides on material design color */
+    background-color: #dddddd;
+}

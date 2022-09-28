@@ -1,24 +1,32 @@
 <template>
-    <v-container>
-        <h2>Liste des étudiants</h2>
+  <v-container>
+      <h2>Liste des étudiants</h2>
 
-        <v-data-table
-        :headers="headers"
-        :items="students"
-        :sort-desc="[false, true]"
-        multi-sort
-        class="elevation-1"
-        @click:row="rowClick"
-        ></v-data-table>
-    </v-container>
-    
-  </template>
+      <v-data-table
+      :headers="headers"
+      :items="students"
+      :sort-desc="[false, true]"
+      multi-sort
+      class="elevation-1"
+      @click:row="rowClick"
+      >
+        <template v-slot:header.student_critical_State>
+          <v-icon color="red">mdi-alert-circle</v-icon>
+        </template>
+
+        <template v-slot:item.student_critical_state>
+          <v-icon color="red">mdi-alert-circle</v-icon>
+        </template>
+    </v-data-table>
+  </v-container>
+</template>
   
 <script>
     export default {
       data () {
         return {
           headers: [
+            { text: '', value: 'student_critical_State'},
             { text: 'Numéro étudiant', value: 'student_number' },
             { text: 'Nom complet', value: 'name' },
             { text: 'Statut étudiant', value: 'statut' },
@@ -27,13 +35,15 @@
           ],
           students: [ // TODO modifier pour aller chercher les étudiants dans la BD
             {
+              student_critical_state: '',
               student_number: '202045777',
               name: 'Vincent Lamy',
               statut: 'Services adaptés',
               commentary_quantity: '2',
               critical_course_quantity: '0',
             },
-            {
+            { 
+              student_critical_state: '',
               student_number: '0000000',
               name: 'Vincent Deux',
               statut: 'Sous Contrat',
