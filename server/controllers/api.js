@@ -76,7 +76,22 @@ module.exports = class API {
                     ville: file['Campus'][i],
                 },
             });
+
+            // Insert Cours
+            const cours = await prisma.cours.upsert({
+                where: { code: file['Numéro du cours'][i] || 0 },
+                update: {},
+                create: {
+                    code: file['Numéro du cours'][i],
+                    nom : '',
+                    duree: Number(file['Nb heures du cours'][i]),
+                    id_campus: campus.id,
+                },
+            });
+
+            
         }
+        
         res.status(201).json({ message: 'Rapport d\'encadrement ajouté avec succès' });
         //  } catch (err) {
         //     res.status(400).json({ message: err.message });
@@ -86,6 +101,7 @@ module.exports = class API {
             noDossier, codePermanent, prenomEtudiant, nomEtudiant, codeProgramme, sessionActuelle,  // Table Etudiant
             villeCampus,                                                                            // Campus
             codeCours, nomCours, duree,                                                             // Cours, besoin de l'id Campus
+
             prenomEnseignant, nomEnseignant,                                                        // Employe, besoin de l'id Type Employe
             numeroGroupe,                                                                           // Groupe, besoin de l'id Cours, Session, Employe
             codeRemarqueNoteFinale, notePonderee, pourcentageNoteCumulee, nbHeuresAbsences,         // TA Etudiant Groupe, garder juste l'id du code remarque
