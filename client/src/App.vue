@@ -18,11 +18,7 @@
             </v-list-item-icon>
 
             <v-list-item-content>
-<<<<<<< HEAD
               <v-list-item-title class="blue--text text--darken-3" v-text="item.text"></v-list-item-title>
-=======
-              <v-list-item-title v-text="item.title"></v-list-item-title>
->>>>>>> origin/fichier_csv
             </v-list-item-content>
           </v-list-item>
         </v-list-item-group>
