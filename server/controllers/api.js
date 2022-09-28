@@ -194,7 +194,7 @@ module.exports = class API {
             */
         }
 
-        res.status(201).json({ message: 'Rapport d\'encadrement ajouté avec succès' });
+        res.status(201).json({ message: 'Sondage mathématique ajouté avec succès' });
         // } catch (err) {
         //     res.status(400).json({ message: err.message });
         // }

@@ -78,7 +78,7 @@
             let temp = reader.result.split("\r\n");
 
             for (let i in temp) {
-              temp[i] = temp[i].split(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
+              temp[i] = temp[i].split(";");
             }
 
             let data = {};
