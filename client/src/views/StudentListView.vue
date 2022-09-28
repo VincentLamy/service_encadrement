@@ -75,8 +75,7 @@
       change_critical_state_value(item) {
         if (item.student_critical_state == true) {
           item.student_critical_state == false;
-        }
-        else if (item.student_critical_state == false) {
+        }else if (item.student_critical_state == false) {
           item.student_critical_state = true;
         }
       }
