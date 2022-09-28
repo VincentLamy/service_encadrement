@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <h2 class="my-2 d-flex justify-center">Nom de l'étudiant</h2>
+    <h2 class="my-2 d-flex justify-center blue--text text--darken-3">Nom de l'étudiant</h2>
 
     <!--
       ************************************************
@@ -205,12 +205,22 @@
                       >
                         <v-list-item-action-text>
                           <div class="d-flex justify-end">
-                            <v-chip class="ms-1 font-weight-bold" x-small>Remarque</v-chip>
-                            <v-chip class="ms-1 font-weight-bold" x-small>AUTN</v-chip>
+                            <v-chip 
+                              class="ms-1 font-weight-bold blue--text text--darken-3" 
+                              x-small
+                            >
+                              Remarque
+                            </v-chip>
+                            <v-chip 
+                              class="ms-1 font-weight-bold blue--text text--darken-3" 
+                              x-small
+                            >
+                              AUTN
+                            </v-chip>
                           </div>
-                          <p class="ma-0">
+                          <p class="ma-0 black--text">
                             Lapalme, Jocelyn
-                            <span class="ms-4 text-light">24 sept. 2021 10:15</span>
+                            <span class="ms-4 grey--text">24 sept. 2021 10:15</span>
                           </p>
                         </v-list-item-action-text>
                       </v-list-item-action>

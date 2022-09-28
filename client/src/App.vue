@@ -3,7 +3,7 @@
     <v-navigation-drawer v-model="drawer" app>
       <v-list-item v-for="(responsable, i) in responsable" :key="i">
         <v-list-item-content>
-          <v-list-item-title class="text-h6" v-text="responsable.name"></v-list-item-title>
+          <v-list-item-title class="text-h6 blue--text text--darken-3" v-text="responsable.name"></v-list-item-title>
           <v-list-item-subtitle v-text="responsable.programme"></v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
@@ -18,7 +18,7 @@
             </v-list-item-icon>
 
             <v-list-item-content>
-              <v-list-item-title v-text="item.text"></v-list-item-title>
+              <v-list-item-title class="blue--text text--darken-3" v-text="item.text"></v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </v-list-item-group>
@@ -28,7 +28,7 @@
     <v-app-bar app >
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 
-      <v-toolbar-title fluid style="width: 100%" class="text-center">Service d'encadrement</v-toolbar-title>
+      <v-toolbar-title fluid style="width: 100%" class="text-center blue--text text--darken-3">Service d'encadrement</v-toolbar-title>
     </v-app-bar>
 
     <v-main>

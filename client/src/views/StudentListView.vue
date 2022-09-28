@@ -1,13 +1,13 @@
 <template>
     <v-container>
-        <h2>Liste des étudiants</h2>
+        <h2 class="blue--text text--darken-3">Liste des étudiants</h2>
 
         <v-data-table
         :headers="headers"
         :items="students"
         :sort-desc="[false, true]"
         multi-sort
-        class="elevation-1"
+        class="elevation-1 blue--text text--darken-3"
         @click:row="rowClick"
         ></v-data-table>
     </v-container>
