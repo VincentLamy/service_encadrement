@@ -106,7 +106,7 @@ model Cours {
 
 model Campus {
   id    Int     @id @default(autoincrement())
-  ville String  @db.VarChar(64)
+  ville String  @unique @db.VarChar(64)
   Cours Cours[]
 }
 

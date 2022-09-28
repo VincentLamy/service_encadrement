@@ -12,7 +12,7 @@
           color="primary" 
           dark 
           :loading="isSelecting" 
-          @click="handleFileImport"
+          @click="handleFileImport('rapport_encadrement')"
         >
           Importer Rapport d'encadrement
         </v-btn>
@@ -21,23 +21,24 @@
       <v-col class="text-center">
         <!-- Button for Sondage mathématiques -->
         <v-btn 
-          color="primary" 
-          dark 
-          :loading="isSelecting" 
-          @click="handleFileImport"
+          color="primary"
+          dark
+          id
+          :loading="isSelecting"
+          @click="handleFileImport('sondage_mathematiques')"
         >
           Importer Sondage mathématiques
         </v-btn>
-
-        <!-- File input for all buttons -->
-        <input 
-          ref="uploader" 
-          class="d-none" 
-          type="file"
-          accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-          @change="onFileChanged"
-        >
+      
       </v-col>
+      <!-- File input for all buttons -->
+      <input 
+        ref="uploader" 
+        class="d-none" 
+        type="file"
+        accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+        @change="onFileChanged"
+      >
     </v-card>
   </v-container>
 </template>
@@ -54,7 +55,7 @@
           }
       },
       methods: {
-        handleFileImport() {
+        handleFileImport(button) {
           this.isSelecting = true;
 
           // After obtaining the focus when closing the FilePicker, return the button state to normal
@@ -64,45 +65,47 @@
           
           // Trigger click on the FileInput
           this.$refs.uploader.click();
+
+          this.$refs.uploader.id = button;
         },
         onFileChanged(e) {
-
-          // PAS CAPABLE DE DIFFÉRENCIER LE BOUTTON CLIQUÉ
-
-          console.log(e);
-          this.selectedFile = e.target.files[0];
-          let reader = new FileReader();
-          
-          // To Array
-          /*
-          reader.addEventListener("loadend", async () => {
-            let data = reader.result.split("\r\n");
-            for (let i in data) {
-              data[i] = data[i].split(";");
-            }
-            const response = await API.addRapportEncadrement(data);
-            this.$router.push({ name:'home', params: {message: response.message} });
-          });
-          */
-
-          // To Object
-          reader.addEventListener("loadend", async () => {
-            let temp = reader.result.split("\r\n");
-            for (let i in temp) {
-              temp[i] = temp[i].split(";");
-            }
-
-            let data = {};
-            for (let i in temp[0]) {
-              data[temp[0][i]] = [];
-              for (let j=1; j<temp.length; j++) {
-                data[temp[0][i]].push(temp[j][i]);
+          if (e.target.id === "rapport_encadrement") {
+            this.selectedFile = e.target.files[0];
+            let reader = new FileReader();
+            
+            // To Array
+            /*
+            reader.addEventListener("loadend", async () => {
+              let data = reader.result.split("\r\n");
+              for (let i in data) {
+                data[i] = data[i].split(";");
               }
-            }
-            const response = await API.addRapportEncadrement(data);
-            this.$router.push({ name:'home', params: {message: response.message} });
-          });
-          reader.readAsText(this.selectedFile);
+              const response = await API.addRapportEncadrement(data);
+              this.$router.push({ name:'home', params: {message: response.message} });
+            });
+            */
+
+            // To Object
+            reader.addEventListener("loadend", async () => {
+              let temp = reader.result.split("\r\n");
+              for (let i in temp) {
+                temp[i] = temp[i].split(";");
+              }
+
+              let data = {};
+              for (let i in temp[0]) {
+                data[temp[0][i]] = [];
+                for (let j=1; j<temp.length; j++) {
+                  data[temp[0][i]].push(temp[j][i]);
+                }
+              }
+              const response = await API.addRapportEncadrement(data);
+              this.$router.push({ name:'home', params: {message: response.message} });
+            });
+            reader.readAsText(this.selectedFile);
+          } else if (e.target.id === "sondage_mathematiques") {
+            console.log("sondage_math button");
+          }
         },
         async sondageMathematiques(e) {
           console.log("Sondage mathématiques");
