@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import CSVImportView from '../views/CSVImportView.vue'
 import StudentListView from '../views/StudentListView.vue'
 
 Vue.use(VueRouter)
@@ -12,9 +13,22 @@ const routes = [
     component: HomeView
   },
   {
+    path: '/csv_import',
+    name: 'csv-import',
+    component: CSVImportView
+  },
+  {
     path: '/student_list',
     name: 'student_list',
     component: StudentListView
+  },
+  {
+    path: '/about',
+    name: 'about',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
   }
 ]
 
