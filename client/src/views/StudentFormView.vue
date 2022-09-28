@@ -11,6 +11,7 @@
       <v-card-text>
         <h2 class="d-flex justify-center">Informations de l'étudiant</h2>
         <v-row no-gutters>
+
           <!-- Numéro de dossier -->
           <v-col class="px-3" lg="3" sm="6" cols="12">
             <v-text-field
@@ -34,6 +35,7 @@
           <v-col class="px-3" lg="3" sm="6" cols="12">
             <v-select label="No. de programme" />
           </v-col>
+          
         </v-row>
       </v-card-text>
       <v-card-actions class="px-5 d-flex justify-space-between">
