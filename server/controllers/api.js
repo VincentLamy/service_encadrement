@@ -4,6 +4,7 @@ const prisma = new PrismaClient();
 
 const fs = require("fs");
 const csvParser = require("csv-parser");
+const { type } = require('os');
 
 
 module.exports = class API {
@@ -100,9 +101,22 @@ module.exports = class API {
                     },
                 });
 
+                /*
                 const nomEnseignant = file['Nom de l\'enseignant'][i].split(',');
-            }
 
+                // Insert Enseignant
+                const employe = await prisma.employe.upsert({
+                    where: {nom: nomEnseignant[0], prenom: nomEnseignant[1]  || 0},
+                    update: {},
+                    create: {
+                        id : Noemploye[],
+                        id_type_employe : type_employe.id,
+                        nom: nomEnseignant[0],
+                        prenom: nomEnseignant[1],
+                    },
+                });
+                */
+            }
             res.status(201).json({ message: 'Rapport d\'encadrement ajouté avec succès' });
         } catch (err) {
             res.status(400).json({ message: err.message });
@@ -164,7 +178,7 @@ module.exports = class API {
             });
 
             // Insert Formulaire Math
-
+            /*
             const noEtudiant = file['Adresse de messagerie'][i].split('@');
             const formulaireMath = await prisma.formulaireMath.upsert({
                 where: { no_etudiant: noEtudiant[0] || 0 },
@@ -177,6 +191,7 @@ module.exports = class API {
                     no_etudiant: noEtudiant[0],
                 },
             });
+            */
         }
 
         res.status(201).json({ message: 'Rapport d\'encadrement ajouté avec succès' });
