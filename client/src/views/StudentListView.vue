@@ -13,20 +13,20 @@
           <v-icon color="red">mdi-alert-circle</v-icon>
         </template>
 
-        <template v-slot:body="{ items }">
-          <tr v-for="item in items" :key="item.student_number" v-on:click="rowClick(item.student_number)">
-            <td v-if="item.critical_course_quantity > 3">
+        <!-- État critique de l'étudiant -->
+        <template v-slot:item.student_critical_state>
+          <tr v-for="student in students" :key="student" v-on:click="rowClick(student.no_etudiant)">
+            <td> <!-- v-if="item.critical_course_quantity > 3" -->
               <v-icon color="red">mdi-alert-circle</v-icon>
-              {{ change_critical_state_value(item) }}
+              {{ change_critical_state_value(student) }}
             </td>
-            <td v-else>
-              <v-icon></v-icon>
-            </td>
-            <td>{{ item.student_number }}</td>
-            <td>{{ item.name }}</td>
-            <td>{{ item.statut }}</td>
-            <td>{{ item.commentary_quantity }}</td>
-            <td>{{ item.critical_course_quantity }}</td>
+          </tr>
+        </template>
+
+        <!-- Emplacement du nom de l'étudiant -->
+        <template v-slot:item.nom>
+          <tr v-for="student in students" :key="student" v-on:click="rowClick(student.no_etudiant)">
+            <td>{{ student.nom + ', ' + student.prenom }}</td>
           </tr>
         </template>
     </v-data-table>
@@ -34,36 +34,75 @@
 </template>
   
 <script>
+  import API from '@/api';
+
     export default {
       data () {
         return {
-          headers: [
-            { text: '', value: 'student_critical_state'},
-            { text: 'Numéro étudiant', value: 'student_number' },
-            { text: 'Nom complet', value: 'name' },
-            { text: 'Statut étudiant', value: 'statut' },
-            { text: 'Quantité de commentaires', value: 'commentary_quantity' },
-            { text: 'Nombre de cours en difficulté', value: 'critical_course_quantity' }
-          ],
-          students: [ // TODO modifier pour aller chercher les étudiants dans la BD
-            {
-              student_critical_state: '',
-              student_number: '202045777',
-              name: 'Vincent Lamy',
-              statut: 'Services adaptés',
-              commentary_quantity: '2',
-              critical_course_quantity: '3',
-            },
-            { 
-              student_critical_state: '',
-              student_number: '0000000',
-              name: 'Vincent Deux',
-              statut: 'Sous Contrat',
-              commentary_quantity: '2',
-              critical_course_quantity: '12',
-            }
-          ]
-        }
+            headers: [
+              { text: '',                               value: 'student_critical_state'},
+              { text: 'Numéro étudiant',                value: 'no_etudiant' },
+              { text: 'Nom complet',                    value: 'nom' },
+              { text: 'Statut étudiant',                value: 'statut' },
+              { text: 'Quantité de commentaires',       value: 'commentary_quantity' },
+              { text: 'Nombre de cours en difficulté',  value: 'critical_course_quantity' }
+            ],
+            students: []
+            // : [ // TODO modifier pour aller chercher les étudiants dans la BD
+              // {
+              //   student_critical_state: '',
+              //   student_number: '202045777',
+              //   name: 'Vincent Lamy',
+              //   statut: 'Services adaptés',
+              //   commentary_quantity: '2',
+              //   critical_course_quantity: '3',
+              // },
+              // { 
+              //   student_critical_state: '',
+              //   student_number: '0000000',
+              //   name: 'Vincent Deux',
+              //   statut: 'Sous Contrat',
+              //   commentary_quantity: '2',
+              //   critical_course_quantity: '12',
+              // }
+            // ]
+          }
+        // }
+
+        // return {
+        //     headers: [
+        //       { text: '', value: 'student_critical_state'},
+        //       { text: 'Numéro étudiant', value: 'no_etudiant' },
+        //       { text: 'Nom complet', value: 'nom' },
+        //       { text: 'Statut étudiant', value: 'statut' },
+        //       { text: 'Quantité de commentaires', value: 'commentary_quantity' },
+        //       { text: 'Nombre de cours en difficulté', value: 'critical_course_quantity' }
+        //     ],
+        //     students: [ // TODO modifier pour aller chercher les étudiants dans la BD
+        //       {
+        //         student_critical_state: '',
+        //         no_etudiant: '202045777',
+        //         nom: 'Vincent Lamy',
+        //         statut: 'Services adaptés',
+        //         commentary_quantity: '2',
+        //         critical_course_quantity: '3',
+        //       },
+        //       { 
+        //         student_critical_state: '',
+        //         student_number: '0000000',
+        //         name: 'Vincent Deux',
+        //         statut: 'Sous Contrat',
+        //         commentary_quantity: '2',
+        //         critical_course_quantity: '12',
+        //       }
+        //     ]
+        // }
+    },
+    async created() {
+      const response = await API.getAllStudent();
+      this.students = response;
+
+      // console.log(this.students);
     },
     methods: {
       rowClick(student_number) {
