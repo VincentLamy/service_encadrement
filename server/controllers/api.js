@@ -2,15 +2,25 @@ const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient();
 
-const fs = require("fs");
-const csvParser = require("csv-parser");
-const { type } = require('os');
-
-
 module.exports = class API {
-    // Hello World
-    static async HelloWorld(req, res) {
-        res.send("Hello from API");
+    static async getStudentById(req, res) {
+        const no_etudiant = req.params.no_etudiant;
+        const students = await prisma.Etudiant.findUnique({
+            where: {
+                no_etudiant: Number(no_etudiant),
+            },
+        });
+        res.json(students);
+    }
+
+    static async getCommentsByStudentId(req, res) {
+        const no_etudiant = req.params.no_etudiant;
+        const comments = await prisma.Commentaire.findMany({
+            where: {
+                no_etudiant: Number(no_etudiant),
+            },
+        });
+        res.json(comments);
     }
 
     static async addSession(req, res) {
@@ -200,3 +210,4 @@ module.exports = class API {
         // }
     };
 };
+

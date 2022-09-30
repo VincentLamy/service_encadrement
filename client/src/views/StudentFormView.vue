@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <h2 class="my-2 d-flex justify-center blue--text text--darken-3">
-      Nom de l'étudiant
+      {{student.prenom}} {{student.nom}}
     </h2>
 
     <!--
@@ -17,6 +17,7 @@
           <v-col class="px-3" lg="3" sm="6" cols="12">
             <v-text-field
               label="No. de dossier"
+              :value="student.no_etudiant"
               type="number"
               hide-spin-buttons
               outlined
@@ -25,12 +26,19 @@
 
           <!-- Code permanent -->
           <v-col class="px-3" lg="3" sm="6" cols="12">
-            <v-text-field label="Code permanent" outlined />
+            <v-text-field 
+              label="Code permanent"
+              :value="student.code_permanent"
+              outlined
+            />
           </v-col>
 
           <!-- Numéro de programme -->
           <v-col class="px-3" lg="3" sm="6" cols="12">
-            <v-select label="No. de programme" outlined />
+            <v-select 
+              label="No. de programme"
+              outlined
+            />
           </v-col>
 
           <!-- Nombre de cours en difficulté -->
@@ -46,18 +54,27 @@
         <v-row no-gutters>
           <!-- Prénom de l'étudiant -->
           <v-col class="px-3" lg="3" sm="6" cols="12">
-            <v-text-field label="Prénom" outlined />
+            <v-text-field 
+              label="Prénom"
+              :value="student.prenom"
+              outlined
+            />
           </v-col>
 
           <!-- Nom de l'étudiant -->
           <v-col class="px-3" lg="3" sm="6" cols="12">
-            <v-text-field label="Nom" outlined />
+            <v-text-field
+              label="Nom"
+              :value="student.nom"
+              outlined
+            />
           </v-col>
 
           <!-- Numéro de la session -->
           <v-col class="px-3" lg="3" sm="6" cols="12">
             <v-text-field
               label="No. de la session"
+              :value="student.session_actuelle"
               type="number"
               min="0"
               max="99"
@@ -72,13 +89,18 @@
       </v-card-actions>
     </v-card>
 
-    <v-expansion-panels class="mb-5" multiple flat>
+    <v-expansion-panels 
+      v-if="student.TA_EtuStatut || student.FormulaireMath"
+      class="mb-5" 
+      multiple
+      flat
+    >
       <!--
         ************************************************
         Informations de l'étudiant à l'international
         ************************************************ 
       -->
-      <v-expansion-panel>
+      <v-expansion-panel v-if="student.TA_EtuStatut">
         <v-expansion-panel-header class="outlined">
           <h3>Informations de l'étudiant à l'international</h3>
         </v-expansion-panel-header>
@@ -107,7 +129,7 @@
         Questionnaire de mathématiques
         ************************************************ 
       -->
-      <v-expansion-panel>
+      <v-expansion-panel v-if="student.FormulaireMath">
         <v-expansion-panel-header class="outlined">
           <h3>Questionnaire de mathématiques</h3>
         </v-expansion-panel-header>
@@ -125,7 +147,7 @@
           </v-row>
 
           <!-- Cours de mathématiques suivis -->
-          <v-row v-for="math_class in math_form.classes" no-gutters>
+          <v-row v-for="(math_class, i) in math_form.classes" :key="i" no-gutters>
             <!-- Code du cours -->
             <v-col class="px-3" lg="3" sm="6" cols="12">
               <v-text-field
@@ -191,7 +213,7 @@
 
         <!-- Onglets sessions -->
         <v-tabs v-model="semesters.tab">
-          <v-tab v-for="code in semesters.codes">
+          <v-tab v-for="(code, i) in semesters.codes" :key="i">
             {{ code }}
           </v-tab>
         </v-tabs>
@@ -239,8 +261,11 @@
                                     >AUTN</v-chip
                                   >
                                 </div>
-                                <p class="ma-0">
-                                  Lapalme, Jocelyn 24 sept. 2021 10:15
+                                <p class="ma-0 black--text">
+                                  Lapalme, Jocelyn
+                                  <span class="ms-4 grey--text"
+                                    >24 sept. 2021 10:15</span
+                                  >
                                 </p>
                               </v-list-item-action-text>
                             </v-list-item-action>
@@ -316,10 +341,14 @@
 </template>
 
 <script>
+import API from '@/api';
+
 export default {
   name: "FicheEtudiante",
   data() {
     return {
+      student: {},
+      comments: [],
       math_form: {
         start_time: null,
         end_time: null,
@@ -344,5 +373,12 @@ export default {
       },
     };
   },
+  async created() {
+    const response = await API.getStudentById(this.$route.params.id);
+    this.student = response;
+
+    const comments_response = await API.getCommentsByStudentId(this.student.no_etudiant);
+    this.comments = comments_response;
+  }
 };
 </script>
