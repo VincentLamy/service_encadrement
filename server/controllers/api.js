@@ -1,4 +1,5 @@
 const { PrismaClient } = require('@prisma/client');
+const { Session } = require('inspector');
 
 const prisma = new PrismaClient();
 
@@ -115,17 +116,31 @@ module.exports = class API {
                 },
             });
 
-            // Insert Groupe
-            const groupe = await prisma.groupe.upsert({
-                where: { no_groupe: file['Numéro du groupe'][i] || 0 },
+            //TODO Temp session
+            const session = await prisma.session.upsert({
+                where: { code: 'HIV22' || 0 },
                 update: {},
                 create: {
-                    no_groupe: file['Numéro du groupe'][i],
-                    cours: cours.id,
-                    session: etudiant.session_actuelle,
-                    employe: employe.id,
+                    code: 'HIV22',
                 },
             });
+
+            // Insert Groupe
+            /*const groupe = await prisma.groupe.upsert({
+                where: {
+                    no_groupe_code_session: {
+                        no_groupe: Number(file['Numéro du groupe'][i]),
+                        code_session: session.code,
+                    }
+                },
+                update: {},
+                create: {
+                    no_groupe: Number(file['Numéro du groupe'][i]),
+                    cours: cours.id,
+                    session: session.code,
+                    employe: employe.id,
+                },
+            });*/
         }
         res.status(201).json({ message: 'Rapport d\'encadrement ajouté avec succès' });
         //  } catch (err) {
