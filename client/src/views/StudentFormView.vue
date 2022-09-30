@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <h2 class="my-2 d-flex justify-center blue--text text--darken-3">
-      {{student.prenom}} {{student.nom}}
+      {{ student.prenom }} {{ student.nom }}
     </h2>
 
     <!--
@@ -21,24 +21,23 @@
               type="number"
               hide-spin-buttons
               outlined
+              readonly
             />
           </v-col>
 
           <!-- Code permanent -->
           <v-col class="px-3" lg="3" sm="6" cols="12">
-            <v-text-field 
+            <v-text-field
               label="Code permanent"
               :value="student.code_permanent"
               outlined
+              readonly
             />
           </v-col>
 
           <!-- Numéro de programme -->
           <v-col class="px-3" lg="3" sm="6" cols="12">
-            <v-select 
-              label="No. de programme"
-              outlined
-            />
+            <v-select label="No. de programme" outlined readonly />
           </v-col>
 
           <!-- Nombre de cours en difficulté -->
@@ -46,28 +45,25 @@
             <v-text-field
               label="Nb. de cours en difficulté"
               value="3"
+              outlined
               readonly
-              filled
             />
           </v-col>
         </v-row>
         <v-row no-gutters>
           <!-- Prénom de l'étudiant -->
           <v-col class="px-3" lg="3" sm="6" cols="12">
-            <v-text-field 
+            <v-text-field
               label="Prénom"
               :value="student.prenom"
               outlined
+              readonly
             />
           </v-col>
 
           <!-- Nom de l'étudiant -->
           <v-col class="px-3" lg="3" sm="6" cols="12">
-            <v-text-field
-              label="Nom"
-              :value="student.nom"
-              outlined
-            />
+            <v-text-field label="Nom" :value="student.nom" outlined readonly />
           </v-col>
 
           <!-- Numéro de la session -->
@@ -79,19 +75,20 @@
               min="0"
               max="99"
               outlined
+              readonly
             />
           </v-col>
         </v-row>
       </v-card-text>
-      <v-card-actions class="px-5 d-flex justify-space-between">
+      <!-- <v-card-actions class="px-5 d-flex justify-space-between">
         <v-btn color="grey" disabled plain>Annuler</v-btn>
         <v-btn type="submit" color="primary" plain>Mettre à jour</v-btn>
-      </v-card-actions>
+      </v-card-actions> -->
     </v-card>
 
-    <v-expansion-panels 
+    <v-expansion-panels
       v-if="student.TA_EtuStatut || student.FormulaireMath"
-      class="mb-5" 
+      class="mb-5"
       multiple
       flat
     >
@@ -107,20 +104,15 @@
         <v-expansion-panel-content class="outlined">
           <v-row no-gutters class="mt-10">
             <!-- Statut -->
-            <v-col class="px-3" lg="3" sm="6" cols="12">
-              <v-select label="Statut" outlined />
+            <v-col class="px-3" sm="6" cols="12">
+              <v-select label="Statut" outlined readonly />
             </v-col>
 
             <!-- Pays d'origine -->
-            <v-col class="px-3" lg="3" sm="6" cols="12">
-              <v-select label="Pays d'origine" outlined />
+            <v-col class="px-3" sm="6" cols="12">
+              <v-select label="Pays d'origine" outlined readonly />
             </v-col>
           </v-row>
-
-          <div class="d-flex justify-space-between mt-5">
-            <v-btn color="grey" disabled plain>Annuler</v-btn>
-            <v-btn type="submit" color="primary" plain>Mettre à jour</v-btn>
-          </div>
         </v-expansion-panel-content>
       </v-expansion-panel>
 
@@ -137,17 +129,21 @@
           <v-row class="mt-10" no-gutters>
             <!-- Heure de début -->
             <v-col class="px-3" sm="6" cols="12">
-              <v-datetime-picker label="Heure de début" outlined />
+              <v-datetime-picker label="Heure de début" outlined disabled />
             </v-col>
 
             <!-- Heure de fin -->
             <v-col class="px-3" sm="6" cols="12">
-              <v-datetime-picker label="Heure de fin" outlined />
+              <v-datetime-picker label="Heure de fin" outlined disabled />
             </v-col>
           </v-row>
 
           <!-- Cours de mathématiques suivis -->
-          <v-row v-for="(math_class, i) in math_form.classes" :key="i" no-gutters>
+          <v-row
+            v-for="(math_class, i) in math_form.classes"
+            :key="i"
+            no-gutters
+          >
             <!-- Code du cours -->
             <v-col class="px-3" lg="3" sm="6" cols="12">
               <v-text-field
@@ -155,6 +151,7 @@
                 :value="math_class.code"
                 prepend-icon="mdi-school"
                 outlined
+                readonly
               />
             </v-col>
 
@@ -164,6 +161,7 @@
                 label="Nom du cours"
                 :value="math_class.name"
                 outlined
+                readonly
               />
             </v-col>
 
@@ -173,31 +171,36 @@
                 label="Note de l'étudiant"
                 :value="math_class.mark"
                 outlined
+                readonly
               />
             </v-col>
 
             <!-- Année durant laquelle l'étudiant a suivi le cours -->
             <v-col class="px-3" lg="3" sm="6" cols="12">
-              <v-text-field label="Année" :value="math_class.year" outlined />
+              <v-text-field
+                label="Année"
+                :value="math_class.year"
+                outlined
+                readonly
+              />
             </v-col>
           </v-row>
 
           <v-row no-gutters>
             <!-- Effort fourni -->
             <v-col class="px-3" sm="6" cols="12">
-              <v-textarea label="Effort fourni" outlined />
+              <v-textarea label="Effort fourni" outlined readonly />
             </v-col>
 
             <!-- Expérience en informatique -->
             <v-col class="px-3" sm="6" cols="12">
-              <v-textarea label="Expérience en informatique" outlined />
+              <v-textarea
+                label="Expérience en informatique"
+                outlined
+                readonly
+              />
             </v-col>
           </v-row>
-
-          <div class="d-flex justify-space-between mt-5">
-            <v-btn color="grey" disabled plain>Annuler</v-btn>
-            <v-btn type="submit" color="primary" plain>Mettre à jour</v-btn>
-          </div>
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
@@ -237,7 +240,7 @@
                             <!-- Titre + commentaire -->
                             <v-list-item-content :key="k">
                               <v-list-item-title>
-                                Commentaire sur la session #{{ k }}
+                                Commentaire sur le cours #{{ k }}
                               </v-list-item-title>
                               <v-list-item-subtitle>
                                 Informations additionnelles
@@ -341,7 +344,7 @@
 </template>
 
 <script>
-import API from '@/api';
+import API from "@/api";
 
 export default {
   name: "FicheEtudiante",
@@ -377,8 +380,10 @@ export default {
     const response = await API.getStudentById(this.$route.params.id);
     this.student = response;
 
-    const comments_response = await API.getCommentsByStudentId(this.student.no_etudiant);
+    const comments_response = await API.getCommentsByStudentId(
+      this.student.no_etudiant
+    );
     this.comments = comments_response;
-  }
+  },
 };
 </script>

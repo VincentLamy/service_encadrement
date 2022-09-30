@@ -10,4 +10,14 @@ module.exports = class Student {
             res.status(404).json({ message: error.message });
        }
     };
+
+    static async getStudentById(req, res) {
+     const no_etudiant = req.params.no_etudiant;
+     const students = await prisma.Etudiant.findUnique({
+         where: {
+             no_etudiant: Number(no_etudiant),
+         },
+     });
+     res.json(students);
+ }
 };

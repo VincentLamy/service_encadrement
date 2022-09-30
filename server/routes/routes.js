@@ -4,7 +4,7 @@ const API = require("../controllers/api");
 const Student = require("../controllers/student");
 
 // Students
-router.get("/getStudent/:no_etudiant", API.getStudentById);
+router.get("/getStudent/:no_etudiant", Student.getStudentById);
 router.get("/student_list", Student.getAllStudent);
 
 // Comments

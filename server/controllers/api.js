@@ -3,16 +3,6 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 module.exports = class API {
-    static async getStudentById(req, res) {
-        const no_etudiant = req.params.no_etudiant;
-        const students = await prisma.Etudiant.findUnique({
-            where: {
-                no_etudiant: Number(no_etudiant),
-            },
-        });
-        res.json(students);
-    }
-
     static async getCommentsByStudentId(req, res) {
         const no_etudiant = req.params.no_etudiant;
         const comments = await prisma.Commentaire.findMany({
