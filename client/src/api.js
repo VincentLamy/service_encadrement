@@ -24,4 +24,9 @@ export default class API {
     const res = await axios.post(`${url}/sondageMathematiques`, sondageMathematiques);
     return res.data;
   }
+  
+  static async getAllStudent() {
+    const res = await axios.get(`${url}/student_list`);
+    return res.data;
+  }
 }

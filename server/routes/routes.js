@@ -1,9 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const API = require("../controllers/api");
+const Student = require("../controllers/student");
 
 // Students
 router.get("/getStudent/:no_etudiant", API.getStudentById);
+router.get("/student_list", Student.getAllStudent);
 
 // Comments
 router.get("/getComment/:no_etudiant", API.getCommentsByStudentId);
