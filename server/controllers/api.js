@@ -2,11 +2,6 @@ const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient();
 
-const fs = require("fs");
-const csvParser = require("csv-parser");
-const { type } = require('os');
-
-
 module.exports = class API {
     // Hello World
     static async HelloWorld(req, res) {
@@ -32,95 +27,110 @@ module.exports = class API {
         const file = req.body;
         const fileSize = file['Numéro de dossier'].length - 1;
 
-        try {
-            // Type employé
-            const type_employe = await prisma.typeEmploye.upsert({
-                where: { id: 1 || 0 },
+        //   try {
+        // Insert Type employé
+        const type_employe = await prisma.typeEmploye.upsert({
+            where: { id: 1 || 0 },
+            update: {},
+            create: {
+                id: 1,
+                nom: 'Enseignant',
+                description: 'Cet employé est un enseignant dans le département d\'informatique',
+            },
+        });
+
+        for (let i = 0; i < fileSize; i++) {
+            // Insert Programme
+            const programme = await prisma.programme.upsert({
+                where: { code: file['Numéro du programme'][i] || 0 },
                 update: {},
                 create: {
-                    id: 1,
-                    nom: 'Enseignant',
-                    description: 'Cet employé est un enseignant dans le département d\'informatique',
+                    code: file['Numéro du programme'][i],
+                    nom: '',
+                    description: '',
                 },
             });
 
-            for (let i = 0; i < fileSize; i++) {
-                // Insert Programme
-                const programme = await prisma.programme.upsert({
-                    where: { code: file['Numéro du programme'][i] || 0 },
-                    update: {},
-                    create: {
-                        code: file['Numéro du programme'][i],
-                        nom: '',
-                        description: '',
-                    },
-                });
+            // Split Etudiant name
+            const nomEtudiant = file['Nom de l\'étudiant'][i].split(',');
 
-                // Split Etudiant name
-                const nomEtudiant = file['Nom de l\'étudiant'][i].split(',');
+            // Insert Etudiant
+            const etudiant = await prisma.etudiant.upsert({
+                where: { no_etudiant: Number(file['Numéro de dossier'][i]) || 0 },
+                update: {
+                    no_etudiant: Number(file['Numéro de dossier'][i]),
+                    code_permanent: file['Code permanent'][i],
+                    nom: nomEtudiant[0],
+                    prenom: nomEtudiant[1],
+                    session_actuelle: Number(file['Session du programme d\'études'][i]),
+                    code_programme: programme.code,
+                },
+                create: {
+                    no_etudiant: Number(file['Numéro de dossier'][i]),
+                    code_permanent: file['Code permanent'][i],
+                    nom: nomEtudiant[0],
+                    prenom: nomEtudiant[1],
+                    session_actuelle: Number(file['Session du programme d\'études'][i]),
+                    code_programme: programme.code,
+                },
+            });
 
-                // Insert Etudiant
-                const etudiant = await prisma.etudiant.upsert({
-                    where: { no_etudiant: Number(file['Numéro de dossier'][i]) || 0 },
-                    update: {
-                        no_etudiant: Number(file['Numéro de dossier'][i]),
-                        code_permanent: file['Code permanent'][i],
-                        nom: nomEtudiant[0],
-                        prenom: nomEtudiant[1],
-                        session_actuelle: Number(file['Session du programme d\'études'][i]),
-                        code_programme: programme.code,
-                    },
-                    create: {
-                        no_etudiant: Number(file['Numéro de dossier'][i]),
-                        code_permanent: file['Code permanent'][i],
-                        nom: nomEtudiant[0],
-                        prenom: nomEtudiant[1],
-                        session_actuelle: Number(file['Session du programme d\'études'][i]),
-                        code_programme: programme.code,
-                    },
-                });
+            // Insert Campus
+            const campus = await prisma.campus.upsert({
+                where: { ville: file['Campus'][i] || 0 },
+                update: {},
+                create: {
+                    ville: file['Campus'][i],
+                },
+            });
 
-                // Insert Campus
-                const campus = await prisma.campus.upsert({
-                    where: { ville: file['Campus'][i] || 0 },
-                    update: {},
-                    create: {
-                        ville: file['Campus'][i],
-                    },
-                });
+            // Insert Cours
+            const cours = await prisma.cours.upsert({
+                where: { code: file['Numéro du cours'][i] || 0 },
+                update: {},
+                create: {
+                    code: file['Numéro du cours'][i],
+                    nom: '',
+                    duree: Number(file['Nb heures du cours'][i]),
+                    id_campus: campus.id,
+                },
+            });
 
-                // Insert Cours
-                const cours = await prisma.cours.upsert({
-                    where: { code: file['Numéro du cours'][i] || 0 },
-                    update: {},
-                    create: {
-                        code: file['Numéro du cours'][i],
-                        nom: '',
-                        duree: Number(file['Nb heures du cours'][i]),
-                        id_campus: campus.id,
-                    },
-                });
+            // Split Enseignant name
+            const nomEnseignant = file['Nom de l\'enseignant'][i].split(',');
 
-                /*
-                const nomEnseignant = file['Nom de l\'enseignant'][i].split(',');
-
-                // Insert Enseignant
-                const employe = await prisma.employe.upsert({
-                    where: {nom: nomEnseignant[0], prenom: nomEnseignant[1]  || 0},
-                    update: {},
-                    create: {
-                        id : Noemploye[],
-                        id_type_employe : type_employe.id,
+            // Insert Enseignant
+            const employe = await prisma.employe.upsert({
+                where: {
+                    prenom_nom: {
                         nom: nomEnseignant[0],
                         prenom: nomEnseignant[1],
-                    },
-                });
-                */
-            }
-            res.status(201).json({ message: 'Rapport d\'encadrement ajouté avec succès' });
-        } catch (err) {
-            res.status(400).json({ message: err.message });
+                    }
+                },
+                update: {},
+                create: {
+                    id_type_employe: type_employe.id,
+                    nom: nomEnseignant[0],
+                    prenom: nomEnseignant[1],
+                },
+            });
+
+            // Insert Groupe
+            const groupe = await prisma.groupe.upsert({
+                where: { no_groupe: file['Numéro du groupe'][i] || 0 },
+                update: {},
+                create: {
+                    no_groupe: file['Numéro du groupe'][i],
+                    cours: cours.id,
+                    session: etudiant.session_actuelle,
+                    employe: employe.id,
+                },
+            });
         }
+        res.status(201).json({ message: 'Rapport d\'encadrement ajouté avec succès' });
+        //  } catch (err) {
+        //       res.status(400).json({ message: err.message });
+        //   }
 
         /*const {
             noDossier, codePermanent, prenomEtudiant, nomEtudiant, codeProgramme, sessionActuelle,  // Table Etudiant
@@ -141,8 +151,6 @@ module.exports = class API {
         const file = req.body;
         const fileSize = file['Adresse de messagerie'].length - 1;
 
-        console.log(file);
-
         //  try {
         for (let i = 0; i < fileSize; i++) {
             // Insert Cours Math 4
@@ -150,7 +158,7 @@ module.exports = class API {
                 where: {
                     nom_annee: {
                         nom: file['Le cours de mathématiques que vous avez suivi en secondaire 4 ?'][i],
-                        annee: 4
+                        annee: 4,
                     }
                 },
                 update: {},
@@ -166,7 +174,7 @@ module.exports = class API {
                 where: {
                     nom_annee: {
                         nom: file['Le cours de mathématiques que vous avez suivi en secondaire 5 ?'][i],
-                        annee: 5
+                        annee: 5,
                     }
                 },
                 update: {},
@@ -178,20 +186,20 @@ module.exports = class API {
             });
 
             // Insert Formulaire Math
-            /*
             const noEtudiant = file['Adresse de messagerie'][i].split('@');
+
             const formulaireMath = await prisma.formulaireMath.upsert({
-                where: { no_etudiant: noEtudiant[0] || 0 },
+                where: { no_etudiant: Number(noEtudiant[0]) || 0 },
                 update: {},
                 create: {
-                    heure_debut: file['Heure de début'][i],
-                    heure_fin: file['Heure de fin'][i],
+                    heure_debut: new Date(file['Heure de début'][i]),
+                    heure_fin: new Date(file['Heure de fin'][i]),
                     effort_fourni: file['L\'effort fourni au secondaire pour réussir ?'][i],
-                    experience_informatique: file['Indiquer votre expérience en informatique avant le Cégep (pas juste effleuré la chose) ?'][i][0],
-                    no_etudiant: noEtudiant[0],
+                    experience_informatique: file['Indiquer votre expérience en informatique avant le Cégep (pas juste effleuré la chose) ?'][i], //TODO remove the ""
+                    no_etudiant: Number(noEtudiant[0]),
                 },
             });
-            */
+
         }
 
         res.status(201).json({ message: 'Sondage mathématique ajouté avec succès' });
