@@ -66,50 +66,42 @@
           // Trigger click on the FileInput
           this.$refs.uploader.click();
 
+          // Differentiate which button has been clicked
           this.$refs.uploader.id = button;
         },
         onFileChanged(e) {
-          if (e.target.id === "rapport_encadrement") {
-            this.selectedFile = e.target.files[0];
-            let reader = new FileReader();
+          this.selectedFile = e.target.files[0];
+          let reader = new FileReader();
             
-            // To Array
-            /*
-            reader.addEventListener("loadend", async () => {
-              let data = reader.result.split("\r\n");
-              for (let i in data) {
-                data[i] = data[i].split(";");
+          // To Object
+          reader.addEventListener("loadend", async () => {
+            let temp = reader.result.split("\r\n");
+
+            for (let i in temp) {
+              temp[i] = temp[i].split(/;(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/);
+            }
+
+            let data = {};
+            for (let i in temp[0]) {
+              data[temp[0][i]] = [];
+              for (let j=1; j<temp.length; j++) {
+                data[temp[0][i]].push(temp[j][i]);
               }
+            }
+
+            // Rapport encadrement
+            if (e.target.id === "rapport_encadrement") {
               const response = await API.addRapportEncadrement(data);
               this.$router.push({ name:'home', params: {message: response.message} });
-            });
-            */
-
-            // To Object
-            reader.addEventListener("loadend", async () => {
-              let temp = reader.result.split("\r\n");
-              for (let i in temp) {
-                temp[i] = temp[i].split(";");
-              }
-
-              let data = {};
-              for (let i in temp[0]) {
-                data[temp[0][i]] = [];
-                for (let j=1; j<temp.length; j++) {
-                  data[temp[0][i]].push(temp[j][i]);
-                }
-              }
-              const response = await API.addRapportEncadrement(data);
+            } 
+            // Sondage mathématiques
+            else if (e.target.id === "sondage_mathematiques") {
+              const response = await API.addSondageMathematiques(data);
               this.$router.push({ name:'home', params: {message: response.message} });
-            });
-            reader.readAsText(this.selectedFile);
-          } else if (e.target.id === "sondage_mathematiques") {
-            console.log("sondage_math button");
-          }
-        },
-        async sondageMathematiques(e) {
-          console.log("Sondage mathématiques");
-          this.$router.push({ name:'home', params: {} });
+            }
+          });
+
+          reader.readAsText(this.selectedFile);
         },
       }
   }

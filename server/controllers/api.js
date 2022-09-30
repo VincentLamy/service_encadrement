@@ -2,10 +2,6 @@ const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient();
 
-const fs = require("fs");
-const csvParser = require("csv-parser");
-
-
 module.exports = class API {
     // Hello World
     static async HelloWorld(req, res) {
@@ -31,7 +27,18 @@ module.exports = class API {
         const file = req.body;
         const fileSize = file['Numéro de dossier'].length - 1;
 
-        //  try {
+        //   try {
+        // Insert Type employé
+        const type_employe = await prisma.typeEmploye.upsert({
+            where: { id: 1 || 0 },
+            update: {},
+            create: {
+                id: 1,
+                nom: 'Enseignant',
+                description: 'Cet employé est un enseignant dans le département d\'informatique',
+            },
+        });
+
         for (let i = 0; i < fileSize; i++) {
             // Insert Programme
             const programme = await prisma.programme.upsert({
@@ -83,25 +90,52 @@ module.exports = class API {
                 update: {},
                 create: {
                     code: file['Numéro du cours'][i],
-                    nom : '',
+                    nom: '',
                     duree: Number(file['Nb heures du cours'][i]),
                     id_campus: campus.id,
                 },
             });
 
-            
+            // Split Enseignant name
+            const nomEnseignant = file['Nom de l\'enseignant'][i].split(',');
+
+            // Insert Enseignant
+            const employe = await prisma.employe.upsert({
+                where: {
+                    prenom_nom: {
+                        nom: nomEnseignant[0],
+                        prenom: nomEnseignant[1],
+                    }
+                },
+                update: {},
+                create: {
+                    id_type_employe: type_employe.id,
+                    nom: nomEnseignant[0],
+                    prenom: nomEnseignant[1],
+                },
+            });
+
+            // Insert Groupe
+            const groupe = await prisma.groupe.upsert({
+                where: { no_groupe: file['Numéro du groupe'][i] || 0 },
+                update: {},
+                create: {
+                    no_groupe: file['Numéro du groupe'][i],
+                    cours: cours.id,
+                    session: etudiant.session_actuelle,
+                    employe: employe.id,
+                },
+            });
         }
-        
         res.status(201).json({ message: 'Rapport d\'encadrement ajouté avec succès' });
         //  } catch (err) {
-        //     res.status(400).json({ message: err.message });
-        // }
+        //       res.status(400).json({ message: err.message });
+        //   }
 
         /*const {
             noDossier, codePermanent, prenomEtudiant, nomEtudiant, codeProgramme, sessionActuelle,  // Table Etudiant
             villeCampus,                                                                            // Campus
             codeCours, nomCours, duree,                                                             // Cours, besoin de l'id Campus
-
             prenomEnseignant, nomEnseignant,                                                        // Employe, besoin de l'id Type Employe
             numeroGroupe,                                                                           // Groupe, besoin de l'id Cours, Session, Employe
             codeRemarqueNoteFinale, notePonderee, pourcentageNoteCumulee, nbHeuresAbsences,         // TA Etudiant Groupe, garder juste l'id du code remarque
@@ -111,5 +145,66 @@ module.exports = class API {
         } = req.body;*/
 
         // Manque le nom du cours
+    };
+
+    static async addSondageMathematiques(req, res) {
+        const file = req.body;
+        const fileSize = file['Adresse de messagerie'].length - 1;
+
+        //  try {
+        for (let i = 0; i < fileSize; i++) {
+            // Insert Cours Math 4
+            const coursMath4 = await prisma.coursMath.upsert({
+                where: {
+                    nom_annee: {
+                        nom: file['Le cours de mathématiques que vous avez suivi en secondaire 4 ?'][i],
+                        annee: 4,
+                    }
+                },
+                update: {},
+                create: {
+                    nom: file['Le cours de mathématiques que vous avez suivi en secondaire 4 ?'][i],
+                    annee: 4,
+                    code: "",
+                },
+            });
+
+            // Insert Cours Math 5
+            const coursMath5 = await prisma.coursMath.upsert({
+                where: {
+                    nom_annee: {
+                        nom: file['Le cours de mathématiques que vous avez suivi en secondaire 5 ?'][i],
+                        annee: 5,
+                    }
+                },
+                update: {},
+                create: {
+                    nom: file['Le cours de mathématiques que vous avez suivi en secondaire 5 ?'][i],
+                    annee: 5,
+                    code: "",
+                },
+            });
+
+            // Insert Formulaire Math
+            const noEtudiant = file['Adresse de messagerie'][i].split('@');
+
+            const formulaireMath = await prisma.formulaireMath.upsert({
+                where: { no_etudiant: Number(noEtudiant[0]) || 0 },
+                update: {},
+                create: {
+                    heure_debut: new Date(file['Heure de début'][i]),
+                    heure_fin: new Date(file['Heure de fin'][i]),
+                    effort_fourni: file['L\'effort fourni au secondaire pour réussir ?'][i],
+                    experience_informatique: file['Indiquer votre expérience en informatique avant le Cégep (pas juste effleuré la chose) ?'][i], //TODO remove the ""
+                    no_etudiant: Number(noEtudiant[0]),
+                },
+            });
+
+        }
+
+        res.status(201).json({ message: 'Sondage mathématique ajouté avec succès' });
+        // } catch (err) {
+        //     res.status(400).json({ message: err.message });
+        // }
     };
 };

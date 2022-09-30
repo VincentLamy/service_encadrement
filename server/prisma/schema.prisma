@@ -17,7 +17,7 @@ model Session {
 }
 
 model Employe {
-  no_employe      Int           @id
+  no_employe      Int           @id @default(autoincrement())
   type_employe    TypeEmploye   @relation(fields: [id_type_employe], references: [id])
   id_type_employe Int
   prenom          String        @db.VarChar(64)
@@ -25,6 +25,8 @@ model Employe {
   Groupe          Groupe[]
   Utilisateur     Utilisateur[]
   Commentaire     Commentaire[]
+
+  @@unique([prenom, nom])
 }
 
 model TypeEmploye {
@@ -174,16 +176,18 @@ model FormulaireMath {
   effort_fourni           String    @db.VarChar(255)
   experience_informatique String    @db.VarChar(255)
   etudiant                Etudiant  @relation(fields: [no_etudiant], references: [no_etudiant])
-  no_etudiant             Int
+  no_etudiant             Int       @unique
   TA_Math                 TA_Math[]
 }
 
 model CoursMath {
-  id      Int       @id @db.SmallInt()
+  id      Int       @id @default(autoincrement()) @db.SmallInt()
   nom     String    @db.VarChar(64)
   code    String    @db.VarChar(10)
   annee   Int       @db.SmallInt()
   TA_Math TA_Math[]
+
+  @@unique([nom, annee])
 }
 
 model TA_Math {

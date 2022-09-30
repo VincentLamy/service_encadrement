@@ -8,4 +8,5 @@ router.post("/addSession", API.addSession);
 router.get("/getSession", API.getSession);
 router.post("/rapportEncadrement", API.addRapportEncadrement);
 router.get("/student_list", Student.getAllStudent);
+router.post("/sondageMathematiques", API.addSondageMathematiques);
 module.exports = router;
