@@ -126,7 +126,7 @@ module.exports = class API {
             });
 
             // Insert Groupe
-            /*const groupe = await prisma.groupe.upsert({
+            const groupe = await prisma.groupe.upsert({
                 where: {
                     no_groupe_code_session: {
                         no_groupe: Number(file['Numéro du groupe'][i]),
@@ -136,11 +136,11 @@ module.exports = class API {
                 update: {},
                 create: {
                     no_groupe: Number(file['Numéro du groupe'][i]),
-                    cours: cours.id,
-                    session: session.code,
-                    employe: employe.id,
+                    code_cours: cours.code,
+                    code_session: session.code,
+                    no_employe: employe.no_employe,
                 },
-            });*/
+            });
         }
         res.status(201).json({ message: 'Rapport d\'encadrement ajouté avec succès' });
         //  } catch (err) {
