@@ -78,7 +78,7 @@ module.exports = class API {
 
             // Insert Campus
             const campus = await prisma.campus.upsert({
-                where: { ville: file['Campus'][i] || 0 },
+                where: { ville: file['Campus'][i] || '' },
                 update: {},
                 create: {
                     ville: file['Campus'][i],
@@ -104,8 +104,8 @@ module.exports = class API {
             const employe = await prisma.employe.upsert({
                 where: {
                     prenom_nom: {
-                        nom: nomEnseignant[0],
-                        prenom: nomEnseignant[1],
+                        nom: nomEnseignant[0] || '',
+                        prenom: nomEnseignant[1] || '',
                     }
                 },
                 update: {},
@@ -118,7 +118,7 @@ module.exports = class API {
 
             //TODO Temp session
             const session = await prisma.session.upsert({
-                where: { code: 'HIV22' || 0 },
+                where: { code: 'HIV22' || '' },
                 update: {},
                 create: {
                     code: 'HIV22',
@@ -129,8 +129,8 @@ module.exports = class API {
             const groupe = await prisma.groupe.upsert({
                 where: {
                     no_groupe_code_session: {
-                        no_groupe: Number(file['Numéro du groupe'][i]),
-                        code_session: session.code,
+                        no_groupe: Number(file['Numéro du groupe'][i]) || 0,
+                        code_session: session.code || 0,
                     }
                 },
                 update: {},
@@ -139,6 +139,41 @@ module.exports = class API {
                     code_cours: cours.code,
                     code_session: session.code,
                     no_employe: employe.no_employe,
+                },
+            });
+
+            // Insert Code Remarque
+            const codeRemarqueNoteFinale = await prisma.codeRemarqueNoteFinale.upsert({
+                where: { nom: file['Code de remarque de la note finale'][i] || '' },
+                update: {},
+                create: {
+                    nom: file['Code de remarque de la note finale'][i],
+                },
+            });
+
+            // Insert TA Etudiant Groupe
+            const TAEtudiantGroupe = await prisma.tA_EtudiantGroupe.upsert({
+                where: {
+                    no_etudiant_id_groupe: {
+                        no_etudiant: etudiant.no_etudiant || 0,
+                        id_groupe: groupe.id || 0,
+                    }
+                },
+                update: {
+                    no_etudiant: etudiant.no_etudiant,
+                    id_groupe: groupe.id,
+                    id_code_remarque_note_finale: codeRemarqueNoteFinale.id,
+                    note_ponderee: parseFloat(file['Note Pondérée'][i].replace(',', '.')) || 0,
+                    pourcentage_note_cumulee: parseFloat(file['Pourcentage note cumulée'][i].replace(',', '.')) || 0,
+                    duree_absence: parseFloat(file['Nb heures d\'absences'][i].replace(',', '.')) || 0,
+                },
+                create: {
+                    no_etudiant: etudiant.no_etudiant,
+                    id_groupe: groupe.id,
+                    id_code_remarque_note_finale: codeRemarqueNoteFinale.id,
+                    note_ponderee: parseFloat(file['Note Pondérée'][i].replace(',', '.')) || 0,
+                    pourcentage_note_cumulee: parseFloat(file['Pourcentage note cumulée'][i].replace(',', '.')) || 0,
+                    duree_absence: parseFloat(file['Nb heures d\'absences'][i].replace(',', '.')) || 0,
                 },
             });
         }
