@@ -8,6 +8,11 @@ export default class API {
     return res.data;
   }
 
+  static async getStudentGroupByStudent(no_etudiant) {
+    const res = await axios.get(`${url}/getStudentGroup/${no_etudiant}`);
+    return res.data;
+  }
+
   static async getCommentsByStudentId(no_etudiant) {
     const res = await axios.get(`${url}/getComment/${no_etudiant}`);
     return res.data;

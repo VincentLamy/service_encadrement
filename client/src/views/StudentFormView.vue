@@ -37,14 +37,19 @@
 
           <!-- Numéro de programme -->
           <v-col class="px-3" lg="3" sm="6" cols="12">
-            <v-select label="No. de programme" outlined readonly />
+            <v-text-field 
+              label="No. de programme" 
+              :value="student.code_programme"
+              outlined
+              readonly
+            />
           </v-col>
 
           <!-- Nombre de cours en difficulté -->
           <v-col class="px-3" lg="3" sm="6" cols="12">
             <v-text-field
               label="Nb. de cours en difficulté"
-              value="3"
+              :value="amountClassesInDifficulty()"
               outlined
               readonly
             />
@@ -352,6 +357,7 @@ export default {
     return {
       student: {},
       comments: [],
+      classes: [],
       math_form: {
         start_time: null,
         end_time: null,
@@ -376,6 +382,11 @@ export default {
       },
     };
   },
+  methods: {
+    amountClassesInDifficulty() {
+      return this.classes.filter(c => c.pourcentage_note_cumulee < 60).length;
+    }
+  },
   async created() {
     const response = await API.getStudentById(this.$route.params.id);
     this.student = response;
@@ -384,6 +395,11 @@ export default {
       this.student.no_etudiant
     );
     this.comments = comments_response;
+
+    const studentclass_response = await API.getStudentGroupByStudent(
+      this.student.no_etudiant
+    );
+    this.classes = studentclass_response;
   },
 };
 </script>
