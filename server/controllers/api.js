@@ -28,6 +28,30 @@ module.exports = class API {
         const file = req.body;
         const fileSize = file['Numéro de dossier'].length - 1;
 
+        const array_code = ["1","2","3","4","5","6","7","8","9","20","21","22","23","24","25","30","31","40","41","42", "AUTN", "PROG", "CHAN"];
+        const array_nom = 
+        ["Arrive souvent en retard","Dort en classe","N\'a pas le matériel requis pour le cours ou le laboratoire",
+        "Quitte souvent avant la fin des cours","Isolé en classe","Facilement distrait, inattentif","Enclin au bavardage",
+        "Utilise son cellulaire en classe","Prend plus de temps que les autres pour faire ses travaux et évaluations",
+        "Travail remis en retard","Travail non remis","Ne lit pas ses MIO","Ne fait pas les travaux ou exercices demandés",
+        "Travail partiellement accompli","Participe peu ou pas aux activités d'apprentissage","Demande à l'enseignant ou à l'enseignante de faire seul un travail d'équipe",
+        "Difficulté à se trouver une équipe de travail","A demandé une évaluation différée sans raison valable","Absent à une évaluation sans raison valable",
+        "N'a pas terminé l'évaluation","Autre (maximum de 3000 caractères):","Progression","Chances de réussite "]
+
+        let size_array = array_code.length;
+
+        for (let i = 0; i < size_array; i++) {
+
+            const code_remarque = await prisma.codeRemarque.upsert({
+                where: { code: array_code[i] || 0 },
+                update: {},
+                create: {
+                    code: array_code[i],
+                    nom: array_nom[i],
+                },
+            });
+        }
+
         //   try {
         // Insert Type employé
         const type_employe = await prisma.typeEmploye.upsert({
@@ -249,6 +273,8 @@ module.exports = class API {
                     no_etudiant: Number(noEtudiant[0]),
                 },
             });
+
+            console.log(file);
 
         }
 
