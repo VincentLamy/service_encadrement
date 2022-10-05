@@ -3,16 +3,6 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 module.exports = class API {
-    static async getCommentsByStudentId(req, res) {
-        const no_etudiant = req.params.no_etudiant;
-        const comments = await prisma.Commentaire.findMany({
-            where: {
-                no_etudiant: Number(no_etudiant),
-            },
-        });
-        res.json(comments);
-    }
-
     static async addSession(req, res) {
         const { code } = req.body;
         const session = await prisma.session.create({

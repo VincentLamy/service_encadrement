@@ -11,11 +11,23 @@ module.exports = class Student {
     }
   }
 
-  static async getStudentById(req, res) {
+  static async getStudentFormInfo(req, res) {
     const no_etudiant = req.params.no_etudiant;
     const students = await prisma.Etudiant.findUnique({
       where: {
         no_etudiant: Number(no_etudiant),
+      },
+      include: {
+        TA_EtudiantGroupe: {
+          include: {
+            groupe: {
+              include: {
+                session: true,
+                Commentaire: true,
+              },
+            },
+          },
+        },
       },
     });
     res.json(students);

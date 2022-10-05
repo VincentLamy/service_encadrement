@@ -37,8 +37,8 @@
 
           <!-- Numéro de programme -->
           <v-col class="px-3" lg="3" sm="6" cols="12">
-            <v-text-field 
-              label="No. de programme" 
+            <v-text-field
+              label="No. de programme"
               :value="student.code_programme"
               outlined
               readonly
@@ -49,7 +49,7 @@
           <v-col class="px-3" lg="3" sm="6" cols="12">
             <v-text-field
               label="Nb. de cours en difficulté"
-              :value="amountClassesInDifficulty()"
+              :value="amount_classes_in_difficulty"
               outlined
               readonly
             />
@@ -220,7 +220,7 @@
         <h3 class="d-flex justify-center mb-4">Commentaires</h3>
 
         <!-- Onglets sessions -->
-        <v-tabs v-model="semesters_tab">
+        <v-tabs v-model="semester_tab">
           <v-tab v-for="(semester, i) in semesters" :key="i">
             {{ semester.code }}
           </v-tab>
@@ -228,7 +228,7 @@
 
         <v-container>
           <!-- Cours & Commentaires des sessions -->
-          <v-tabs-items v-model="semesters_tab">
+          <v-tabs-items v-model="semester_tab">
             <v-tab-item v-for="(semester, i) in semesters" :key="i">
               <!-- Cours de la session -->
               <v-expansion-panels accordion flat>
@@ -356,10 +356,9 @@ export default {
   data() {
     return {
       student: {},
-      comments: [],
-      classes: [],
       semesters: [],
-      semesters_tab: null,
+      semester_tab: null,
+      amount_classes_in_difficulty: 0,
       math_form: {
         start_time: null,
         end_time: null,
@@ -380,16 +379,27 @@ export default {
       },
     };
   },
-  methods: {
-    amountClassesInDifficulty() {
-      return this.classes.filter(c => c.pourcentage_note_cumulee < 60).length;
-    }
-  },
   async created() {
-    this.student = await API.getStudentById(this.$route.params.id);
-    this.comments = await API.getCommentsByStudentId(this.student.no_etudiant);
-    this.classes = await API.getStudentGroupByStudent(this.student.no_etudiant);
-    this.semesters = await API.getSemesterByStudent(this.student.no_etudiant);
+    // Get student info
+    this.student = await API.getStudentFormInfo(this.$route.params.id);
+
+    // Get all semesters the student is in
+    let duplicate_semesters = this.student.TA_EtudiantGroupe.map(
+      (x) => x.groupe.session
+    );
+    this.semesters = Array.from(
+      new Set(duplicate_semesters.map((s) => s.id))
+    ).map((id) => {
+      return {
+        id: id,
+        code: duplicate_semesters.find((s) => s.id === id).code,
+      };
+    });
+
+    // Get amount of classes the student is currently failing
+    this.amount_classes_in_difficulty = this.student.TA_EtudiantGroupe.filter(
+      (x) => x.pourcentage_note_cumulee < 60
+    ).length;
   },
 };
 </script>

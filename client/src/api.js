@@ -2,27 +2,6 @@ import axios from 'axios';
 const url = '/api';
 
 export default class API {
-  // To get a student by Id
-  static async getStudentById(no_etudiant) {
-    const res = await axios.get(`${url}/getStudent/${no_etudiant}`);
-    return res.data;
-  }
-
-  static async getStudentGroupByStudent(no_etudiant) {
-    const res = await axios.get(`${url}/getStudentGroup/${no_etudiant}`);
-    return res.data;
-  }
-
-  static async getSemesterByStudent(no_etudiant) {
-    const res = await axios.get(`${url}/getSemesterByStudent/${no_etudiant}`);
-    return res.data;
-  }
-
-  static async getCommentsByStudentId(no_etudiant) {
-    const res = await axios.get(`${url}/getComment/${no_etudiant}`);
-    return res.data;
-  }
-
   // To insert a rapport d'encadrement
   static async addRapportEncadrement(rapportEncadrement) {
     const res = await axios.post(`${url}/rapportEncadrement`, rapportEncadrement);
@@ -35,8 +14,15 @@ export default class API {
     return res.data;
   }
   
+  // Gets all students
   static async getAllStudent() {
     const res = await axios.get(`${url}/student_list`);
+    return res.data;
+  }
+
+  // Gets student form info by ID
+  static async getStudentFormInfo(no_etudiant) {
+    const res = await axios.get(`${url}/student_form/${no_etudiant}`)
     return res.data;
   }
 }
