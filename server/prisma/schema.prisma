@@ -11,8 +11,7 @@ datasource db {
 }
 
 model Session {
-  id     Int      @id @default(autoincrement())
-  code   String   @db.VarChar(5)
+  code   String   @id @db.VarChar(5)
   Groupe Groupe[]
 }
 
@@ -43,12 +42,12 @@ model Groupe {
   no_employe        Int
   cours             Cours               @relation(fields: [code_cours], references: [code])
   code_cours        String              @db.VarChar(10)
-  session           Session             @relation(fields: [id_session], references: [id])
-  id_session         Int
+  session           Session             @relation(fields: [code_session], references: [code])
+  code_session      String              @db.VarChar(5)
   Commentaire       Commentaire[]
   TA_EtudiantGroupe TA_EtudiantGroupe[]
 
-  @@unique([no_groupe, id_session])
+  @@unique([no_groupe, code_session])
 }
 
 model Utilisateur {
@@ -89,7 +88,8 @@ model Commentaire {
 
 model CodeRemarque {
   id          Int           @id @default(autoincrement())
-  nom         String        @db.VarChar(4)
+  code        String        @db.VarChar(12) @unique
+  nom         String        @db.VarChar(255)
   Commentaire Commentaire[]
 }
 
@@ -130,7 +130,7 @@ model TA_EtudiantGroupe {
 
 model CodeRemarqueNoteFinale {
   id                Int                 @id @default(autoincrement())
-  nom               String              @db.VarChar(64)
+  nom               String              @unique @db.VarChar(64)
   TA_EtudiantGroupe TA_EtudiantGroupe[]
 }
 
@@ -197,7 +197,7 @@ model TA_Math {
   id_cours_math      Int            @db.SmallInt()
   formulaire_math    FormulaireMath @relation(fields: [id_formulaire_math], references: [id])
   id_formulaire_math Int
-  note_obtenue       Float
+  note_obtenue       String         @db.VarChar(32)
 
   @@unique([id_cours_math, id_formulaire_math])
 }
