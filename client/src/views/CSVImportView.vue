@@ -16,8 +16,8 @@
         >
           Importer Rapport d'encadrement
         </v-btn>
-      </v-col>
 
+      </v-col>
       <v-col class="text-center">
         <!-- Button for Sondage mathématiques -->
         <v-btn 
@@ -29,21 +29,8 @@
         >
           Importer Sondage mathématiques
         </v-btn>
-      </v-col>
       
-      <v-col class="text-center">
-        <!-- Button for Etudiants Internationaux -->
-        <v-btn 
-          color="primary"
-          dark
-          id
-          :loading="isSelecting"
-          @click="handleFileImport('etudiants_internationaux')"
-        >
-          Importer Liste étudiants internationaux
-        </v-btn>
       </v-col>
-
       <!-- File input for all buttons -->
       <input 
         ref="uploader" 
@@ -85,7 +72,7 @@
         onFileChanged(e) {
           this.selectedFile = e.target.files[0];
           let reader = new FileReader();
-
+            
           // To Object
           reader.addEventListener("loadend", async () => {
             let temp = reader.result.split("\r\n");
@@ -110,11 +97,6 @@
             // Sondage mathématiques
             else if (e.target.id === "sondage_mathematiques") {
               const response = await API.addSondageMathematiques(data);
-              this.$router.push({ name:'home', params: {message: response.message} });
-            }
-            // Etudiants internationaux
-            else if (e.target.id === "etudiants_internationaux") {
-              const response = await API.addEtudiantsInternationaux(data);
               this.$router.push({ name:'home', params: {message: response.message} });
             }
           });
