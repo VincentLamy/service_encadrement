@@ -220,21 +220,21 @@
         <h3 class="d-flex justify-center mb-4">Commentaires</h3>
 
         <!-- Onglets sessions -->
-        <v-tabs v-model="semesters.tab">
-          <v-tab v-for="(code, i) in semesters.codes" :key="i">
-            {{ code }}
+        <v-tabs v-model="semesters_tab">
+          <v-tab v-for="(semester, i) in semesters" :key="i">
+            {{ semester.code }}
           </v-tab>
         </v-tabs>
 
         <v-container>
           <!-- Cours & Commentaires des sessions -->
-          <v-tabs-items v-model="semesters.tab">
-            <v-tab-item v-for="(code, i) in semesters.codes" :key="i">
+          <v-tabs-items v-model="semesters_tab">
+            <v-tab-item v-for="(semester, i) in semesters" :key="i">
               <!-- Cours de la session -->
               <v-expansion-panels accordion flat>
                 <v-expansion-panel v-for="j in 5" :key="j">
                   <v-expansion-panel-header class="outlined">
-                    Cours #{{ j }} {{ code }}
+                    Cours #{{ j }} {{ semester.code }}
                   </v-expansion-panel-header>
                   <v-expansion-panel-content class="outlined">
                     <!-- Commentaires d'un cours -->
@@ -358,6 +358,8 @@ export default {
       student: {},
       comments: [],
       classes: [],
+      semesters: [],
+      semesters_tab: null,
       math_form: {
         start_time: null,
         end_time: null,
@@ -376,10 +378,6 @@ export default {
           },
         ],
       },
-      semesters: {
-        tab: null,
-        codes: ["AUT21", "HIV21", "AUT22", "HIV22"],
-      },
     };
   },
   methods: {
@@ -388,18 +386,10 @@ export default {
     }
   },
   async created() {
-    const response = await API.getStudentById(this.$route.params.id);
-    this.student = response;
-
-    const comments_response = await API.getCommentsByStudentId(
-      this.student.no_etudiant
-    );
-    this.comments = comments_response;
-
-    const studentclass_response = await API.getStudentGroupByStudent(
-      this.student.no_etudiant
-    );
-    this.classes = studentclass_response;
+    this.student = await API.getStudentById(this.$route.params.id);
+    this.comments = await API.getCommentsByStudentId(this.student.no_etudiant);
+    this.classes = await API.getStudentGroupByStudent(this.student.no_etudiant);
+    this.semesters = await API.getSemesterByStudent(this.student.no_etudiant);
   },
 };
 </script>

@@ -13,6 +13,11 @@ export default class API {
     return res.data;
   }
 
+  static async getSemesterByStudent(no_etudiant) {
+    const res = await axios.get(`${url}/getSemesterByStudent/${no_etudiant}`);
+    return res.data;
+  }
+
   static async getCommentsByStudentId(no_etudiant) {
     const res = await axios.get(`${url}/getComment/${no_etudiant}`);
     return res.data;

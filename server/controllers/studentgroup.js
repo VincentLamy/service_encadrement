@@ -7,7 +7,7 @@ module.exports = class StudentGroup {
     const classes = await prisma.TA_EtudiantGroupe.findMany({
       where: {
         no_etudiant: Number(no_etudiant),
-      }
+      },
     });
     res.json(classes);
   }
