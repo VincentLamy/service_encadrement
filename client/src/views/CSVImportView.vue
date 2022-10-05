@@ -83,7 +83,7 @@
           this.$refs.uploader.id = button;
         },
         onFileChanged(e) {
-          this.selectedFile = e.target.files[0]; 
+          this.selectedFile = e.target.files[0];
           let reader = new FileReader();
 
           // To Object

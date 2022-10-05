@@ -8,9 +8,8 @@ export default class API {
     return res.data;
   }
 
-  static async getListStudent() {
+  static async getAllStudent() {
     const res = await axios.get(`${url}/student_list`);
-    return res.data;
   }
   
   // To insert a sondage mathematiques
