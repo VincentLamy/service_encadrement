@@ -1,30 +1,48 @@
-* {
-    color: #0169B0;
-}
+/* ==========================================================================
+   Textes
+   ========================================================================== */
 
-h1, h2, h3, h4, h5, h6 {
-    text-align: center;
-}
+    * {
+        color: #0169B0;
+    }
 
-#list_student thead span {
-    color: #FC8D33;
-    font-size: large;
-}
+/* Titres
+   ========================================================================== */
+    h1, h2, h3, h4, h5, h6 {
+        text-align: center;
+    }
 
-#list_student tr:nth-of-type(odd) {
-    /* 'teal lighten-5' basides on material design color */
-    background-color: #FFFFFF;
-}
+    h1, h2 {
+        color: #FC8D33;
+    }
 
-#list_student tr:nth-of-type(even) {
-    /* 'deep-orange lighten-5' basides on material design color */
-    background-color: #dddddd;
-}
+    .v-app-bar__nav-icon {
+        position: absolute;
+    }
 
-#list_student tr:hover {
-    cursor: pointer;
-}
+    .v-application--is-ltr .v-toolbar__content > .v-btn.v-btn--icon:first-child + .v-toolbar__title, .v-application--is-ltr .v-toolbar__extension > .v-btn.v-btn--icon:first-child + .v-toolbar__title {
+        padding: 0;
+    }
 
-#list_student tr:active {
-    cursor: grabbing;
-}
+/* ==========================================================================
+   Tableau Liste étudiante
+   ========================================================================== */
+    #list_student thead span {
+        font-size: large;
+    }
+
+    #list_student tr:nth-of-type(odd) {
+        background-color: #FFFFFF;
+    }
+
+    #list_student tr:nth-of-type(even) {
+        background-color: #dddddd;
+    }
+
+    #list_student tr:hover {
+        cursor: pointer;
+    }
+
+    #list_student tr:active {
+        cursor: grabbing;
+    }

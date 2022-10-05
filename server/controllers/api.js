@@ -3,10 +3,6 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 module.exports = class API {
-    // Hello World
-    static async HelloWorld(req, res) {
-        res.send("Hello from API");
-    }
 
     static async addSession(req, res) {
         const { code } = req.body;
@@ -116,16 +112,16 @@ module.exports = class API {
             });
 
             // Insert Groupe
-            const groupe = await prisma.groupe.upsert({
-                where: { no_groupe: file['Numéro du groupe'][i] || 0 },
-                update: {},
-                create: {
-                    no_groupe: file['Numéro du groupe'][i],
-                    cours: cours.id,
-                    session: etudiant.session_actuelle,
-                    employe: employe.id,
-                },
-            });
+            // const groupe = await prisma.groupe.upsert({
+            //     where: { no_groupe: file['Numéro du groupe'][i] || 0 },
+            //     update: {},
+            //     create: {
+            //         no_groupe: file['Numéro du groupe'][i],
+            //         cours: cours.id,
+            //         session: etudiant.session_actuelle,
+            //         employe: employe.id,
+            //     },
+            // });
         }
         res.status(201).json({ message: 'Rapport d\'encadrement ajouté avec succès' });
         //  } catch (err) {
@@ -203,6 +199,7 @@ module.exports = class API {
         }
 
         res.status(201).json({ message: 'Sondage mathématique ajouté avec succès' });
+        
         // } catch (err) {
         //     res.status(400).json({ message: err.message });
         // }
