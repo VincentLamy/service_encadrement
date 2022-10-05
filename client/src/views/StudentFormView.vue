@@ -232,23 +232,28 @@
             <v-tab-item v-for="(semester, i) in semesters" :key="i">
               <!-- Cours de la session -->
               <v-expansion-panels accordion flat>
-                <v-expansion-panel v-for="j in 5" :key="j">
+                <v-expansion-panel
+                  v-for="student_group in semester.student_groups"
+                >
                   <v-expansion-panel-header class="outlined">
-                    Cours #{{ j }} {{ semester.code }}
+                    {{ student_group.groupe.cours.code }} -
+                    {{ student_group.groupe.cours.nom }}
                   </v-expansion-panel-header>
                   <v-expansion-panel-content class="outlined">
                     <!-- Commentaires d'un cours -->
                     <v-list>
-                      <template v-for="k in 3">
+                      <template
+                        v-for="(comment, i) in student_group.groupe.Commentaire"
+                      >
                         <v-list-item class="py-3">
                           <v-row class="align-center">
                             <!-- Titre + commentaire -->
-                            <v-list-item-content :key="k">
+                            <v-list-item-content>
                               <v-list-item-title>
-                                Commentaire sur le cours #{{ k }}
+                                {{ comment.titre }}
                               </v-list-item-title>
                               <v-list-item-subtitle>
-                                Informations additionnelles
+                                {{ comment.contenu }}
                               </v-list-item-subtitle>
                             </v-list-item-content>
 
@@ -261,25 +266,29 @@
                                   <v-chip
                                     class="ms-1 font-weight-bold blue--text text--darken-3"
                                     x-small
-                                    >Remarque</v-chip
+                                    >{{ comment.type_remarque.nom }}</v-chip
                                   >
                                   <v-chip
                                     class="ms-1 font-weight-bold blue--text text--darken-3"
                                     x-small
-                                    >AUTN</v-chip
+                                    >{{ comment.code_remarque.nom }}</v-chip
                                   >
                                 </div>
                                 <p class="ma-0 black--text">
-                                  Lapalme, Jocelyn
-                                  <span class="ms-4 grey--text"
-                                    >24 sept. 2021 10:15</span
-                                  >
+                                  {{ comment.employe.nom }},
+                                  {{ comment.employe.prenom }}
+                                  <span class="ms-4 grey--text">
+                                    {{ dateToString(comment.date_creation) }}  
+                                  </span>
                                 </p>
                               </v-list-item-action-text>
                             </v-list-item-action>
                           </v-row>
                         </v-list-item>
-                        <v-divider v-if="k < 3" :key="k"></v-divider>
+                        <v-divider
+                          v-if="i < student_group.groupe.Commentaire.length - 1"
+                          :key="i"
+                        ></v-divider>
                       </template>
                     </v-list>
                   </v-expansion-panel-content>
@@ -379,6 +388,13 @@ export default {
       },
     };
   },
+  methods: {
+    dateToString(d) {
+      d = new Date(d);
+      const options = {year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric'};
+      return d.toLocaleDateString('fr-CA', options);
+    },
+  },
   async created() {
     // Get student info
     this.student = await API.getStudentFormInfo(this.$route.params.id);
@@ -393,12 +409,15 @@ export default {
       return {
         id: id,
         code: duplicate_semesters.find((s) => s.id === id).code,
+        student_groups: this.student.TA_EtudiantGroupe.filter(
+          (g) => g.groupe.session.id === id
+        ),
       };
     });
 
     // Get amount of classes the student is currently failing
     this.amount_classes_in_difficulty = this.student.TA_EtudiantGroupe.filter(
-      (x) => x.pourcentage_note_cumulee < 60
+      (g) => g.pourcentage_note_cumulee < 60
     ).length;
   },
 };

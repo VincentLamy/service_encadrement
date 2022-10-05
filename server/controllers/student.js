@@ -22,8 +22,15 @@ module.exports = class Student {
           include: {
             groupe: {
               include: {
+                cours: true,
                 session: true,
-                Commentaire: true,
+                Commentaire: {
+                  include: {
+                    employe: true,
+                    code_remarque: true,
+                    type_remarque: true,
+                  }
+                },
               },
             },
           },
