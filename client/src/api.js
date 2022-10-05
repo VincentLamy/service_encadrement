@@ -13,4 +13,10 @@ export default class API {
     const res = await axios.post(`${url}/sondageMathematiques`, sondageMathematiques);
     return res.data;
   }
+
+  // To insert a étudiants internationaux list
+  static async addEtudiantsInternationaux(etudiantsInternationaux) {
+    const res = await axios.post(`${url}/etudiantsInternationaux`, etudiantsInternationaux);
+    return res.data;
+  }
 }

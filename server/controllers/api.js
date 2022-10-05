@@ -176,6 +176,9 @@ module.exports = class API {
                     duree_absence: parseFloat(file['Nb heures d\'absences'][i].replace(',', '.')) || 0,
                 },
             });
+
+            // Insert TA Etu Statut
+
         }
         res.status(201).json({ message: 'Rapport d\'encadrement ajouté avec succès' });
         //  } catch (err) {
@@ -250,11 +253,49 @@ module.exports = class API {
                 },
             });
 
+            // Insert TA Math 4
+            const TAMath4 = await prisma.tA_Math.upsert({
+                where: {
+                    id_cours_math_id_formulaire_math: {
+                        id_cours_math: coursMath4.id,
+                        id_formulaire_math: formulaireMath.id,
+                    },
+                },
+                update: {},
+                create: {
+                    id_cours_math: coursMath4.id,
+                    id_formulaire_math: formulaireMath.id,
+                    note_obtenue: file['La note obtenue pour le cours de mathématiques que vous avez suivi en secondaire 4 ?'][i],
+                },
+            });
+
+            // Insert TA Math 5
+            const TAMath5 = await prisma.tA_Math.upsert({
+                where: {
+                    id_cours_math_id_formulaire_math: {
+                        id_cours_math: coursMath5.id,
+                        id_formulaire_math: formulaireMath.id,
+                    },
+                },
+                update: {},
+                create: {
+                    id_cours_math: coursMath5.id,
+                    id_formulaire_math: formulaireMath.id,
+                    note_obtenue: file['La note obtenue pour le cours de mathématiques que vous avez suivi en secondaire 5 ?'][i],
+                },
+            });
         }
 
-        res.status(201).json({ message: 'Sondage mathématique ajouté avec succès' });
+        res.status(201).json({ message: 'Sondage mathématiques ajouté avec succès' });
         // } catch (err) {
         //     res.status(400).json({ message: err.message });
         // }
+    };
+
+    static async addEtudiantsInternationaux(req, res) {
+        const file = req.body;
+        console.log(file);
+
+        res.status(201).json({ message: 'Liste d\'étudiants internationaux ajouté avec succès' });
     };
 };

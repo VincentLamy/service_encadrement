@@ -196,7 +196,7 @@ model TA_Math {
   id_cours_math      Int            @db.SmallInt()
   formulaire_math    FormulaireMath @relation(fields: [id_formulaire_math], references: [id])
   id_formulaire_math Int
-  note_obtenue       Float
+  note_obtenue       String         @db.VarChar(32)
 
   @@unique([id_cours_math, id_formulaire_math])
 }
