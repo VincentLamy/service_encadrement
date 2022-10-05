@@ -5,5 +5,5 @@
 
 */
 -- AlterTable
-ALTER TABLE `coderemarque` MODIFY `nom` VARCHAR(255) NOT NULL,
+ALTER TABLE `CodeRemarque` MODIFY `nom` VARCHAR(255) NOT NULL,
     MODIFY `code` VARCHAR(12) NOT NULL;
