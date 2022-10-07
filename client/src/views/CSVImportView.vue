@@ -84,38 +84,43 @@
         },
         onFileChanged(e) {
           this.selectedFile = e.target.files[0];
+          const extension = this.selectedFile.name.split('.').pop();
+
           let reader = new FileReader();
 
           // To Object
           reader.addEventListener("loadend", async () => {
-            let temp = reader.result.split("\r\n");
-
-            for (let i in temp) {
-              temp[i] = temp[i].split(/;(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/);
-            }
-
             let data = {};
-            for (let i in temp[0]) {
-              data[temp[0][i]] = [];
-              for (let j=1; j<temp.length; j++) {
-                data[temp[0][i]].push(temp[j][i]);
+
+            if (extension === "csv" || extension === "xlsx") {
+              let temp = reader.result.split("\r\n");
+
+              for (let i in temp) {
+                temp[i] = temp[i].split(/;(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/);
+              }
+
+              for (let i in temp[0]) {
+                data[temp[0][i]] = [];
+                for (let j=1; j<temp.length; j++) {
+                  data[temp[0][i]].push(temp[j][i]);
+                }
               }
             }
 
             // Rapport encadrement
             if (e.target.id === "rapport_encadrement") {
               const response = await API.addRapportEncadrement(data);
-              this.$router.push({ name:'home', params: {message: response.message} });
+              this.$router.push({ name:'home', params: {response: response} });
             } 
             // Sondage mathématiques
             else if (e.target.id === "sondage_mathematiques") {
               const response = await API.addSondageMathematiques(data);
-              this.$router.push({ name:'home', params: {message: response.message} });
+              this.$router.push({ name:'home', params: {response: response} });
             }
             // Etudiants internationaux
             else if (e.target.id === "etudiants_internationaux") {
               const response = await API.addEtudiantsInternationaux(data);
-              this.$router.push({ name:'home', params: {message: response.message} });
+              this.$router.push({ name:'home', params: {response: response} });
             }
           });
 
