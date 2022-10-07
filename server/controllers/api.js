@@ -56,7 +56,6 @@ module.exports = class API {
                 });
             }
 
-
             // Insert Type employé
             const type_employe = await prisma.typeEmploye.upsert({
                 where: { id: 1 || 0 },
@@ -65,6 +64,39 @@ module.exports = class API {
                     id: 1,
                     nom: 'Enseignant',
                     description: 'Cet employé est un enseignant dans le département d\'informatique',
+                },
+            });
+
+            // Traitement session
+            let codeSession = "";
+
+            const today = new Date();
+
+            const yy = today.getFullYear().toString().substring(2);
+            const mm = today.getMonth() + 1;
+            const dd = today.getDate();
+
+            // AUT
+            if ((mm == 8 && dd >= 1 || mm > 8) && (mm == 12 && dd <= 31 || mm < 12)) {
+                codeSession = "AUT" + yy;
+            }
+
+            // HIV
+            if ((mm == 1 && dd >= 1 || mm > 1) && (mm == 5 && dd <= 19 || mm < 5)) {
+                codeSession = "HIV" + yy;
+            }
+
+            // ETE
+            if ((mm == 5 && dd >= 20 || mm > 5) && (mm == 7 && dd <= 31 || mm < 7)) {
+                codeSession = "ETE" + yy;
+            }
+
+            //Insert Session
+            const session = await prisma.session.upsert({
+                where: { code: codeSession || '' },
+                update: {},
+                create: {
+                    code: codeSession,
                 },
             });
 
@@ -141,15 +173,6 @@ module.exports = class API {
                         id_type_employe: type_employe.id,
                         nom: nomEnseignant[0],
                         prenom: nomEnseignant[1],
-                    },
-                });
-
-                //TODO Temp session
-                const session = await prisma.session.upsert({
-                    where: { code: 'HIV22' || '' },
-                    update: {},
-                    create: {
-                        code: 'HIV22',
                     },
                 });
 
@@ -289,8 +312,6 @@ module.exports = class API {
 
                 statutEtuCours = statutEtuCours.split(';'); // Splitting by ;
 
-                //TODO not inserting
-
                 for (let j = 0; j < statutEtuCours.length; j++) {
                     if (statutEtuCours[j]) {
                         // Insert Statut Etudiant
@@ -367,6 +388,10 @@ module.exports = class API {
                 // Insert Formulaire Math
                 const noEtudiant = file['Adresse de messagerie'][i].split('@');
 
+                let experienceInformatique = file['Indiquer votre expérience en informatique avant le Cégep (pas juste effleuré la chose) ?'][i];
+
+                if (experienceInformatique.charAt(0) == "\"" && experienceInformatique.charAt(experienceInformatique.length - 1) == "\"") experienceInformatique = experienceInformatique.slice(1, -1); // Deleting quotation marks
+
                 const formulaireMath = await prisma.formulaireMath.upsert({
                     where: { no_etudiant: Number(noEtudiant[0]) || 0 },
                     update: {},
@@ -374,7 +399,7 @@ module.exports = class API {
                         heure_debut: new Date(file['Heure de début'][i]),
                         heure_fin: new Date(file['Heure de fin'][i]),
                         effort_fourni: file['L\'effort fourni au secondaire pour réussir ?'][i],
-                        experience_informatique: file['Indiquer votre expérience en informatique avant le Cégep (pas juste effleuré la chose) ?'][i], //TODO remove the ""
+                        experience_informatique: experienceInformatique,
                         no_etudiant: Number(noEtudiant[0]),
                     },
                 });
