@@ -278,7 +278,7 @@
                                   {{ comment.employe.nom }},
                                   {{ comment.employe.prenom }}
                                   <span class="ms-4 grey--text">
-                                    {{ dateToString(comment.date_creation) }}  
+                                    {{ dateToString(comment.date_creation) }}
                                   </span>
                                 </p>
                               </v-list-item-action-text>
@@ -391,8 +391,14 @@ export default {
   methods: {
     dateToString(d) {
       d = new Date(d);
-      const options = {year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric'};
-      return d.toLocaleDateString('fr-CA', options);
+      const options = {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+      };
+      return d.toLocaleDateString("fr-CA", options);
     },
   },
   async created() {
