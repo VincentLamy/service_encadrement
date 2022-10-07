@@ -78,7 +78,7 @@
             let temp = reader.result.split("\r\n");
 
             for (let i in temp) {
-              temp[i] = temp[i].split(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
+              temp[i] = temp[i].split(/;(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/);
             }
 
             let data = {};
@@ -88,8 +88,6 @@
                 data[temp[0][i]].push(temp[j][i]);
               }
             }
-
-            console.log(data);
 
             // Rapport encadrement
             if (e.target.id === "rapport_encadrement") {
