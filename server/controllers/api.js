@@ -6,11 +6,6 @@ const { Session } = require('inspector');
 const prisma = new PrismaClient();
 
 module.exports = class API {
-    // Hello World
-    static async HelloWorld(req, res) {
-        res.send("Hello from API");
-    }
-
     static async addSession(req, res) {
         const { code } = req.body;
         const session = await prisma.session.create({
@@ -492,3 +487,4 @@ module.exports = class API {
         }
     };
 };
+
