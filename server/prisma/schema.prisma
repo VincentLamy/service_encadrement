@@ -11,8 +11,7 @@ datasource db {
 }
 
 model Session {
-  id     Int      @id @default(autoincrement())
-  code   String   @db.VarChar(5)
+  code   String   @id @db.VarChar(5)
   Groupe Groupe[]
 }
 
@@ -43,10 +42,12 @@ model Groupe {
   no_employe        Int
   cours             Cours               @relation(fields: [code_cours], references: [code])
   code_cours        String              @db.VarChar(10)
-  session           Session             @relation(fields: [sessionId], references: [id])
-  sessionId         Int
+  session           Session             @relation(fields: [code_session], references: [code])
+  code_session      String              @db.VarChar(5)
   Commentaire       Commentaire[]
   TA_EtudiantGroupe TA_EtudiantGroupe[]
+
+  @@unique([no_groupe, code_session])
 }
 
 model Utilisateur {
@@ -71,29 +72,25 @@ model TypeUtilisateur {
 
 model Commentaire {
   id               Int          @id @default(autoincrement())
+  etudiant         Etudiant     @relation(fields: [no_etudiant], references: [no_etudiant])
   no_etudiant      Int
   employe          Employe      @relation(fields: [no_employe], references: [no_employe])
   no_employe       Int
   groupe           Groupe       @relation(fields: [id_groupe], references: [id])
   id_groupe        Int
-  code_remarque    CodeRemarque @relation(fields: [id_code_remarque], references: [id])
-  id_code_remarque Int
-  type_remarque    TypeRemarque @relation(fields: [id_type_remarque], references: [id])
-  id_type_remarque Int
+  code_remarque    CodeRemarque @relation(fields: [id_code_remarque], references: [code])
+  id_code_remarque String
   titre            String       @db.VarChar(64)
   contenu          String       @db.VarChar(255)
   date_creation    DateTime
+
+  @@unique([no_etudiant, id_code_remarque, date_creation])
 }
 
 model CodeRemarque {
   id          Int           @id @default(autoincrement())
-  nom         String        @db.VarChar(4)
-  Commentaire Commentaire[]
-}
-
-model TypeRemarque {
-  id          Int           @id @default(autoincrement())
-  nom         String        @db.VarChar(64)
+  code        String        @unique @db.VarChar(12)
+  nom         String        @db.VarChar(255)
   Commentaire Commentaire[]
 }
 
@@ -128,7 +125,7 @@ model TA_EtudiantGroupe {
 
 model CodeRemarqueNoteFinale {
   id                Int                 @id @default(autoincrement())
-  nom               String              @db.VarChar(64)
+  nom               String              @unique @db.VarChar(64)
   TA_EtudiantGroupe TA_EtudiantGroupe[]
 }
 
@@ -144,6 +141,7 @@ model Etudiant {
   TA_EtuStatut          TA_EtuStatut[]
   FormulaireMath        FormulaireMath[]
   TA_EtudiantPaysStatut TA_EtudiantPaysStatut[]
+  Commentaire           Commentaire[]
 }
 
 model TA_EtuStatut {
@@ -157,7 +155,7 @@ model TA_EtuStatut {
 
 model StatutEtudiant {
   id           Int            @id @default(autoincrement())
-  code         String         @db.VarChar(64)
+  code         String         @unique @db.VarChar(16)
   description  String         @db.VarChar(255)
   TA_EtuStatut TA_EtuStatut[]
 }
@@ -195,31 +193,31 @@ model TA_Math {
   id_cours_math      Int            @db.SmallInt()
   formulaire_math    FormulaireMath @relation(fields: [id_formulaire_math], references: [id])
   id_formulaire_math Int
-  note_obtenue       Float
+  note_obtenue       String         @db.VarChar(32)
 
   @@unique([id_cours_math, id_formulaire_math])
 }
 
 model Pays {
-  code                  String                  @id @db.VarChar(4)
-  nom                   String                  @db.VarChar(64)
+  id                    Int                     @id @default(autoincrement())
+  nom                   String                  @unique @db.VarChar(64)
   TA_EtudiantPaysStatut TA_EtudiantPaysStatut[]
 }
 
 model Statut {
   id                    Int                     @id @default(autoincrement())
-  nom                   String                  @db.VarChar(64)
+  nom                   String                  @unique @db.VarChar(64)
   description           String                  @db.VarChar(255)
   TA_EtudiantPaysStatut TA_EtudiantPaysStatut[]
 }
 
 model TA_EtudiantPaysStatut {
-  pays        Pays     @relation(fields: [code_pays], references: [code])
-  code_pays   String   @db.VarChar(4)
+  pays        Pays     @relation(fields: [id_pays], references: [id])
+  id_pays     Int
   statut      Statut   @relation(fields: [id_statut], references: [id])
   id_statut   Int
   etudiant    Etudiant @relation(fields: [no_etudiant], references: [no_etudiant])
   no_etudiant Int
 
-  @@unique([code_pays, id_statut, no_etudiant])
+  @@unique([id_pays, id_statut, no_etudiant])
 }
