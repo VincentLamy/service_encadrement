@@ -10,6 +10,7 @@ export default class API {
 
   static async getAllStudent() {
     const res = await axios.get(`${url}/student_list`);
+    return res.data;
   }
   
   // To insert a sondage mathematiques

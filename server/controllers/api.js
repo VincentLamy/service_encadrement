@@ -21,7 +21,7 @@ module.exports = class API {
 
     static async addRapportEncadrement(req, res) {
         const file = req.body;
-        const fileSize = file['Numéro de dossier'].length - 1;
+        const fileSize = req.body.length - 1;
 
         //   try {
         // Insert Type employé

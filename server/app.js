@@ -14,5 +14,6 @@ if (process.env.NODE_ENV === 'production') {
         res.sendFile(__dirname + "/dist/index.html");
     })
 }
+
 //start server
 app.listen(port, () => console.log('server running'));

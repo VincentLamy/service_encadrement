@@ -70,6 +70,32 @@
           this.$refs.uploader.id = button;
         },
         onFileChanged(e) {
+          // var XLSX = require("xlsx");
+
+          // e.target.files[0].arrayBuffer().then((res) => {
+          //   let data = new Uint8Array(res);
+          //   let workbook = XLSX.read(data, {type:"array"});
+          //   let first_sheet_name = workbook.SheetNames[0];
+          //   let worksheet = workbook.Sheets[first_sheet_name]
+
+          //   let jsonData = XLSX.utils.sheet_to_json(worksheet, { raw: true });
+
+          //   let json = jsonData.map((x) => ({
+          //     ...x
+          //   }));
+
+          //   let fileNameWitoutExtension = e.target.files[0].name.substring(0, e.target.files[0].name.lastIndexOf("."));
+            
+          //   let new_worksheet = XLSX.utils.json_to_sheet(json);
+          //   let new_workbook = XLSX.utils.book_new();
+            
+          //   XLSX.utils.book_append_sheet(new_workbook, new_worksheet, "CSV_Sheet");
+
+          //   XLSX.writeFile(new_workbook, fileNameWitoutExtension + ".csv");
+          // });
+        
+          // const csv=require('csvtojson')
+
           this.selectedFile = e.target.files[0];
           let reader = new FileReader();
             
@@ -91,18 +117,19 @@
 
             // Rapport encadrement
             if (e.target.id === "rapport_encadrement") {
-              const response = await API.addRapportEncadrement(data);
+              const response = API.addRapportEncadrement(data);
               this.$router.push({ name:'home', params: {message: response.message} });
             } 
             // Sondage mathématiques
             else if (e.target.id === "sondage_mathematiques") {
-              const response = await API.addSondageMathematiques(data);
+              const response = API.addSondageMathematiques(data);
               this.$router.push({ name:'home', params: {message: response.message} });
             }
           });
 
           reader.readAsText(this.selectedFile);
-        },
-      }
-  }
+        }
+      },
+    }
+  // }
 </script>
