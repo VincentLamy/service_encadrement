@@ -43,7 +43,12 @@ export default class API {
 
   // Gets student form info by ID
   static async getStudentFormInfo(no_etudiant) {
-    const res = await axios.get(`${url}/student_form/${no_etudiant}`)
-    return res.data;
+    try {
+      const res = await axios.get(`${url}/student_form/${no_etudiant}`)
+      return res.data;  
+    }
+    catch (err) {
+      return err;
+    }
   }
 }
