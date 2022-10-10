@@ -23,10 +23,6 @@ module.exports = class API {
     };
 
     static async addRapportEncadrement(req, res) {
-<<<<<<< HEAD
-        const file = req.body;
-        const fileSize = req.body.length - 1;
-=======
         try {
             const file = req.body;
             const fileSize = file['Numéro de dossier'].length - 1;
@@ -66,7 +62,6 @@ module.exports = class API {
                     description: 'Cet employé est un enseignant dans le département d\'informatique',
                 },
             });
->>>>>>> fichier_csv
 
             // Traitement session
             let codeSession = "";
@@ -77,21 +72,10 @@ module.exports = class API {
             const mm = today.getMonth() + 1;
             const dd = today.getDate();
 
-<<<<<<< HEAD
-            // Insert Campus
-            const campus = await prisma.campus.upsert({
-                where: { ville: file['Campus'][i] || 0 },
-                update: {},
-                create: {
-                    ville: file['Campus'][i],
-                },
-            });
-=======
             // AUT
             if ((mm == 8 && dd >= 1 || mm > 8) && (mm == 12 && dd <= 31 || mm < 12)) {
                 codeSession = "AUT" + yy;
             }
->>>>>>> fichier_csv
 
             // HIV
             if ((mm == 1 && dd >= 1 || mm > 1) && (mm == 5 && dd <= 19 || mm < 5)) {
@@ -103,35 +87,6 @@ module.exports = class API {
                 codeSession = "ETE" + yy;
             }
 
-<<<<<<< HEAD
-            // Insert Enseignant
-            const employe = await prisma.employe.upsert({
-                where: {
-                    prenom_nom: {
-                        nom: nomEnseignant[0],
-                        prenom: nomEnseignant[1],
-                    }
-                },
-                update: {},
-                create: {
-                    id_type_employe: type_employe.id,
-                    nom: nomEnseignant[0],
-                    prenom: nomEnseignant[1],
-                },
-            });
-
-            // Insert Groupe
-            // const groupe = await prisma.groupe.upsert({
-            //     where: { no_groupe: file['Numéro du groupe'][i] || 0 },
-            //     update: {},
-            //     create: {
-            //         no_groupe: file['Numéro du groupe'][i],
-            //         cours: cours.id,
-            //         session: etudiant.session_actuelle,
-            //         employe: employe.id,
-            //     },
-            // });
-=======
             //Insert Session
             const session = await prisma.session.upsert({
                 where: { code: codeSession || '' },
@@ -385,7 +340,6 @@ module.exports = class API {
             res.status(201).json({ message: 'Le rapport d\'encadrement ajouté avec succès' });
         } catch (err) {
             res.status(400).json({ message: 'Le rapport d\'encadrement n\'a pas pu être ajouté' });
->>>>>>> fichier_csv
         }
     };
 
@@ -432,16 +386,6 @@ module.exports = class API {
 
                 let experienceInformatique = file['Indiquer votre expérience en informatique avant le Cégep (pas juste effleuré la chose) ?'][i];
 
-<<<<<<< HEAD
-        }
-
-        res.status(201).json({ message: 'Sondage mathématique ajouté avec succès' });
-        
-        // } catch (err) {
-        //     res.status(400).json({ message: err.message });
-        // }
-    };
-=======
                 if (experienceInformatique.charAt(0) == "\"" && experienceInformatique.charAt(experienceInformatique.length - 1) == "\"") experienceInformatique = experienceInformatique.slice(1, -1); // Deleting quotation marks
 
                 const formulaireMath = await prisma.formulaireMath.upsert({
@@ -543,5 +487,4 @@ module.exports = class API {
             res.status(400).json({ message: 'La liste d\'étudiants internationaux n\'a pas pu être ajouté' });
         }
     };
->>>>>>> fichier_csv
 };

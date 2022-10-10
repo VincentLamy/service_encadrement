@@ -23,8 +23,9 @@ h1, h2, h3, h4, h5, h6 {
 
 #list_student tr:hover {
     cursor: pointer;
+    background-color: #fc8d3390;
 }
 
-#list_student tr:active {
+#list_student tr:target {
     cursor: grabbing;
 }
