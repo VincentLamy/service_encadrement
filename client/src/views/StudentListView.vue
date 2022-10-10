@@ -8,6 +8,7 @@
       :items="students"
       :sort-desc="[false, true]"
       class="elevation-1"
+      @click:row="rowClick"
       >
         <!-- <template v-slot:header.student_critical_state>
           <v-icon color="red">mdi-alert-circle</v-icon>
@@ -62,8 +63,8 @@
           console.log(this.students);
         },
         methods: {
-          rowClick(student_number) {
-              let URL = `/student_form/${student_number}`
+          rowClick(item, row) {
+              let URL = `/student_form/${item.no_etudiant}`
               window.location = URL;
               window.location.href = URL;
               window.location.assign(URL);
