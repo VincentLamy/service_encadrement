@@ -58,8 +58,6 @@
 
   const current = dev;
 
-  console.log(current.liste_etudiants);
-
   export default {
     data: () => ({
       drawer: null,
