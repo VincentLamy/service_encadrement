@@ -44,7 +44,7 @@
 
             this.students[index].nom = this.students[index].nom + ", " + this.students[index].prenom;
           
-            for (let index2 = 0; index2 < this.students[index].TA_EtudiantGroupe.length; index2++) {
+            for (let index2 = 0; index2 < this.students[index].TA_EtudiantGroupe; index2++) {
               if(this.students[index].TA_EtudiantGroupe[index2].note_ponderee / this.students[index].TA_EtudiantGroupe[index2].pourcentage_note_cumulee < 0.6) {
                 critical_course_quantity++;
               }
