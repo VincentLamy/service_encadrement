@@ -1,31 +1,52 @@
+/* ==========================================================================
+   Textes
+   ========================================================================== */
+
+   * {
+    color: #0169B0;
+}
+
+/* Titres
+========================================================================== */
 h1, h2, h3, h4, h5, h6 {
     text-align: center;
 }
 
-.outlined {
-    border: 1px solid rgba(0, 0, 0, 0.12);
+h1, h2 {
+    color: #FC8D33;
 }
 
-#list_student thead span, h3 {
-    color: #FC8D33;
+.v-app-bar__nav-icon {
+    position: absolute;
+}
+
+.v-application--is-ltr .v-toolbar__content > .v-btn.v-btn--icon:first-child + .v-toolbar__title, .v-application--is-ltr .v-toolbar__extension > .v-btn.v-btn--icon:first-child + .v-toolbar__title {
+    padding: 0;
+}
+
+/* ==========================================================================
+Tableau Liste étudiante
+========================================================================== */
+#list_student thead span {
     font-size: large;
 }
 
 #list_student tr:nth-of-type(odd) {
-    /* 'teal lighten-5' basides on material design color */
     background-color: #FFFFFF;
 }
 
 #list_student tr:nth-of-type(even) {
-    /* 'deep-orange lighten-5' basides on material design color */
     background-color: #dddddd;
 }
 
 #list_student tr:hover {
     cursor: pointer;
-    background-color: #fc8d3390;
 }
 
-#list_student tr:target {
+#list_student tr:active {
     cursor: grabbing;
+}
+
+.outlined {
+    border: 1px solid rgba(0, 0, 0, 0.12);
 }
