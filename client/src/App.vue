@@ -12,7 +12,7 @@
 
       <v-list nav dense>
         <v-list-item-group color="primary">
-          <v-list-item v-for="(item, i) in items" :key="i" :to="item.link" link>
+          <v-list-item v-if="item.info" v-for="(item, i) in items" :key="i" :to="item.link" link>
             <v-list-item-icon>
               <v-icon v-text="item.icon"></v-icon>
             </v-list-item-icon>
@@ -38,13 +38,35 @@
 </template>
 
 <script>
+  const dev = {
+    "liste_etudiants": true,
+    "liste_responsables": true,
+    "csv": true,
+  }
+
+  const admin = {
+    "liste_etudiants": false,
+    "liste_responsables": true,
+    "csv": false,
+  }
+
+  const responsable = {
+    "liste_etudiants": true,
+    "liste_responsables": false,
+    "csv": true,
+  }
+
+  const current = dev;
+
+  console.log(current.liste_etudiants);
+
   export default {
     data: () => ({
       drawer: null,
       items: [
-        { title: 'Liste des étudiants',     icon: 'mdi-account-multiple', link: "/student_list" },
-        { title: 'Liste des responsables',  icon: 'mdi-account-multiple', link: "/user_list" },
-        { title: 'Importer un fichier CSV', icon: 'mdi-attachment', link: "/csv_import" },
+        { title: 'Liste des étudiants',     icon: 'mdi-account-multiple', link: "/student_list", info: current.liste_etudiants },
+        { title: 'Liste des responsables',  icon: 'mdi-account-multiple', link: "/user_list", info: current.liste_responsables },
+        { title: 'Importer un fichier CSV', icon: 'mdi-attachment', link: "/csv_import", info: current.csv },
       ],
       responsable: [
         { name: "Vincent Lamy", programme: "Programmation" } // TODO Modifier pour aller chercher les données dans la BD
