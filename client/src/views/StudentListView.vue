@@ -70,6 +70,5 @@
               window.location.assign(URL);
           }
         }, 
-         
       }
   </script>
