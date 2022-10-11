@@ -17,7 +17,7 @@ router.post("/rapportEncadrement", API.addRapportEncadrement);
 // Math form
 router.post("/sondageMathematiques", API.addSondageMathematiques);
 
-// International students
+// Internationals
 router.post("/etudiantsInternationaux", API.addEtudiantsInternationaux);
 
 module.exports = router;

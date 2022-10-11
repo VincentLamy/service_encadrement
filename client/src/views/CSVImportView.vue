@@ -47,24 +47,24 @@
   import API from '../api';
 
   export default {
-      name: 'CSVImport',
-      data(){
-          return {
-              isSelecting: false,
-              selectedFile: null
-          }
-      },
-      methods: {
-        handleFileImport(button) {
-          this.isSelecting = true;
+    name: 'CSVImport',
+    data(){
+      return {
+        isSelecting: false,
+        selectedFile: null
+      }
+    },
+    methods: {
+      handleFileImport(button) {
+        this.isSelecting = true;
 
-          // After obtaining the focus when closing the FilePicker, return the button state to normal
-          window.addEventListener('focus', () => {
-              this.isSelecting = false
-          }, { once: true });
-          
-          // Trigger click on the FileInput
-          this.$refs.uploader.click();
+        // After obtaining the focus when closing the FilePicker, return the button state to normal
+        window.addEventListener('focus', () => {
+            this.isSelecting = false
+        }, { once: true });
+        
+        // Trigger click on the FileInput
+        this.$refs.uploader.click();
 
           // Differentiate which button has been clicked
           this.$refs.uploader.id = button;
@@ -105,41 +105,40 @@
           reader.addEventListener("loadend", async () => {
             let data = {};
 
-            if (extension === "csv" || extension === "xlsx") {
-              let temp = reader.result.split("\r\n");
+          if (extension === "csv" || extension === "xlsx") {
+            let temp = reader.result.split("\r\n");
 
-              for (let i in temp) {
-                temp[i] = temp[i].split(/;(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/);
+            for (let i in temp) {
+              temp[i] = temp[i].split(/;(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/);
+            }
+
+            for (let i in temp[0]) {
+              data[temp[0][i]] = [];
+              for (let j=1; j<temp.length; j++) {
+                data[temp[0][i]].push(temp[j][i]);
               }
+            }
+          }
 
-              for (let i in temp[0]) {
-                data[temp[0][i]] = [];
-                for (let j=1; j<temp.length; j++) {
-                  data[temp[0][i]].push(temp[j][i]);
-                }
-              }
-            }
-
-            // Rapport encadrement
-            if (e.target.id === "rapport_encadrement") {
-              const response = await API.addRapportEncadrement(data);
-              this.$router.push({ name:'home', params: {response: response} });
-            } 
-            // Sondage mathématiques
-            else if (e.target.id === "sondage_mathematiques") {
-              const response = await API.addSondageMathematiques(data);
-              this.$router.push({ name:'home', params: {response: response} });
-            }
-            // Etudiants internationaux
-            else if (e.target.id === "etudiants_internationaux") {
-              const response = await API.addEtudiantsInternationaux(data);
-              this.$router.push({ name:'home', params: {response: response} });
-            }
-          });
+          // Rapport encadrement
+          if (e.target.id === "rapport_encadrement") {
+            const response = await API.addRapportEncadrement(data);
+            this.$router.push({ name:'home', params: {response: response} });
+          } 
+          // Sondage mathématiques
+          else if (e.target.id === "sondage_mathematiques") {
+            const response = await API.addSondageMathematiques(data);
+            this.$router.push({ name:'home', params: {response: response} });
+          }
+          // Etudiants internationaux
+          else if (e.target.id === "etudiants_internationaux") {
+            const response = await API.addEtudiantsInternationaux(data);
+            this.$router.push({ name:'home', params: {response: response} });
+          }
+        });
 
           reader.readAsText(this.selectedFile);
         }
       },
     }
-  // }
 </script>

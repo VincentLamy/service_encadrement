@@ -28,7 +28,6 @@ module.exports = class Student {
                   include: {
                     employe: true,
                     code_remarque: true,
-                    type_remarque: true,
                   }
                 },
               },

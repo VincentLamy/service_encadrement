@@ -266,11 +266,6 @@
                                   <v-chip
                                     class="ms-1 font-weight-bold blue--text text--darken-3"
                                     x-small
-                                    >{{ comment.type_remarque.nom }}</v-chip
-                                  >
-                                  <v-chip
-                                    class="ms-1 font-weight-bold blue--text text--darken-3"
-                                    x-small
                                     >{{ comment.code_remarque.nom }}</v-chip
                                   >
                                 </div>
@@ -318,12 +313,6 @@
                       >
                         <v-list-item-action-text>
                           <div class="d-flex justify-end">
-                            <v-chip
-                              class="ms-1 font-weight-bold blue--text text--darken-3"
-                              x-small
-                            >
-                              Remarque
-                            </v-chip>
                             <v-chip
                               class="ms-1 font-weight-bold blue--text text--darken-3"
                               x-small
