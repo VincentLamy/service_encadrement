@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <h2 class="my-2 d-flex justify-center blue--text text--darken-3">
+    <h2 class="my-2 d-flex justify-center">
       {{ student.prenom }} {{ student.nom }}
     </h2>
 
@@ -219,8 +219,13 @@
       <v-card-text>
         <h3 class="d-flex justify-center mb-4">Commentaires</h3>
 
+        <!-- Message si aucun cours n'est associé à l'étudiant -->
+        <h4 v-if="semesters.length === 0" class="grey--text">
+          L'étudiant n'est inscrit à aucun cours!
+        </h4>
+
         <!-- Onglets sessions -->
-        <v-tabs v-model="semester_tab">
+        <v-tabs v-model="semester_tab" v-if="semesters.length !== 0">
           <v-tab v-for="(semester, i) in semesters" :key="i">
             {{ semester.code }}
           </v-tab>
@@ -228,7 +233,7 @@
 
         <v-container>
           <!-- Cours & Commentaires des sessions -->
-          <v-tabs-items v-model="semester_tab">
+          <v-tabs-items v-model="semester_tab" v-if="semesters.length !== 0">
             <v-tab-item v-for="(semester, i) in semesters" :key="i">
               <!-- Cours de la session -->
               <v-expansion-panels accordion flat>
@@ -240,8 +245,18 @@
                     {{ student_group.groupe.cours.nom }}
                   </v-expansion-panel-header>
                   <v-expansion-panel-content class="outlined">
+                    <!-- Message si aucun commentaire n'est associé au cours -->
+                    <h4
+                      v-if="student_group.groupe.Commentaire.length === 0"
+                      class="mt-5 grey--text"
+                    >
+                      L'étudiant n'a aucun commentaire sur ce cours!
+                    </h4>
+
                     <!-- Commentaires d'un cours -->
-                    <v-list>
+                    <v-list
+                      v-if="student_group.groupe.Commentaire.length !== 0"
+                    >
                       <template
                         v-for="(comment, i) in student_group.groupe.Commentaire"
                       >
@@ -264,7 +279,7 @@
                               <v-list-item-action-text>
                                 <div class="d-flex justify-end">
                                   <v-chip
-                                    class="ms-1 font-weight-bold blue--text text--darken-3"
+                                    class="ms-1 font-weight-bold"
                                     x-small
                                     >{{ comment.code_remarque.nom }}</v-chip
                                   >
@@ -313,10 +328,7 @@
                       >
                         <v-list-item-action-text>
                           <div class="d-flex justify-end">
-                            <v-chip
-                              class="ms-1 font-weight-bold blue--text text--darken-3"
-                              x-small
-                            >
+                            <v-chip class="ms-1 font-weight-bold" x-small>
                               AUTN
                             </v-chip>
                           </div>
