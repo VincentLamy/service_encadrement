@@ -39,4 +39,16 @@ export default class API {
       return err;
     }
   }
+  
+  // Gets all students
+  static async getAllStudent() {
+    const res = await axios.get(`${url}/student_list`);
+    return res.data;
+  }
+
+  // Gets student form info by ID
+  static async getStudentFormInfo(no_etudiant) {
+    const res = await axios.get(`${url}/student_form/${no_etudiant}`)
+    return res.data;
+  }
 }

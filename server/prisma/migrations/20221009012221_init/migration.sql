@@ -1,10 +1,18 @@
 -- CreateTable
+CREATE TABLE `Session` (
+    `code` VARCHAR(5) NOT NULL,
+
+    PRIMARY KEY (`code`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `Employe` (
-    `no_employe` INTEGER NOT NULL,
+    `no_employe` INTEGER NOT NULL AUTO_INCREMENT,
     `id_type_employe` INTEGER NOT NULL,
     `prenom` VARCHAR(64) NOT NULL,
     `nom` VARCHAR(64) NOT NULL,
 
+    UNIQUE INDEX `Employe_prenom_nom_key`(`prenom`, `nom`),
     PRIMARY KEY (`no_employe`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -23,8 +31,9 @@ CREATE TABLE `Groupe` (
     `no_groupe` INTEGER NOT NULL,
     `no_employe` INTEGER NOT NULL,
     `code_cours` VARCHAR(10) NOT NULL,
-    `sessionId` INTEGER NOT NULL,
+    `code_session` VARCHAR(5) NOT NULL,
 
+    UNIQUE INDEX `Groupe_no_groupe_code_session_key`(`no_groupe`, `code_session`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -57,28 +66,22 @@ CREATE TABLE `Commentaire` (
     `no_etudiant` INTEGER NOT NULL,
     `no_employe` INTEGER NOT NULL,
     `id_groupe` INTEGER NOT NULL,
-    `id_code_remarque` INTEGER NOT NULL,
-    `id_type_remarque` INTEGER NOT NULL,
+    `id_code_remarque` VARCHAR(191) NOT NULL,
     `titre` VARCHAR(64) NOT NULL,
     `contenu` VARCHAR(255) NOT NULL,
     `date_creation` DATETIME(3) NOT NULL,
 
+    UNIQUE INDEX `Commentaire_no_etudiant_id_code_remarque_date_creation_key`(`no_etudiant`, `id_code_remarque`, `date_creation`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `CodeRemarque` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `nom` VARCHAR(4) NOT NULL,
+    `code` VARCHAR(12) NOT NULL,
+    `nom` VARCHAR(255) NOT NULL,
 
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
-CREATE TABLE `TypeRemarque` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `nom` VARCHAR(64) NOT NULL,
-
+    UNIQUE INDEX `CodeRemarque_code_key`(`code`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -97,6 +100,7 @@ CREATE TABLE `Campus` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `ville` VARCHAR(64) NOT NULL,
 
+    UNIQUE INDEX `Campus_ville_key`(`ville`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -117,6 +121,7 @@ CREATE TABLE `CodeRemarqueNoteFinale` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `nom` VARCHAR(64) NOT NULL,
 
+    UNIQUE INDEX `CodeRemarqueNoteFinale_nom_key`(`nom`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -143,9 +148,10 @@ CREATE TABLE `TA_EtuStatut` (
 -- CreateTable
 CREATE TABLE `StatutEtudiant` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `code` VARCHAR(64) NOT NULL,
+    `code` VARCHAR(16) NOT NULL,
     `description` VARCHAR(255) NOT NULL,
 
+    UNIQUE INDEX `StatutEtudiant_code_key`(`code`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -154,7 +160,6 @@ CREATE TABLE `Programme` (
     `code` VARCHAR(10) NOT NULL,
     `nom` VARCHAR(64) NOT NULL,
     `description` VARCHAR(255) NOT NULL,
-    `id_api` INTEGER NOT NULL,
 
     PRIMARY KEY (`code`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -168,16 +173,18 @@ CREATE TABLE `FormulaireMath` (
     `experience_informatique` VARCHAR(255) NOT NULL,
     `no_etudiant` INTEGER NOT NULL,
 
+    UNIQUE INDEX `FormulaireMath_no_etudiant_key`(`no_etudiant`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `CoursMath` (
-    `id` SMALLINT NOT NULL,
+    `id` SMALLINT NOT NULL AUTO_INCREMENT,
     `nom` VARCHAR(64) NOT NULL,
     `code` VARCHAR(10) NOT NULL,
     `annee` SMALLINT NOT NULL,
 
+    UNIQUE INDEX `CoursMath_nom_annee_key`(`nom`, `annee`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -185,17 +192,18 @@ CREATE TABLE `CoursMath` (
 CREATE TABLE `TA_Math` (
     `id_cours_math` SMALLINT NOT NULL,
     `id_formulaire_math` INTEGER NOT NULL,
-    `note_obtenue` DOUBLE NOT NULL,
+    `note_obtenue` VARCHAR(32) NOT NULL,
 
     UNIQUE INDEX `TA_Math_id_cours_math_id_formulaire_math_key`(`id_cours_math`, `id_formulaire_math`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `Pays` (
-    `code` VARCHAR(4) NOT NULL,
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
     `nom` VARCHAR(64) NOT NULL,
 
-    PRIMARY KEY (`code`)
+    UNIQUE INDEX `Pays_nom_key`(`nom`),
+    PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
@@ -204,16 +212,17 @@ CREATE TABLE `Statut` (
     `nom` VARCHAR(64) NOT NULL,
     `description` VARCHAR(255) NOT NULL,
 
+    UNIQUE INDEX `Statut_nom_key`(`nom`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `TA_EtudiantPaysStatut` (
-    `code_pays` VARCHAR(4) NOT NULL,
+    `id_pays` INTEGER NOT NULL,
     `id_statut` INTEGER NOT NULL,
     `no_etudiant` INTEGER NOT NULL,
 
-    UNIQUE INDEX `TA_EtudiantPaysStatut_code_pays_id_statut_no_etudiant_key`(`code_pays`, `id_statut`, `no_etudiant`)
+    UNIQUE INDEX `TA_EtudiantPaysStatut_id_pays_id_statut_no_etudiant_key`(`id_pays`, `id_statut`, `no_etudiant`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
@@ -226,7 +235,7 @@ ALTER TABLE `Groupe` ADD CONSTRAINT `Groupe_no_employe_fkey` FOREIGN KEY (`no_em
 ALTER TABLE `Groupe` ADD CONSTRAINT `Groupe_code_cours_fkey` FOREIGN KEY (`code_cours`) REFERENCES `Cours`(`code`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Groupe` ADD CONSTRAINT `Groupe_sessionId_fkey` FOREIGN KEY (`sessionId`) REFERENCES `Session`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Groupe` ADD CONSTRAINT `Groupe_code_session_fkey` FOREIGN KEY (`code_session`) REFERENCES `Session`(`code`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Utilisateur` ADD CONSTRAINT `Utilisateur_no_employe_fkey` FOREIGN KEY (`no_employe`) REFERENCES `Employe`(`no_employe`) ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -235,16 +244,16 @@ ALTER TABLE `Utilisateur` ADD CONSTRAINT `Utilisateur_no_employe_fkey` FOREIGN K
 ALTER TABLE `Utilisateur` ADD CONSTRAINT `Utilisateur_id_type_utilisateur_fkey` FOREIGN KEY (`id_type_utilisateur`) REFERENCES `TypeUtilisateur`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE `Commentaire` ADD CONSTRAINT `Commentaire_no_etudiant_fkey` FOREIGN KEY (`no_etudiant`) REFERENCES `Etudiant`(`no_etudiant`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE `Commentaire` ADD CONSTRAINT `Commentaire_no_employe_fkey` FOREIGN KEY (`no_employe`) REFERENCES `Employe`(`no_employe`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Commentaire` ADD CONSTRAINT `Commentaire_id_groupe_fkey` FOREIGN KEY (`id_groupe`) REFERENCES `Groupe`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Commentaire` ADD CONSTRAINT `Commentaire_id_code_remarque_fkey` FOREIGN KEY (`id_code_remarque`) REFERENCES `CodeRemarque`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `Commentaire` ADD CONSTRAINT `Commentaire_id_type_remarque_fkey` FOREIGN KEY (`id_type_remarque`) REFERENCES `TypeRemarque`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Commentaire` ADD CONSTRAINT `Commentaire_id_code_remarque_fkey` FOREIGN KEY (`id_code_remarque`) REFERENCES `CodeRemarque`(`code`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Cours` ADD CONSTRAINT `Cours_id_campus_fkey` FOREIGN KEY (`id_campus`) REFERENCES `Campus`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -277,7 +286,7 @@ ALTER TABLE `TA_Math` ADD CONSTRAINT `TA_Math_id_cours_math_fkey` FOREIGN KEY (`
 ALTER TABLE `TA_Math` ADD CONSTRAINT `TA_Math_id_formulaire_math_fkey` FOREIGN KEY (`id_formulaire_math`) REFERENCES `FormulaireMath`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `TA_EtudiantPaysStatut` ADD CONSTRAINT `TA_EtudiantPaysStatut_code_pays_fkey` FOREIGN KEY (`code_pays`) REFERENCES `Pays`(`code`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `TA_EtudiantPaysStatut` ADD CONSTRAINT `TA_EtudiantPaysStatut_id_pays_fkey` FOREIGN KEY (`id_pays`) REFERENCES `Pays`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `TA_EtudiantPaysStatut` ADD CONSTRAINT `TA_EtudiantPaysStatut_id_statut_fkey` FOREIGN KEY (`id_statut`) REFERENCES `Statut`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

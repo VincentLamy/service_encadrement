@@ -1,12 +1,12 @@
-* {
-    color: #0169B0;
-}
-
 h1, h2, h3, h4, h5, h6 {
     text-align: center;
 }
 
-#list_student thead span {
+.outlined {
+    border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+#list_student thead span, h3 {
     color: #FC8D33;
     font-size: large;
 }

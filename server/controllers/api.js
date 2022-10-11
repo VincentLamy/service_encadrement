@@ -6,7 +6,6 @@ const { Session } = require('inspector');
 const prisma = new PrismaClient();
 
 module.exports = class API {
-
     static async addSession(req, res) {
         const { code } = req.body;
         const session = await prisma.session.create({
@@ -339,7 +338,7 @@ module.exports = class API {
             }
             res.status(201).json({ message: 'Le rapport d\'encadrement ajouté avec succès' });
         } catch (err) {
-            res.status(400).json({ message: 'Le rapport d\'encadrement n\'a pas pu être ajouté' });
+            res.status(400).json({ message: err.message });
         }
     };
 
@@ -435,7 +434,7 @@ module.exports = class API {
 
             res.status(201).json({ message: 'Le sondage de mathématiques ajouté avec succès' });
         } catch (err) {
-            res.status(400).json({ message: 'Le sondage de mathématiques n\'a pas pu être ajouté' });
+            res.status(400).json({ message: err.message });
         }
     };
 
@@ -484,7 +483,8 @@ module.exports = class API {
             res.status(201).json({ message: 'La liste d\'étudiants internationaux ajouté avec succès' });
 
         } catch (err) {
-            res.status(400).json({ message: 'La liste d\'étudiants internationaux n\'a pas pu être ajouté' });
+            res.status(400).json({ message: err.message });
         }
     };
 };
+
