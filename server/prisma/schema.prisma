@@ -47,7 +47,7 @@ model Groupe {
   Commentaire       Commentaire[]
   TA_EtudiantGroupe TA_EtudiantGroupe[]
 
-  @@unique([no_groupe, code_session])
+  @@unique([no_groupe, code_cours, code_session])
 }
 
 model Utilisateur {

@@ -174,8 +174,9 @@ module.exports = class API {
                 // Insert Groupe
                 const groupe = await prisma.groupe.upsert({
                     where: {
-                        no_groupe_code_session: {
+                        no_groupe_code_cours_code_session: {
                             no_groupe: Number(file['Numéro du groupe'][i]) || 0,
+                            code_cours: cours.code,
                             code_session: session.code || 0,
                         }
                     },
