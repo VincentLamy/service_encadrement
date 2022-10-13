@@ -6,6 +6,8 @@ import CSVImportView from '../views/CSVImportView'
 import StudentListView from '../views/StudentListView'
 import StudentFormView from '../views/StudentFormView'
 
+import SupervisorFormView from '../views/SupervisorFormView'
+
 Vue.use(VueRouter)
 Vue.use(DatetimePicker)
 
@@ -29,6 +31,11 @@ const routes = [
     path: '/student_form/:id',
     name: 'student_form',
     component: StudentFormView
+  },
+  {
+    path: '/supervisor_form/:id',
+    name: 'supervisor_form',
+    component: SupervisorFormView
   },
   {
     path: '/about',

@@ -17,7 +17,7 @@ export default class API {
     const res = await axios.get(`${url}/student_list`);
     return res.data;
   }
-  
+
   // To insert a sondage mathematiques
   static async addSondageMathematiques(sondageMathematiques) {
     try {
@@ -39,7 +39,7 @@ export default class API {
       return err;
     }
   }
-  
+
   // Gets all students
   static async getAllStudent() {
     const res = await axios.get(`${url}/student_list`);
@@ -50,7 +50,18 @@ export default class API {
   static async getStudentFormInfo(no_etudiant) {
     try {
       const res = await axios.get(`${url}/student_form/${no_etudiant}`)
-      return res.data;  
+      return res.data;
+    }
+    catch (err) {
+      return err;
+    }
+  }
+
+  // Gets supervisor form info by ID
+  static async getSupervisorFormInfo(id) {
+    try {
+      const res = await axios.get(`${url}/supervisor_form/${id}`)
+      return res.data;
     }
     catch (err) {
       return err;
