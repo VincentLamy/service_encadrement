@@ -67,4 +67,15 @@ export default class API {
       return err;
     }
   }
+
+  // Updates supervisor form info by ID
+  static async updateSupervisorFormInfo(id, post) {
+    try {
+      const res = await axios.patch(`${url}/supervisor_form/${id}`, post)
+      return res.data;
+    }
+    catch (err) {
+      return err;
+    }
+  }
 }

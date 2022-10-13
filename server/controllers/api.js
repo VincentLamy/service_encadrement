@@ -337,7 +337,7 @@ module.exports = class API {
                     }
                 }
             }
-            res.status(201).json({ message: 'Le rapport d\'encadrement ajouté avec succès' });
+            res.status(201).json({ message: 'Le rapport d\'encadrement a été ajouté avec succès' });
         } catch (err) {
             res.status(400).json({ message: err.message });
         }
@@ -433,7 +433,7 @@ module.exports = class API {
                 });
             }
 
-            res.status(201).json({ message: 'Le sondage de mathématiques ajouté avec succès' });
+            res.status(201).json({ message: 'Le sondage de mathématiques a été ajouté avec succès' });
         } catch (err) {
             res.status(400).json({ message: err.message });
         }
@@ -481,7 +481,7 @@ module.exports = class API {
                     },
                 });
             }
-            res.status(201).json({ message: 'La liste d\'étudiants internationaux ajouté avec succès' });
+            res.status(201).json({ message: 'La liste d\'étudiants internationaux a été ajouté avec succès' });
 
         } catch (err) {
             res.status(400).json({ message: err.message });
