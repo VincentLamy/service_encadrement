@@ -225,8 +225,35 @@
         </h4>
 
         <!-- Ajouter un commentaire -->
-        <v-btn color="primary my-3"> Ajouter un commentaire </v-btn>
-        
+        <v-btn
+          block
+          color="primary my-3"
+          @click="show_add_comment = !show_add_comment"
+        >
+          Ajouter un commentaire
+        </v-btn>
+
+        <v-card v-if="show_add_comment" class="mb-5" outlined>
+          <v-card-text>
+            <v-row>
+              <v-col cols="8">
+                <v-text-field class="mb-3" label="Titre" hide-details outlined />
+                <v-textarea
+                  label="Description"
+                  no-resize
+                  hide-details
+                  outlined
+                />
+              </v-col>
+              <v-col cols="4">
+                <v-text-field class="mb-3" label="Remarque" hide-details outlined />
+                <v-btn class="mb-3" x-large block> Annuler </v-btn>
+                <v-btn color="primary" x-large block> Publier </v-btn>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
+
         <!-- Commentaires de la session -->
         <v-list class="px-5" outlined>
           <template v-for="k in 3">
@@ -270,6 +297,10 @@
             <v-divider v-if="k < 3" :key="k"></v-divider>
           </template>
         </v-list>
+
+        <h3 class="d-flex justify-center my-4">
+          Commentaires sur les cours de l'étudiant
+        </h3>
 
         <!-- Onglets sessions -->
         <v-tabs v-model="semester_tab" v-if="semesters.length !== 0">
@@ -462,6 +493,7 @@ export default {
       semester_tab: null,
       amount_classes_in_difficulty: 0,
       course_name: "",
+      show_add_comment: false,
       math_form: {
         start_time: null,
         end_time: null,
