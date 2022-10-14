@@ -21,6 +21,7 @@ module.exports = class Student {
   static async updateSupervisorFormInfo(req, res) {
     try {
       const id = req.params.id;
+      const actif = req.body.actif === 'true' ? 1 : 0;
 
       const supervisor = await prisma.utilisateur.update({
         where: {
@@ -28,9 +29,20 @@ module.exports = class Student {
         },
         data: {
           courriel: req.body.courriel,
-          mdp: req.body.mdp,
+          actif: Boolean(actif),
         },
       });
+
+      const employe = await prisma.employe.update({
+        where: {
+          no_employe: supervisor.no_employe,
+        },
+        data: {
+          prenom: req.body.prenom,
+          nom: req.body.nom,
+        },
+      });
+
       res.status(200).json({ message: 'Le superviseur a été modifié avec succès' });
     } catch (error) {
       res.status(404).json({ message: error.message });
