@@ -241,8 +241,71 @@
                   v-for="student_group in semester.student_groups"
                 >
                   <v-expansion-panel-header class="outlined">
-                    {{ student_group.groupe.cours.code }} -
-                    {{ student_group.groupe.cours.nom }}
+                    <v-container class="pa-0 pe-3">
+                      <div class="d-flex flex-md-row flex-column justify-space-between col-12 pa-0">
+                        <div class="d-flex flex-column col-md">
+                          <div class="font-weight-bold">
+                            <span v-if="student_group.groupe.cours.nom">
+                              {{ student_group.groupe.cours.nom }}
+                            </span>
+                            <span v-else>
+                              <v-menu>
+                                <template v-slot:activator="{ on, attrs }">
+                                  <v-btn 
+                                    x-small
+                                    outlined
+                                    color="blue darken-3"
+                                    class="mb-1"
+                                    @click.native.stop
+                                    v-bind="attrs"
+                                    v-on="on"
+                                  >
+                                    Ajouter un nom au cours
+                                  </v-btn>
+                                </template>
+                                <template>
+                                  <v-card>
+                                    <v-card-text>
+                                      <v-text-field 
+                                        label="Nom du cours"
+                                        outlined
+                                        hide-details
+                                        @click.stop
+                                        :append-outer-icon="'mdi-arrow-right'"
+                                        @click:append-outer=""
+                                      />
+                                    </v-card-text>
+                                  </v-card>
+                                </template>
+                              </v-menu>
+                            </span>
+                            ({{ student_group.groupe.cours.code }})
+                          </div>
+                          <div>Groupe : {{ student_group.groupe.no_groupe }}</div> 
+                        </div>
+                        <div class="d-flex flex-column col-md">
+                          <div>Durée : {{ student_group.groupe.cours.duree }}</div>
+                          <div>Durée absence : {{ student_group.duree_absence }}</div>
+                        </div>
+                        <div class="d-flex flex-column col-md">
+                          <div>Campus : {{ student_group.groupe.cours.campus.ville}}</div>
+                        </div>
+                      </div>
+                      <v-divider></v-divider>
+                      <div class="d-flex flex-md-row flex-column justify-space-between col-12 pa-0">
+                        <div class="d-flex flex-column col-md">
+                          <div>Note pondérée : {{ student_group.note_ponderee }}</div> 
+                        </div>
+                        <div class="d-flex flex-column col-md">
+                          <div>Note cumulée : NaN</div>
+                          <div>Pourcentage note cumulée : {{ student_group.pourcentage_note_cumulee }}</div> 
+                        </div>
+                        <div class="d-flex flex-column col-md">
+                          <div>Note finale : NaN</div>
+                          <div>Remarque note finale : {{ student_group.code_remarque_note_finale.nom }}</div>
+                        </div>
+                      </div>
+                    </v-container>
                   </v-expansion-panel-header>
                   <v-expansion-panel-content class="outlined">
                     <!-- Message si aucun commentaire n'est associé au cours -->
@@ -265,7 +328,9 @@
                             <!-- Titre + commentaire -->
                             <v-list-item-content>
                               <v-list-item-title>
-                                {{ comment.titre }}
+                                <span class="black--text">
+                                  {{ comment.titre }}
+                                </span>
                               </v-list-item-title>
                               <v-list-item-subtitle>
                                 {{ comment.contenu }}
@@ -315,7 +380,9 @@
                       <!-- Titre + commentaire -->
                       <v-list-item-content :key="k">
                         <v-list-item-title>
-                          Commentaire sur la session #{{ k }}
+                          <span class="black--text">
+                            Commentaire sur la session #{{ k }}
+                          </span>
                         </v-list-item-title>
                         <v-list-item-subtitle>
                           Informations additionnelles
@@ -401,10 +468,16 @@ export default {
       };
       return d.toLocaleDateString("fr-CA", options);
     },
+    updateClassName(new_name) {
+
+    }
   },
   async created() {
     // Get student info
     this.student = await API.getStudentFormInfo(this.$route.params.id);
+    console.log(this.student);
+
+    // if(this.student.note_ponderee)
 
     // Get all semesters the student is in
     let duplicate_semesters = this.student.TA_EtudiantGroupe.map(

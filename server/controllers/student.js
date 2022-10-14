@@ -54,7 +54,11 @@ module.exports = class Student {
           include: {
             groupe: {
               include: {
-                cours: true,
+                cours: {
+                  include: {
+                    campus: true,
+                  },
+                },
                 session: true,
                 Commentaire: {
                   include: {
@@ -64,6 +68,7 @@ module.exports = class Student {
                 },
               },
             },
+            code_remarque_note_finale: true,
           },
         },
       },
