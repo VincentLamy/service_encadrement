@@ -8,21 +8,24 @@
 
       <v-col class="text-center">
         <!-- Button for Rapport d'encadrement -->
-        <v-btn color="primary" dark :loading="isSelecting" @click="handleFileImport('rapport_encadrement')">
+        <v-btn color="primary" dark :loading="isSelecting" @click="handleFileImport('rapport_encadrement')"
+          v-if="!loading">
           Importer Rapport d'encadrement
         </v-btn>
       </v-col>
 
       <v-col class="text-center">
         <!-- Button for Sondage mathématiques -->
-        <v-btn color="primary" dark id :loading="isSelecting" @click="handleFileImport('sondage_mathematiques')">
+        <v-btn color="primary" dark id :loading="isSelecting" @click="handleFileImport('sondage_mathematiques')"
+          v-if="!loading">
           Importer Sondage mathématiques
         </v-btn>
       </v-col>
 
       <v-col class="text-center">
         <!-- Button for Etudiants Internationaux -->
-        <v-btn color="primary" dark id :loading="isSelecting" @click="handleFileImport('etudiants_internationaux')">
+        <v-btn color="primary" dark id :loading="isSelecting" @click="handleFileImport('etudiants_internationaux')"
+          v-if="!loading">
           Importer Liste étudiants internationaux
         </v-btn>
       </v-col>
@@ -31,6 +34,9 @@
       <input ref="uploader" class="d-none" type="file"
         accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
         @change="onFileChanged">
+
+      <v-progress-linear :active="loading" :indeterminate="loading" absolute bottom color="deep-purple accent-4">
+      </v-progress-linear>
     </v-card>
   </v-container>
 </template>
@@ -43,7 +49,8 @@ export default {
   data() {
     return {
       isSelecting: false,
-      selectedFile: null
+      selectedFile: null,
+      loading: false
     }
   },
   mounted() {
@@ -68,6 +75,7 @@ export default {
     },
     onFileChanged(e) {
       this.selectedFile = e.target.files[0];
+      this.loading = true;
 
       let reader = new FileReader();
 
