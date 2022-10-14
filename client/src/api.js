@@ -56,4 +56,15 @@ export default class API {
       return err;
     }
   }
+
+  // Update course name
+  static async changeCourseName(course) {
+    try {
+      const res = await axios.patch(`${url}/changeCourseName`, course);
+      return res.data;
+    }
+    catch (err) {
+      return err;
+    }
+  }
 }
