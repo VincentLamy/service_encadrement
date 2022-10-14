@@ -67,4 +67,15 @@ export default class API {
       return err;
     }
   }
+
+  // Add comment
+  static async addComment(comment) {
+    try {
+      const res = await axios.post(`${url}/addComment`, comment);
+      return res.data;
+    }
+    catch (err) {
+      return err;
+    }
+  }
 }

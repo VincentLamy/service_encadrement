@@ -82,7 +82,7 @@ model Commentaire {
   id_code_remarque String
   titre            String       @db.VarChar(64)
   contenu          String       @db.VarChar(255)
-  date_creation    DateTime
+  date_creation    DateTime     @default(now())
 
   @@unique([no_etudiant, id_code_remarque, date_creation])
 }
