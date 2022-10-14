@@ -19,22 +19,27 @@
             <v-col class="px-3" lg="6" sm="6" cols="12">
               <v-text-field id="courriel_input" label="Courriel" :value="supervisor.courriel" :rules="rules" outlined />
             </v-col>
-
-            <!-- Mot de passe -->
+            <!-- Prénom -->
             <v-col class="px-3" lg="6" sm="6" cols="12">
-              <v-text-field id="mdp_input" label="Mot de passe" type="password" :value="supervisor.mdp" :rules="rules"
-                :type="show ?'text': 
-                'password'" :append-icon="show ?'mdi-eye':'mdi-eye-off'" @click:append="show=!show" outlined />
+              <v-text-field id="prenom_input" label="Prénom" :value="supervisor.employe.prenom" :rules="rules"
+                outlined />
             </v-col>
           </v-row>
 
           <!-- New row -->
           <v-row no-gutters>
+            <!-- Nom -->
+            <v-col class="px-3" lg="6" sm="6" cols="12">
+              <v-text-field id="nom_input" label="Nom" :value="supervisor.employe.nom" :rules="rules" outlined />
+            </v-col>
             <!-- Date d'activation -->
             <v-col class="px-3" lg="6" sm="6" cols="12">
               <v-text-field label="Date d'activation" :value="date_activation" outlined readonly />
             </v-col>
+          </v-row>
 
+          <!-- New row -->
+          <v-row no-gutters>
             <!-- Date de désactivation -->
             <v-col class="px-3" lg="6" sm="6" cols="12">
               <v-text-field label="Date de désactivation" :value="date_desactivation" outlined readonly />
@@ -43,7 +48,11 @@
 
         </v-card-text>
         <v-card-actions class="px-5 d-flex justify-space-between">
-          <v-btn color="red" plain>Annuler</v-btn>
+          <!-- Activate toggle -->
+          <v-switch id="actif" v-model="activation_switch" inset
+            :label="`${activation_switch ? 'Le responsable est activé' : 'Le responsable est désactivé'}`"></v-switch>
+
+          <!-- Update -->
           <v-btn type="submit" color="primary">Mettre à jour</v-btn>
         </v-card-actions>
       </v-card>
@@ -63,23 +72,26 @@ export default {
       date_desactivation: null,
       show: false,
       rules: [(value) => !!value || "Ce champs ne peut pas être vide."],
+      activation_switch: true,
     };
   },
   methods: {
     async updateForm(event) {
       const formData = new FormData();
       formData.append('courriel', document.getElementById("courriel_input").value);
-      formData.append('mdp', document.getElementById("mdp_input").value);
+      formData.append('prenom', document.getElementById("prenom_input").value);
+      formData.append('nom', document.getElementById("nom_input").value);
+      formData.append('actif', document.getElementById("actif").ariaChecked);
 
       if (this.$refs.form.validate()) {
         const response = await API.updateSupervisorFormInfo(this.supervisor.id, formData);
-        this.$router.push({ name: 'home', params: { response: response } });
       }
     },
   },
   async created() {
     // Get student info
     this.supervisor = await API.getSupervisorFormInfo(this.$route.params.id);
+    this.activation_switch = this.supervisor.actif;
 
     // Format date
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
