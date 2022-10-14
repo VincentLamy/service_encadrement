@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const API = require("../controllers/api");
+const Importation = require("../controllers/importation");
 const Student = require("../controllers/student");
 const Supervisor = require("../controllers/supervisor");
 const multer = require('multer');
@@ -16,16 +16,16 @@ router.get("/supervisor_form/:id", Supervisor.getSupervisorFormInfo);
 router.patch("/supervisor_form/:id", upload, Supervisor.updateSupervisorFormInfo);
 
 // Semesters
-router.post("/addSession", API.addSession);
-router.get("/getSession", API.getSession);
+router.post("/addSession", Importation.addSession);
+router.get("/getSession", Importation.getSession);
 
 // Reports
-router.post("/rapportEncadrement", API.addRapportEncadrement);
+router.post("/rapportEncadrement", Importation.addRapportEncadrement);
 
 // Math form
-router.post("/sondageMathematiques", API.addSondageMathematiques);
+router.post("/sondageMathematiques", Importation.addSondageMathematiques);
 
 // Internationals
-router.post("/etudiantsInternationaux", API.addEtudiantsInternationaux);
+router.post("/etudiantsInternationaux", Importation.addEtudiantsInternationaux);
 
 module.exports = router;
