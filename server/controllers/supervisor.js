@@ -1,7 +1,7 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
-module.exports = class Student {
+module.exports = class Supervisor {
   static async getSupervisorFormInfo(req, res) {
     // try {
     const id = req.params.id;
@@ -35,5 +35,33 @@ module.exports = class Student {
     } catch (error) {
       res.status(404).json({ message: error.message });
     }
+  }
+
+  static async getAllSupervisor(req, res) {
+    //try {
+
+      const id_responsable = await prisma.typeUtilisateur.findUnique({
+        where: {
+          nom: "Responsable"
+        },
+        select: {
+          id: true
+        },
+
+      });
+
+      const supervisor = await prisma.Utilisateur.findMany({
+        where: {
+          id_type_utilisateur : Number(id_responsable.id)
+        },
+        include: {
+          employe: true,
+        },
+      });
+      res.status(200).json(supervisor);
+      
+    //} catch (error) {
+      //res.status(404).json({ message: error.message });
+    //}
   }
 };

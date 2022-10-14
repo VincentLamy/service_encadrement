@@ -59,13 +59,13 @@ model Utilisateur {
   courriel            String          @db.VarChar(255)
   mdp                 String          @db.VarChar(255)
   date_activation     DateTime
-  date_desactivation  DateTime
+  date_desactivation  DateTime        
   actif               Boolean
 }
 
 model TypeUtilisateur {
   id          Int           @id @default(autoincrement())
-  nom         String        @db.VarChar(64)
+  nom         String        @db.VarChar(64) @unique
   description String        @db.VarChar(255)
   Utilisateur Utilisateur[]
 }

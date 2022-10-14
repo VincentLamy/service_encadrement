@@ -12,6 +12,7 @@ router.get("/student_list", Student.getAllStudent);
 router.get("/student_form/:no_etudiant", Student.getStudentFormInfo);
 
 // Supervisor
+router.get("/supervisor_list", Supervisor.getAllSupervisor);
 router.get("/supervisor_form/:id", Supervisor.getSupervisorFormInfo);
 router.patch("/supervisor_form/:id", upload, Supervisor.updateSupervisorFormInfo);
 

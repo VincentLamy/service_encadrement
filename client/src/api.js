@@ -57,6 +57,12 @@ export default class API {
     }
   }
 
+  // Gets all responsable
+  static async getAllSupervisor() {
+    const res = await axios.get(`${url}/supervisor_list`);
+    return res.data;
+  }
+
   // Gets supervisor form info by ID
   static async getSupervisorFormInfo(id) {
     try {

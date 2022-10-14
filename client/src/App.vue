@@ -63,7 +63,7 @@
       drawer: null,
       items: [
         { title: 'Liste des étudiants',     icon: 'mdi-account-multiple', link: "/student_list", info: current.liste_etudiants },
-        { title: 'Liste des responsables',  icon: 'mdi-account-multiple', link: "/user_list", info: current.liste_responsables },
+        { title: 'Liste des responsables',  icon: 'mdi-account-multiple', link: "/supervisor_list", info: current.liste_responsables },
         { title: 'Importer un fichier CSV', icon: 'mdi-attachment', link: "/csv_import", info: current.csv },
       ],
       responsable: [
