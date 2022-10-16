@@ -49,7 +49,7 @@ export default class API {
   // Gets student form info by ID
   static async getStudentFormInfo(no_etudiant) {
     try {
-      const res = await axios.get(`${url}/student_form/${no_etudiant}`)
+      const res = await axios.get(`${url}/student_form/${no_etudiant}`);
       return res.data;  
     }
     catch (err) {
@@ -72,6 +72,17 @@ export default class API {
   static async addComment(comment) {
     try {
       const res = await axios.post(`${url}/addComment`, comment);
+      return res.data;
+    }
+    catch (err) {
+      return err;
+    }
+  }
+
+  // Get all remark codes
+  static async getRemarkCode() {
+    try {
+      const res = await axios.get(`${url}/getRemarkCodes`);
       return res.data;
     }
     catch (err) {

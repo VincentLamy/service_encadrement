@@ -4,6 +4,7 @@ const API = require("../controllers/api");
 const Student = require("../controllers/student");
 const Course = require("../controllers/course");
 const Comment = require("../controllers/comment");
+const RemarkCode = require("../controllers/remark_code");
 
 // Students
 router.get("/student_list", Student.getAllStudent);
@@ -18,6 +19,9 @@ router.patch("/changeCourseName", Course.changeCourseName);
 
 // Comments
 router.post("/addComment", Comment.addComment);
+
+// Remark codes
+router.get("/getRemarkCodes", RemarkCode.getRemarkCode);
 
 // Reports
 router.post("/rapportEncadrement", API.addRapportEncadrement);

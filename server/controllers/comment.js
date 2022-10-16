@@ -3,6 +3,7 @@ const prisma = new PrismaClient();
 
 module.exports = class Comment {
   static async addComment(req, res) {
+    console.log(req.body);
     const {
       no_etudiant,
       no_employe,
@@ -17,9 +18,9 @@ module.exports = class Comment {
           no_etudiant: Number(no_etudiant),
           no_employe: Number(no_employe),
           id_groupe: Number(id_groupe),
-          id_code_remarque: id_code_remarque,
-          titre: titre,
-          contenu: contenu,
+          id_code_remarque: String(id_code_remarque),
+          titre: String(titre),
+          contenu: String(contenu),
         },
       });
       res.status(201).json({ message: 'Le commentaire a été ajouté avec succès' });
