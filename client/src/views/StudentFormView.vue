@@ -243,64 +243,11 @@
               >
                 Ajouter un commentaire
               </v-btn>
-
-              <v-card v-if="show_add_comment" class="mb-5" outlined>
-                <v-card-text>
-                  <v-form>
-                    <v-row>
-                      <v-col cols="8">
-                        <v-text-field
-                          class="mb-3"
-                          label="Titre"
-                          v-model="comment.title.value"
-                          :rules="comment.title.rules"
-                          counter="64"
-                          outlined
-                          required
-                        />
-                        <v-textarea
-                          label="Description"
-                          v-model="comment.description.value"
-                          :rules="comment.description.rules"
-                          counter="255"
-                          no-resize
-                          outlined
-                          required
-                        />
-                      </v-col>
-                      <v-col cols="4">
-                        <v-select
-                          class="mb-3"
-                          label="Remarque"
-                          :items="remark_codes"
-                          item-value="code"
-                          item-text="nom"
-                          v-model="comment.remark_id.value"
-                          :rules="comment.remark_id.rules"
-                          outlined
-                          required
-                        />
-                        <v-btn
-                          class="mb-3"
-                          x-large
-                          block
-                          @click="cancelComment"
-                        >
-                          Annuler
-                        </v-btn>
-                        <v-btn
-                          color="primary"
-                          x-large
-                          block
-                          @click="addComment"
-                        >
-                          Publier
-                        </v-btn>
-                      </v-col>
-                    </v-row>
-                  </v-form>
-                </v-card-text>
-              </v-card>
+              <v-comment-input
+                :show="show_add_comment"
+                :no-etudiant="student.no_etudiant"
+                :remark-codes="remark_codes"
+              />
 
               <!-- Commentaires de la session -->
               <h4 class="d-flex justify-center my-4">
@@ -465,9 +412,7 @@
                     </h4>
 
                     <!-- Commentaires du cours -->
-                    <v-comment-list 
-                      :data="student_group.groupe.Commentaire"
-                    />
+                    <v-comment-list :data="student_group.groupe.Commentaire" />
                   </v-expansion-panel-content>
                 </v-expansion-panel>
               </v-expansion-panels>
@@ -480,9 +425,9 @@
 </template>
 
 <script>
-import CommentList from "@/components/CommentList";
-
 import API from "@/api";
+import CommentList from "@/components/CommentList";
+import CommentInput from "@/components/CommentInput";
 
 export default {
   name: "FicheEtudiante",
@@ -599,6 +544,7 @@ export default {
   },
   components: {
     "v-comment-list": CommentList,
+    "v-comment-input": CommentInput,
   },
 };
 </script>
