@@ -22,7 +22,7 @@
         </v-btn>
       </v-col>
 
-      <v-col class="text-center">
+      <v-col class="text-center" style="padding-bottom: 5%;">
         <!-- Button for Etudiants Internationaux -->
         <v-btn color="primary" dark id :loading="isSelecting" @click="handleFileImport('etudiants_internationaux')"
           v-if="!loading">
