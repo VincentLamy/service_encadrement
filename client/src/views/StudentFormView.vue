@@ -224,77 +224,76 @@
           L'étudiant n'est inscrit à aucun cours!
         </h4>
 
-        
         <!-- Onglets sessions -->
         <v-tabs v-model="semester_tab" v-if="semesters.length !== 0">
           <v-tab v-for="(semester, i) in semesters" :key="i">
             {{ semester.code }}
           </v-tab>
         </v-tabs>
-        
+
         <v-container>
           <!-- Cours & Commentaires des sessions -->
           <v-tabs-items v-model="semester_tab" v-if="semesters.length !== 0">
             <v-tab-item v-for="(semester, i) in semesters" :key="i">
               <!-- Ajouter un commentaire -->
               <v-btn
-              block
-              color="primary my-3"
-              @click="show_add_comment = !show_add_comment"
+                block
+                color="primary my-3"
+                @click="show_add_comment = !show_add_comment"
               >
                 Ajouter un commentaire
               </v-btn>
-              
+
               <v-card v-if="show_add_comment" class="mb-5" outlined>
                 <v-card-text>
                   <v-form>
                     <v-row>
                       <v-col cols="8">
                         <v-text-field
-                        class="mb-3"
-                        label="Titre"
-                        v-model="comment.title.value"
-                        :rules="comment.title.rules"
-                        counter="64"
-                        outlined
-                        required
+                          class="mb-3"
+                          label="Titre"
+                          v-model="comment.title.value"
+                          :rules="comment.title.rules"
+                          counter="64"
+                          outlined
+                          required
                         />
                         <v-textarea
-                        label="Description"
-                        v-model="comment.description.value"
-                        :rules="comment.description.rules"
-                        counter="255"
-                        no-resize
-                        outlined
-                        required
+                          label="Description"
+                          v-model="comment.description.value"
+                          :rules="comment.description.rules"
+                          counter="255"
+                          no-resize
+                          outlined
+                          required
                         />
                       </v-col>
                       <v-col cols="4">
                         <v-select
-                        class="mb-3"
-                        label="Remarque"
-                        :items="remark_codes"
-                        item-value="code"
-                        item-text="nom"
-                        v-model="comment.remark_id.value"
-                        :rules="comment.remark_id.rules"
-                        outlined
-                        required
+                          class="mb-3"
+                          label="Remarque"
+                          :items="remark_codes"
+                          item-value="code"
+                          item-text="nom"
+                          v-model="comment.remark_id.value"
+                          :rules="comment.remark_id.rules"
+                          outlined
+                          required
                         />
                         <v-btn
-                        class="mb-3"
-                        x-large
+                          class="mb-3"
+                          x-large
                           block
                           @click="cancelComment"
                         >
                           Annuler
                         </v-btn>
                         <v-btn
-                        color="primary"
+                          color="primary"
                           x-large
                           block
                           @click="addComment"
-                          >
+                        >
                           Publier
                         </v-btn>
                       </v-col>
@@ -302,11 +301,11 @@
                   </v-form>
                 </v-card-text>
               </v-card>
-              
+
               <!-- Commentaires de la session -->
-              <h3 class="d-flex justify-center my-4">
+              <h4 class="d-flex justify-center my-4">
                 Commentaires de la session
-              </h3>
+              </h4>
 
               <v-list class="px-5" outlined>
                 <template v-for="k in 3">
@@ -323,10 +322,10 @@
                           Informations additionnelles
                         </v-list-item-subtitle>
                       </v-list-item-content>
-                      
+
                       <!-- Catégories du commentaire + date de publication -->
                       <v-list-item-action
-                      class="d-flex flex-column justify-space-between"
+                        class="d-flex flex-column justify-space-between"
                       >
                         <v-list-item-action-text>
                           <div class="d-flex justify-end">
@@ -342,7 +341,7 @@
                           </p>
                         </v-list-item-action-text>
                       </v-list-item-action>
-                      
+
                       <!-- Boutons de modification -->
                       <v-btn class="ms-2" text icon>
                         <v-icon>mdi-pencil-outline</v-icon>
@@ -354,37 +353,37 @@
               </v-list>
 
               <!-- Commentaires d'un cours -->
-              <h3 class="d-flex justify-center my-4">
+              <h4 class="d-flex justify-center my-4">
                 Commentaires sur les cours de l'étudiant
-              </h3>
-              
+              </h4>
+
               <!-- Cours de la session -->
               <v-expansion-panels accordion flat>
                 <v-expansion-panel
-                v-for="student_group in semester.student_groups"
+                  v-for="student_group in semester.student_groups"
                 >
-                <v-expansion-panel-header class="outlined">
-                  <v-container class="pa-0 pe-3">
-                    <div
-                    class="d-flex flex-md-row flex-column justify-space-between col-12 pa-0"
-                    >
-                    <div class="d-flex flex-column col-md">
-                      <div class="font-weight-bold">
-                        <span v-if="student_group.groupe.cours.nom">
-                          {{ student_group.groupe.cours.nom }}
-                        </span>
+                  <v-expansion-panel-header class="outlined">
+                    <v-container class="pa-0 pe-3">
+                      <div
+                        class="d-flex flex-md-row flex-column justify-space-between col-12 pa-0"
+                      >
+                        <div class="d-flex flex-column col-md">
+                          <div class="font-weight-bold">
+                            <span v-if="student_group.groupe.cours.nom">
+                              {{ student_group.groupe.cours.nom }}
+                            </span>
                             <span v-else>
                               <v-menu @input="onCourseMenuToggle">
                                 <template v-slot:activator="{ on, attrs }">
                                   <v-btn
-                                  x-small
-                                  outlined
-                                  color="blue darken-3"
-                                  class="mb-1"
-                                  @click.native.stop
+                                    x-small
+                                    outlined
+                                    color="blue darken-3"
+                                    class="mb-1"
+                                    @click.native.stop
                                     v-bind="attrs"
                                     v-on="on"
-                                    >
+                                  >
                                     Ajouter un nom au cours
                                   </v-btn>
                                 </template>
@@ -402,19 +401,19 @@
                                           updateCourseName(
                                             student_group.groupe.cours.code,
                                             course_name
-                                            )
+                                          )
                                         "
                                         @click.stop
-                                        />
-                                      </v-card-text>
-                                    </v-card>
-                                  </template>
-                                </v-menu>
-                              </span>
-                              ({{ student_group.groupe.cours.code }})
-                            </div>
-                            <div>
-                              Groupe : {{ student_group.groupe.no_groupe }}
+                                      />
+                                    </v-card-text>
+                                  </v-card>
+                                </template>
+                              </v-menu>
+                            </span>
+                            ({{ student_group.groupe.cours.code }})
+                          </div>
+                          <div>
+                            Groupe : {{ student_group.groupe.no_groupe }}
                           </div>
                         </div>
                         <div class="d-flex flex-column col-md">
@@ -434,22 +433,22 @@
                       </div>
                       <v-divider></v-divider>
                       <div
-                      class="d-flex flex-md-row flex-column justify-space-between col-12 pa-0"
+                        class="d-flex flex-md-row flex-column justify-space-between col-12 pa-0"
                       >
-                      <div class="d-flex flex-column col-md">
-                        <div>
-                          Note pondérée : {{ student_group.note_ponderee }}
+                        <div class="d-flex flex-column col-md">
+                          <div>
+                            Note pondérée : {{ student_group.note_ponderee }}
+                          </div>
                         </div>
-                      </div>
-                      <div class="d-flex flex-column col-md">
-                        <div>
-                          Pourcentage note cumulée :
-                          {{ student_group.pourcentage_note_cumulee }}
+                        <div class="d-flex flex-column col-md">
+                          <div>
+                            Pourcentage note cumulée :
+                            {{ student_group.pourcentage_note_cumulee }}
+                          </div>
                         </div>
-                      </div>
-                      <div class="d-flex flex-column col-md">
-                        <div>
-                          Remarque note finale :
+                        <div class="d-flex flex-column col-md">
+                          <div>
+                            Remarque note finale :
                             {{ student_group.code_remarque_note_finale.nom }}
                           </div>
                         </div>
@@ -459,62 +458,16 @@
                   <v-expansion-panel-content class="outlined">
                     <!-- Message si aucun commentaire n'est associé au cours -->
                     <h4
-                    v-if="student_group.groupe.Commentaire.length === 0"
-                    class="mt-5 grey--text"
+                      v-if="student_group.groupe.Commentaire.length === 0"
+                      class="mt-5 grey--text"
                     >
-                    L'étudiant n'a aucun commentaire sur ce cours!
-                  </h4>
-                  
+                      L'étudiant n'a aucun commentaire sur ce cours!
+                    </h4>
 
-                  <v-list
-                  v-if="student_group.groupe.Commentaire.length !== 0"
-                  >
-                  <template
-                  v-for="(comment, i) in student_group.groupe.Commentaire"
-                  >
-                  <v-list-item class="py-3">
-                    <v-row class="align-center">
-                      <!-- Titre + commentaire -->
-                      <v-list-item-content>
-                        <v-list-item-title>
-                          <span class="black--text">
-                            {{ comment.titre }}
-                                </span>
-                              </v-list-item-title>
-                              <v-list-item-subtitle>
-                                {{ comment.contenu }}
-                              </v-list-item-subtitle>
-                            </v-list-item-content>
-
-                            <!-- Catégories du commentaire + date de publication -->
-                            <v-list-item-action
-                              class="d-flex flex-column justify-space-between"
-                            >
-                              <v-list-item-action-text>
-                                <div class="d-flex justify-end">
-                                  <v-chip
-                                    class="ms-1 font-weight-bold"
-                                    x-small
-                                    >{{ comment.code_remarque.nom }}</v-chip
-                                  >
-                                </div>
-                                <p class="ma-0 black--text">
-                                  {{ comment.employe.nom }},
-                                  {{ comment.employe.prenom }}
-                                  <span class="ms-4 grey--text">
-                                    {{ dateToString(comment.date_creation) }}
-                                  </span>
-                                </p>
-                              </v-list-item-action-text>
-                            </v-list-item-action>
-                          </v-row>
-                        </v-list-item>
-                        <v-divider
-                          v-if="i < student_group.groupe.Commentaire.length - 1"
-                          :key="i"
-                        ></v-divider>
-                      </template>
-                    </v-list>
+                    <!-- Commentaires du cours -->
+                    <v-comment-list 
+                      :data="student_group.groupe.Commentaire"
+                    />
                   </v-expansion-panel-content>
                 </v-expansion-panel>
               </v-expansion-panels>
@@ -527,6 +480,8 @@
 </template>
 
 <script>
+import CommentList from "@/components/CommentList";
+
 import API from "@/api";
 
 export default {
@@ -542,7 +497,7 @@ export default {
       show_add_comment: false,
       comment: {
         title: {
-          value: null,
+          value: "",
           rules: [
             (v) => !!v || "Un titre est requis",
             (v) =>
@@ -550,7 +505,7 @@ export default {
           ],
         },
         description: {
-          value: null,
+          value: "",
           rules: [
             (v) => !!v || "Une description est requise",
             (v) =>
@@ -584,17 +539,6 @@ export default {
     };
   },
   methods: {
-    dateToString(d) {
-      d = new Date(d);
-      const options = {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-        hour: "numeric",
-        minute: "numeric",
-      };
-      return d.toLocaleDateString("fr-CA", options);
-    },
     async updateCourseName(code, name) {
       await API.changeCourseName({
         code: code,
@@ -652,6 +596,9 @@ export default {
     this.amount_classes_in_difficulty = this.student.TA_EtudiantGroupe.filter(
       (g) => g.pourcentage_note_cumulee < 60
     ).length;
+  },
+  components: {
+    "v-comment-list": CommentList,
   },
 };
 </script>
