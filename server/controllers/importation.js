@@ -337,7 +337,7 @@ module.exports = class Importation {
             }
             res.status(201).json({ message: 'Le rapport d\'encadrement a été ajouté avec succès' });
         } catch (err) {
-            res.status(400).json({ message: err.message });
+            res.status(400).json({ message: 'Le rapport d\'encadrement n\'a pas pu être ajouté' });
         }
     };
 
@@ -430,7 +430,7 @@ module.exports = class Importation {
 
             res.status(201).json({ message: 'Le sondage de mathématiques a été ajouté avec succès' });
         } catch (err) {
-            res.status(400).json({ message: err.message });
+            res.status(400).json({ message: 'Le sondage de mathématiques n\'a pas pu être ajouté' });
         }
     };
 
@@ -478,7 +478,7 @@ module.exports = class Importation {
             res.status(201).json({ message: 'La liste d\'étudiants internationaux a été ajouté avec succès' });
 
         } catch (err) {
-            res.status(400).json({ message: err.message });
+            res.status(400).json({ message: 'La liste d\'étudiants internationaux n\'a pas pu être ajouté' });
         }
     };
 };

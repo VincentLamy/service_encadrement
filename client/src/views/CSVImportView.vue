@@ -97,6 +97,7 @@ export default {
             if (button_id === "rapport_encadrement") {
               const response = await API.addRapportEncadrement(XL_row_object);
               router.push({ name: 'home', params: { response: response } });
+              console.log(response);
             }
             // Sondage mathématiques
             else if (button_id === "sondage_mathematiques") {
