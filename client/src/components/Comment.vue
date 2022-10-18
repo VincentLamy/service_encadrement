@@ -30,7 +30,7 @@
       </v-list-item-action>
 
       <!-- Boutons de modification -->
-      <v-btn v-if="editable" class="ms-2" text icon @click="edit()">
+      <v-btn v-if="editable" class="ms-2" text icon @click="edit">
         <v-icon>mdi-pencil-outline</v-icon>
       </v-btn>
 
@@ -40,6 +40,7 @@
         :remark-codes="remarkCodes"
         method="edit"
         :id-edited-comment="data.id"
+        @updated="updateData"
       />
     </v-row>
   </v-list-item>
@@ -80,6 +81,10 @@ export default {
     },
     edit() {
       this.editing = !this.editing;
+    },
+    updateData() {
+      console.log("caught event, emitting from Comment");
+      this.$emit("updated");
     },
   },
   components: {

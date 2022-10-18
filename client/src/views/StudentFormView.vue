@@ -416,6 +416,7 @@
                     <v-comment-list
                       :data="student_group.groupe.Commentaire"
                       :remark-codes="remark_codes"
+                      @update-data="getData"
                     />
                   </v-expansion-panel-content>
                 </v-expansion-panel>
@@ -501,45 +502,34 @@ export default {
         console.log(this.$refs.course_name_field);
       }
     },
-    async addComment() {
-      await API.addComment({
-        no_etudiant: this.student.no_etudiant,
-        no_employe: 6, // TODO - Mettre le no_employe de l'utilisateur
-        id_groupe: 4, // TODO - Mettre l'id_groupe à null, marche pas pour le moment
-        id_code_remarque: this.comment.remark_id.value,
-        titre: this.comment.title.value,
-        contenu: this.comment.description.value,
+    async getData() {
+      // Get student info
+      this.student = await API.getStudentFormInfo(this.$route.params.id);
+
+      // Get all remark codes
+      this.remark_codes = await API.getRemarkCode();
+      
+      // Get all semesters the student is in
+      let duplicate_semesters = this.student.TA_EtudiantGroupe.map(
+        (x) => x.groupe.session
+      );
+      this.semesters = Array.from(
+        new Set(duplicate_semesters.map((s) => s.id))
+      ).map((id) => {
+        return {
+          id: id,
+          code: duplicate_semesters.find((s) => s.id === id).code,
+          student_groups: this.student.TA_EtudiantGroupe.filter(
+            (g) => g.groupe.session.id === id
+          ),
+        };
       });
-    },
-    async cancelComment() {
-      this.show_add_comment = false;
-      this.comment.title.value = null;
-      this.comment.description.value = null;
-      this.comment.remark_id.value = null;
+      console.log(this.semesters[0].student_groups[0].groupe.Commentaire);
     },
   },
   async created() {
     // Get student info
-    this.student = await API.getStudentFormInfo(this.$route.params.id);
-
-    // Get all remark codes
-    this.remark_codes = await API.getRemarkCode();
-
-    // Get all semesters the student is in
-    let duplicate_semesters = this.student.TA_EtudiantGroupe.map(
-      (x) => x.groupe.session
-    );
-    this.semesters = Array.from(
-      new Set(duplicate_semesters.map((s) => s.id))
-    ).map((id) => {
-      return {
-        id: id,
-        code: duplicate_semesters.find((s) => s.id === id).code,
-        student_groups: this.student.TA_EtudiantGroupe.filter(
-          (g) => g.groupe.session.id === id
-        ),
-      };
-    });
+    await this.getData();
 
     // Get amount of classes the student is currently failing
     this.amount_classes_in_difficulty = this.student.TA_EtudiantGroupe.filter(
