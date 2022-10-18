@@ -247,6 +247,7 @@
                 :show="show_add_comment"
                 :no-etudiant="student.no_etudiant"
                 :remark-codes="remark_codes"
+                method="publish"
               />
 
               <!-- Commentaires de la session -->
@@ -280,7 +281,7 @@
                               AUTN
                             </v-chip>
                           </div>
-                          <p class="ma-0 black--text">
+                          <p class="ma-0 black--text text-end">
                             Lapalme, Jocelyn
                             <span class="ms-4 grey--text"
                               >24 sept. 2021 10:15</span
@@ -412,7 +413,10 @@
                     </h4>
 
                     <!-- Commentaires du cours -->
-                    <v-comment-list :data="student_group.groupe.Commentaire" />
+                    <v-comment-list
+                      :data="student_group.groupe.Commentaire"
+                      :remark-codes="remark_codes"
+                    />
                   </v-expansion-panel-content>
                 </v-expansion-panel>
               </v-expansion-panels>

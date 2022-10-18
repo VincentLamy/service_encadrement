@@ -19,6 +19,7 @@ router.patch("/changeCourseName", Course.changeCourseName);
 
 // Comments
 router.post("/addComment", Comment.addComment);
+router.patch("/editComment", Comment.editComment);
 
 // Remark codes
 router.get("/getRemarkCodes", RemarkCode.getRemarkCode);

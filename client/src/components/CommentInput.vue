@@ -1,5 +1,5 @@
 <template>
-  <v-card v-if="show" class="mb-5" outlined>
+  <v-card v-if="show" class="mb-5" style="width: 100%;" outlined>
     <v-card-text>
       <v-form>
         <v-row>
@@ -38,8 +38,11 @@
             <v-btn class="mb-3" x-large block @click="cancelComment">
               Annuler
             </v-btn>
-            <v-btn color="primary" x-large block @click="addComment">
+            <v-btn v-if="method === 'publish'" color="primary" x-large block @click="addComment">
               Publier
+            </v-btn>
+            <v-btn v-if="method === 'edit'" color="primary" x-large block @click="editComment">
+              Modifier
             </v-btn>
           </v-col>
         </v-row>
@@ -57,11 +60,17 @@ export default {
     show: {
       type: Boolean,
     },
+    method: {
+      type: String,
+    },
     noEtudiant: {
       type: Number,
     },
     remarkCodes: {
       type: Array,
+    },
+    idEditedComment: {
+      type: Number,
     },
   },
   data() {
@@ -101,6 +110,14 @@ export default {
         titre: this.comment.title.value,
         contenu: this.comment.description.value,
       });
+    },
+    async editComment() {
+      await API.editComment({
+        id: this.idEditedComment,
+        titre: this.comment.title.value,
+        contenu: this.comment.description.value,
+        id_code_remarque: this.comment.remark_id.value,
+      })
     },
     async cancelComment() {
       this.show_add_comment = false;

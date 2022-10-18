@@ -1,7 +1,7 @@
 <template>
   <v-list v-if="data.length !== 0">
     <template v-for="(comment, i) in data">
-      <v-comment :data="comment" />
+      <v-comment :data="comment" :remark-codes="remarkCodes" editable />
       <v-divider
         v-if="i < data.length - 1"
         :key="i"
@@ -17,6 +17,9 @@ export default {
   name: "v-comment-list",
   props: {
     data: {
+      type: Array,
+    },
+    remarkCodes: {
       type: Array,
     },
   },

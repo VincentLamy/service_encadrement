@@ -79,6 +79,17 @@ export default class API {
     }
   }
 
+  // Edit comment
+  static async editComment(comment) {
+    try {
+      const res = await axios.patch(`${url}/editComment`, comment);
+      return res.data;
+    }
+    catch (err) {
+      return err;
+    }
+  }
+
   // Get all remark codes
   static async getRemarkCode() {
     try {
