@@ -3,19 +3,20 @@ const prisma = new PrismaClient();
 
 module.exports = class Supervisor {
   static async getSupervisorFormInfo(req, res) {
-    // try {
-    const id = req.params.id;
-    const supervisor = await prisma.utilisateur.findUnique({
-      where: {
-        id: Number(id),
-      },
-      include: {
-        employe: true,
-      },
-    });
-    res.status(200).json(supervisor);
-  } catch(error) {
-    res.status(404).json({ message: error.message });
+    try {
+      const id = req.params.id;
+      const supervisor = await prisma.utilisateur.findUnique({
+        where: {
+          id: Number(id),
+        },
+        include: {
+          employe: true,
+        },
+      });
+      res.status(200).json(supervisor);
+    } catch (error) {
+      res.status(404).json({ message: error.message });
+    }
   }
 
   static async updateSupervisorFormInfo(req, res) {
@@ -50,8 +51,7 @@ module.exports = class Supervisor {
   }
 
   static async getAllSupervisor(req, res) {
-    //try {
-
+    try {
       const id_responsable = await prisma.typeUtilisateur.findUnique({
         where: {
           nom: "Responsable"
@@ -64,16 +64,76 @@ module.exports = class Supervisor {
 
       const supervisor = await prisma.Utilisateur.findMany({
         where: {
-          id_type_utilisateur : Number(id_responsable.id)
+          id_type_utilisateur: Number(id_responsable.id)
         },
         include: {
           employe: true,
         },
       });
       res.status(200).json(supervisor);
-      
-    //} catch (error) {
-      //res.status(404).json({ message: error.message });
-    //}
+
+    } catch (error) {
+      res.status(404).json({ message: error.message });
+    }
+  }
+
+  static async getPreviousSupervisor(req, res) {
+    const id = req.params.id;
+
+    let prev = await prisma.Utilisateur.findMany({
+      take: 1,
+      where: {
+        id: {
+          lt: Number(id),
+        },
+      },
+      include: {
+        employe: true,
+      },
+      orderBy: {
+        id: "desc",
+      },
+    });
+
+    if (prev === undefined || prev.length == 0) {
+      prev = await prisma.Utilisateur.findMany({
+        take: -1,
+        include: {
+          employe: true,
+        },
+      });
+    }
+    res.status(200).json(prev);
+  }
+
+  static async getNextSupervisor(req, res) {
+    const id = req.params.id;
+
+    let next = await prisma.Utilisateur.findMany({
+      take: 1,
+      where: {
+        id: {
+          gt: Number(id),
+        },
+      },
+      include: {
+        employe: true,
+      },
+      orderBy: {
+        id: "asc",
+      },
+    });
+
+    if (next === undefined || next.length == 0) {
+      next = await prisma.Utilisateur.findMany({
+        take: 1,
+        include: {
+          employe: true,
+        },
+      });
+    }
+
+    console.log(next);
+    res.status(200).json(next);
   }
 };

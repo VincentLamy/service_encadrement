@@ -84,4 +84,26 @@ export default class API {
       return err;
     }
   }
+
+  // Gets previous supervisor by ID
+  static async getPreviousSupervisor(id, post) {
+    try {
+      const res = await axios.get(`${url}/previous_supervisor_form/${id}`, post)
+      return res.data;
+    }
+    catch (err) {
+      return err;
+    }
+  }
+
+  // Gets next supervisor by ID
+  static async getNextSupervisor(id, post) {
+    try {
+      const res = await axios.get(`${url}/next_supervisor_form/${id}`, post)
+      return res.data;
+    }
+    catch (err) {
+      return err;
+    }
+  }
 }
