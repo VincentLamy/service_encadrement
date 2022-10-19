@@ -31,6 +31,7 @@ module.exports = class Supervisor {
         data: {
           courriel: req.body.courriel,
           actif: Boolean(actif),
+          date_desactivation: new Date(req.body.date_desactivation),
         },
       });
 
@@ -78,62 +79,68 @@ module.exports = class Supervisor {
   }
 
   static async getPreviousSupervisor(req, res) {
-    const id = req.params.id;
+    try {
+      const id = req.params.id;
 
-    let prev = await prisma.Utilisateur.findMany({
-      take: 1,
-      where: {
-        id: {
-          lt: Number(id),
+      let prev = await prisma.Utilisateur.findMany({
+        take: 1,
+        where: {
+          id: {
+            lt: Number(id),
+          },
         },
-      },
-      include: {
-        employe: true,
-      },
-      orderBy: {
-        id: "desc",
-      },
-    });
-
-    if (prev === undefined || prev.length == 0) {
-      prev = await prisma.Utilisateur.findMany({
-        take: -1,
         include: {
           employe: true,
         },
+        orderBy: {
+          id: "desc",
+        },
       });
+
+      if (prev === undefined || prev.length == 0) {
+        prev = await prisma.Utilisateur.findMany({
+          take: -1,
+          include: {
+            employe: true,
+          },
+        });
+      }
+      res.status(200).json(prev);
+    } catch (error) {
+      res.status(404).json({ message: error.message });
     }
-    res.status(200).json(prev);
   }
 
   static async getNextSupervisor(req, res) {
-    const id = req.params.id;
+    try {
+      const id = req.params.id;
 
-    let next = await prisma.Utilisateur.findMany({
-      take: 1,
-      where: {
-        id: {
-          gt: Number(id),
-        },
-      },
-      include: {
-        employe: true,
-      },
-      orderBy: {
-        id: "asc",
-      },
-    });
-
-    if (next === undefined || next.length == 0) {
-      next = await prisma.Utilisateur.findMany({
+      let next = await prisma.Utilisateur.findMany({
         take: 1,
+        where: {
+          id: {
+            gt: Number(id),
+          },
+        },
         include: {
           employe: true,
         },
+        orderBy: {
+          id: "asc",
+        },
       });
-    }
 
-    console.log(next);
-    res.status(200).json(next);
+      if (next === undefined || next.length == 0) {
+        next = await prisma.Utilisateur.findMany({
+          take: 1,
+          include: {
+            employe: true,
+          },
+        });
+      }
+      res.status(200).json(next);
+    } catch (error) {
+      res.status(404).json({ message: error.message });
+    }
   }
 };

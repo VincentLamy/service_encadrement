@@ -100,6 +100,33 @@ export default {
       formData.append('nom', document.getElementById("nom_input").value);
       formData.append('actif', document.getElementById("actif").ariaChecked);
 
+      const switch_actif = document.getElementById("actif").ariaChecked;
+      const supervisor_actif = this.supervisor.actif.toString();
+
+      // If the activation switch has changed
+      if (switch_actif != supervisor_actif) {
+        // If the activation switch is now true
+        if (document.getElementById("actif").ariaChecked === 'true') {
+          formData.append('date_desactivation', document.getElementById("date_activation_input").value);
+          this.date_desactivation = 'Non applicable';
+        }
+        // If the activation switch is now false
+        else if (document.getElementById("actif").ariaChecked === 'false') {
+          formData.append('date_desactivation', this.dateToString(Date.now()));
+          this.date_desactivation = this.dateToString(Date.now());
+        }
+        this.supervisor.actif = !this.supervisor.actif;
+        // If the activation switch hasn't changed
+      } else {
+        // Prevent problems if date desactivation is Non applicable
+        if (document.getElementById("date_desactivation_input").value === 'Non applicable') {
+          formData.append('date_desactivation', document.getElementById("date_activation_input").value);
+        } else {
+          formData.append('date_desactivation', document.getElementById("date_desactivation_input").value);
+        }
+        this.date_desactivation = document.getElementById("date_desactivation_input").value;
+      }
+
       if (this.$refs.form.validate()) {
         const response = await API.updateSupervisorFormInfo(this.supervisor.id, formData);
       }
@@ -108,22 +135,45 @@ export default {
       // Get previous supervisor info
       const previousSupervisor = await API.getPreviousSupervisor(this.$route.params.id);
       this.supervisor = previousSupervisor[0];
+      this.date_activation = this.dateToString(this.supervisor.date_activation);
+
+      if (this.date_activation !== this.dateToString(this.supervisor.date_desactivation)) {
+        this.date_desactivation = this.dateToString(this.supervisor.date_desactivation);
+      } else {
+        this.date_desactivation = 'Non applicable';
+      }
+
+      this.activation_switch = this.supervisor.actif;
+
       this.$router.push({ name: 'supervisor_form', params: { id: this.supervisor.id } });
     },
     async gotoNextSupervisor() {
       // Get next supervisor info
       const nextSupervisor = await API.getNextSupervisor(this.$route.params.id);
       this.supervisor = nextSupervisor[0];
+      this.date_activation = this.dateToString(this.supervisor.date_activation);
+
+      if (this.date_activation !== this.dateToString(this.supervisor.date_desactivation)) {
+        this.date_desactivation = this.dateToString(this.supervisor.date_desactivation);
+      } else {
+        this.date_desactivation = 'Non applicable';
+      }
+
+      this.activation_switch = this.supervisor.actif;
+
       this.$router.push({ name: 'supervisor_form', params: { id: this.supervisor.id } });
     },
-    formatDate(date) {
+    dateToString(date) {
       const options = { year: 'numeric', month: 'long', day: 'numeric' };
 
       let dateToDate = new Date(date);
-      dateToDate.setDate(dateToDate.getDate() + 1);
+      dateToDate.setDate(dateToDate.getDate());
       dateToDate = dateToDate.toLocaleString("fr-CA", options);
 
       return dateToDate;
+    },
+    stringToDate(string) {
+      return new Date(string);
     },
   },
   async created() {
@@ -131,8 +181,13 @@ export default {
     this.supervisor = await API.getSupervisorFormInfo(this.$route.params.id);
     this.activation_switch = this.supervisor.actif;
 
-    this.date_activation = this.formatDate(this.supervisor.date_activation);
-    this.date_desactivation = this.formatDate(this.supervisor.date_desactivation);
+    this.date_activation = this.dateToString(this.supervisor.date_activation);
+
+    if (this.date_activation !== this.dateToString(this.supervisor.date_desactivation)) {
+      this.date_desactivation = this.dateToString(this.supervisor.date_desactivation);
+    } else {
+      this.date_desactivation = 'Non applicable';
+    }
   },
 };
 </script>
