@@ -14,9 +14,16 @@
       <!-- Form -->
       <v-form id="supervisor_form" ref="form" @submit.prevent="updateForm" class="pa-5 d-xl-flex"
         enctype="multipart/form-data" style="flex: 5;">
+        <!-- Supervisor name -->
         <h2 class="my-2 d-flex justify-center blue--text text--darken-3">
           {{ supervisor.employe.prenom }} {{ supervisor.employe.nom }}
         </h2>
+
+        <!-- Alert on modification -->
+        <v-alert v-model="success" dense text type="success" dismissible>
+          Le superviseur a été mis à jour avec succès!
+        </v-alert>
+
         <v-card class="py-2 px-3 mb-5" outlined>
           <v-card-text>
             <h3 class="d-flex justify-center mb-4">Informations du responsable</h3>
@@ -90,6 +97,7 @@ export default {
       show: false,
       rules: [(value) => !!value || "Ce champs ne peut pas être vide."],
       activation_switch: true,
+      success: false,
     };
   },
   methods: {
@@ -129,6 +137,7 @@ export default {
 
       if (this.$refs.form.validate()) {
         const response = await API.updateSupervisorFormInfo(this.supervisor.id, formData);
+        this.success = true;
       }
     },
     async gotoPreviousSupervisor() {
@@ -171,9 +180,6 @@ export default {
       dateToDate = dateToDate.toLocaleString("fr-CA", options);
 
       return dateToDate;
-    },
-    stringToDate(string) {
-      return new Date(string);
     },
   },
   async created() {
