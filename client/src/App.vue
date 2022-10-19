@@ -21,7 +21,7 @@
               <v-list-item-title class="blue--text text--darken-3" v-text="item.title"></v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-        </v-list-item-group>
+        </v-list-item-group>  
       </v-list>
     </v-navigation-drawer>
 
@@ -29,6 +29,8 @@
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 
       <v-toolbar-title fluid style="width: 100%" class="text-center blue--text text--darken-3">Service d'encadrement</v-toolbar-title>
+
+      <v-btn id="disconnect_button" @click="logout()">Déconnexion</v-btn>
     </v-app-bar>
 
     <v-main>
@@ -38,9 +40,6 @@
 </template>
 
 <script>
-  import VueSession from 'vue-session';
-  // Vue.use(VueSession);
-
   export default {
     data: () => ({
       drawer: null,
@@ -52,21 +51,7 @@
       responsable: [
         { name: "Vincent Lamy", programme: "Programmation" } // TODO Modifier pour aller chercher les données dans la BD
       ]
-    }),
-    beforeCreate: function () {
-      if (!this.$session.exists()) {
-        this.$router.push('/')
-      }
-      else {
-        console.log(this.$session)
-      }
-    },
-    methods: {
-      logout: function () {
-        this.$session.destroy()
-        this.$router.push('/')
-      }
-    }
+    })
   }
 </script>
 

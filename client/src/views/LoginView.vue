@@ -24,15 +24,7 @@
  </template>
 
 <script>
-    import API from "@/api"
-    import VueSession from 'vue-session';
-    // import Vue from 'vue'
-
-    // var options = {
-    //     persist: true
-    // }
-
-    // Vue.use(VueSession, options);
+    import API from "@/api";
 
     export default {
         name: "Login",
@@ -61,23 +53,10 @@
                     .then(
                         function (response) {
                             response = response[0];
-
+                            
                             console.log(response);
-
-                            if (response.status === 200 && 'token' in response.body) {
-                                this.$session.start();
-                                this.$session.set('jwt', response.body.token);
-                                Vue.http.headers.common['Authorization'] = 'Bearer ' + response.body.token;
-                                this.$router.push('/panel/search')
-                            }
-                        }, 
-                        function (err) {
-                            console.log('err', err)
                         }
                     )
-                   
-
-                    //TODO Ajout code pour créer session
                 }
             },
             reset() {

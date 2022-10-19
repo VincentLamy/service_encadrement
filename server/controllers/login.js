@@ -4,13 +4,27 @@ const prisma = new PrismaClient();
 module.exports = class Responsable {
     static async get_user(req, res) {
         try {
-            console.log(req.body);
-            const user = await prisma.Utilisateur.findMany({
+            const user = await prisma.utilisateur.findMany({
                 where: {
                     courriel: req.body.username,
                     mdp: req.body.password,
-                }
-            });
+                },
+                select: {
+                    employe: {
+                        select: {
+                            prenom: true,
+                            nom:    true,
+                            Groupe: true,
+                        }
+                    },
+                    type_utilisateur: {
+                        select: {
+                            nom: true
+                        }
+                    },
+                    actif: true 
+                },
+            })
 
             res.status(200).json(user);
         } catch (error) {
