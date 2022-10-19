@@ -1,5 +1,6 @@
 <template>
     <v-container>
+  
         <h2>Liste des responsables</h2>
   
         <v-data-table
@@ -14,6 +15,13 @@
             <v-icon color="red">mdi-alert-circle</v-icon>
           </template> -->
       </v-data-table>
+      <v-btn 
+          color="primary" 
+          dark 
+          @click="addSupervisor()"
+        >
+          Ajouter un responsable d'encadrement
+        </v-btn>
     </v-container>
   </template>
     
@@ -44,15 +52,23 @@
 
                 this.supervisor[index].employe = this.supervisor[index].employe.nom + ", " + this.supervisor[index].employe.prenom;
 
-                this.supervisor[index].date_activation = new Date(this.supervisor[index].date_activation);
-                this.supervisor[index].date_activation.setDate(this.supervisor[index].date_activation.getDate() + 1);
-                this.supervisor[index].date_activation = this.supervisor[index].date_activation.toLocaleDateString("fr-CA", options);
+                if (this.supervisor[index].date_activation !== this.supervisor[index].date_desactivation) {
+                  this.supervisor[index].date_activation = new Date(this.supervisor[index].date_activation);
+                  this.supervisor[index].date_activation.setDate(this.supervisor[index].date_activation.getDate());
+                  this.supervisor[index].date_activation = this.supervisor[index].date_activation.toLocaleDateString("fr-CA", options);
 
-                this.supervisor[index].date_desactivation = new Date(this.supervisor[index].date_desactivation);
-                this.supervisor[index].date_desactivation.setDate(this.supervisor[index].date_desactivation.getDate() + 1);
-                this.supervisor[index].date_desactivation = this.supervisor[index].date_desactivation.toLocaleDateString("fr-CA", options);
-                
-            
+                  this.supervisor[index].date_desactivation = new Date(this.supervisor[index].date_desactivation);
+                  this.supervisor[index].date_desactivation.setDate(this.supervisor[index].date_desactivation.getDate());
+                  this.supervisor[index].date_desactivation = this.supervisor[index].date_desactivation.toLocaleDateString("fr-CA", options);
+                }
+                else {
+                  this.supervisor[index].date_activation = new Date(this.supervisor[index].date_activation);
+                  this.supervisor[index].date_activation.setDate(this.supervisor[index].date_activation.getDate());
+                  this.supervisor[index].date_activation = this.supervisor[index].date_activation.toLocaleDateString("fr-CA", options);
+
+                  this.supervisor[index].date_desactivation = "Non applicable";
+                }
+
                 if (this.supervisor[index].actif === true) {
                     this.supervisor[index].actif = "Oui"
                 } else {
@@ -61,12 +77,16 @@
             
             }
 
-            console.log(this.supervisor);
-
           },
           methods: {
             rowClick(item, row) {
                 let URL = `/supervisor_form/${item.id}`
+                window.location = URL;
+                window.location.href = URL;
+                window.location.assign(URL);
+            },
+            addSupervisor() {
+                let URL = `/add_supervisor`
                 window.location = URL;
                 window.location.href = URL;
                 window.location.assign(URL);

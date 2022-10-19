@@ -74,6 +74,12 @@ export default class API {
     }
   }
 
+  // to insert Supervisor into database
+  static async addSupervisor(data) {
+    const res = await axios.post(`${url}/add_supervisor/`, data);
+    return res.data;
+}
+
   // Updates supervisor form info by ID
   static async updateSupervisorFormInfo(id, post) {
     try {
