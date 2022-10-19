@@ -48,39 +48,44 @@ export default {
 
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
 
-                if (this.supervisor[index].date_activation !== this.supervisor[index].date_desactivation) {
-                  this.supervisor[index].date_activation = new Date(this.supervisor[index].date_activation);
-                  this.supervisor[index].date_activation.setDate(this.supervisor[index].date_activation.getDate());
-                  this.supervisor[index].date_activation = this.supervisor[index].date_activation.toLocaleDateString("fr-CA", options);
+    for (let index = 0; index < this.supervisor.length; index++) {
 
-                  this.supervisor[index].date_desactivation = new Date(this.supervisor[index].date_desactivation);
-                  this.supervisor[index].date_desactivation.setDate(this.supervisor[index].date_desactivation.getDate());
-                  this.supervisor[index].date_desactivation = this.supervisor[index].date_desactivation.toLocaleDateString("fr-CA", options);
-                }
-                else {
-                  this.supervisor[index].date_activation = new Date(this.supervisor[index].date_activation);
-                  this.supervisor[index].date_activation.setDate(this.supervisor[index].date_activation.getDate());
-                  this.supervisor[index].date_activation = this.supervisor[index].date_activation.toLocaleDateString("fr-CA", options);
+        if (this.supervisor[index].date_activation !== this.supervisor[index].date_desactivation) {
+          this.supervisor[index].date_activation = new Date(this.supervisor[index].date_activation);
+          this.supervisor[index].date_activation.setDate(this.supervisor[index].date_activation.getDate());
+          this.supervisor[index].date_activation = this.supervisor[index].date_activation.toLocaleDateString("fr-CA", options);
 
-                  this.supervisor[index].date_desactivation = "Non applicable";
-                }
+          this.supervisor[index].date_desactivation = new Date(this.supervisor[index].date_desactivation);
+          this.supervisor[index].date_desactivation.setDate(this.supervisor[index].date_desactivation.getDate());
+          this.supervisor[index].date_desactivation = this.supervisor[index].date_desactivation.toLocaleDateString("fr-CA", options);
+        }
+        else {
+          this.supervisor[index].date_activation = new Date(this.supervisor[index].date_activation);
+          this.supervisor[index].date_activation.setDate(this.supervisor[index].date_activation.getDate());
+          this.supervisor[index].date_activation = this.supervisor[index].date_activation.toLocaleDateString("fr-CA", options);
 
-                if (this.supervisor[index].actif === true) {
-                    this.supervisor[index].actif = "Oui"
-                } else {
-                    this.supervisor[index].actif = "Non"
-                };
+          this.supervisor[index].date_desactivation = "Non applicable";
+        }
+
+        if (this.supervisor[index].actif === true) {
+            this.supervisor[index].actif = "Oui"
+        } else {
+            this.supervisor[index].actif = "Non"
+        };
+
+        this.supervisor[index].employe = this.supervisor[index].employe.nom + ", " + this.supervisor[index].employe.prenom;
+
+    }
+  },
             
-            }
+  methods: {
+    rowClick(item, row) {
+    this.$router.push({ name: 'supervisor_form', params: { id: item.id } });
+      },
+    addSupervisor() {
+      this.$router.push({ name: 'add_supervisor' });
+    },
+  },
+}
 
-          },
-          methods: {
-            rowClick(item, row) {
-            this.$router.push({ name: 'supervisor_form', params: { id: item.id } });
-              },
-            addSupervisor() {
-              this.$router.push({ name: 'add_supervisor' });
-            };
-          };
-        
 </script>
