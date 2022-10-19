@@ -247,6 +247,7 @@
                 :show="show_add_comment"
                 :no-etudiant="student.no_etudiant"
                 :remark-codes="remark_codes"
+                :code-session="semester.code"
                 method="publish"
                 @cancel="show_add_comment = false"
               />

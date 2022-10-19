@@ -37,11 +37,11 @@ model TypeEmploye {
 
 model Groupe {
   id                Int                 @id @default(autoincrement())
-  no_groupe         Int
-  employe           Employe             @relation(fields: [no_employe], references: [no_employe])
-  no_employe        Int
-  cours             Cours               @relation(fields: [code_cours], references: [code])
-  code_cours        String              @db.VarChar(10)
+  no_groupe         Int?                @default(0)
+  employe           Employe?            @relation(fields: [no_employe], references: [no_employe])
+  no_employe        Int?
+  cours             Cours?              @relation(fields: [code_cours], references: [code])
+  code_cours        String?             @db.VarChar(10)
   session           Session             @relation(fields: [code_session], references: [code])
   code_session      String              @db.VarChar(5)
   Commentaire       Commentaire[]

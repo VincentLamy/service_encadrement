@@ -92,6 +92,9 @@ export default {
     noEtudiant: {
       type: Number,
     },
+    codeSession: {
+      type: String,
+    },
     remarkCodes: {
       type: Array,
     },
@@ -103,10 +106,7 @@ export default {
       default: () => ({
         titre: "",
         contenu: "",
-        code_remarque: {
-          id: 0,
-          code: "",
-        }
+        id_code_remarque: 0,
       }),
     },
   },
@@ -133,7 +133,7 @@ export default {
           ],
         },
         remark_id: {
-          value: this.baseComment.code_remarque,
+          value: this.baseComment.id_code_remarque,
           rules: [(v) => !!v || "Un code de remarque doit être choisi"],
         },
       },
@@ -145,7 +145,7 @@ export default {
       await API.addComment({
         no_etudiant: this.noEtudiant,
         no_employe: 6, // TODO - Mettre le no_employe de l'utilisateur
-        id_groupe: 4, // TODO - Mettre l'id_groupe à null, marche pas pour le moment
+        code_session: this.codeSession,
         id_code_remarque: this.comment.remark_id.value,
         titre: this.comment.title.value,
         contenu: this.comment.description.value,
@@ -167,9 +167,9 @@ export default {
     },
     async cancelComment() {
       this.$emit("cancel");
-      this.comment.title.value = "";
-      this.comment.description.value = "";
-      this.comment.remark_id.value = "";
+      this.comment.title.value = (this.method === "publish" ? "" : this.baseComment.titre);
+      this.comment.description.value = (this.method === "publish" ? "" : this.baseComment.contenu);
+      this.comment.remark_id.value = (this.method === "publish" ? "" : this.baseComment.id_code_remarque);
     },
   },
 };
