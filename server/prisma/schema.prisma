@@ -56,10 +56,10 @@ model Utilisateur {
   no_employe          Int
   type_utilisateur    TypeUtilisateur @relation(fields: [id_type_utilisateur], references: [id])
   id_type_utilisateur Int
-  courriel            String          @db.VarChar(255)
+  courriel            String          @unique @db.VarChar(255)
   mdp                 String          @db.VarChar(255)
-  date_activation     DateTime
-  date_desactivation  DateTime
+  date_activation     DateTime        @default(now())
+  date_desactivation  DateTime        
   actif               Boolean
 }
 

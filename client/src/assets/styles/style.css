@@ -24,6 +24,12 @@ h1, h2 {
     padding: 0;
 }
 
+#loginForm {
+    margin: auto;
+    width: 30%;
+}
+
+
 /* ==========================================================================
 Tableau Liste étudiante
 ========================================================================== */
@@ -50,4 +56,13 @@ Tableau Liste étudiante
 
 .outlined {
     border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+#connection_error {
+    position: absolute;
+    visibility: hidden;
+    width: 450px;
+    top: 50px;
+    left: calc(50% - (450px / 2));
+    z-index: 1;
 }

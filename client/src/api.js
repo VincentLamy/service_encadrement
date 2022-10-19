@@ -12,11 +12,6 @@ export default class API {
       return err;
     }
   }
-
-  static async getAllStudent() {
-    const res = await axios.get(`${url}/student_list`);
-    return res.data;
-  }
   
   // To insert a sondage mathematiques
   static async addSondageMathematiques(sondageMathematiques) {
@@ -55,5 +50,11 @@ export default class API {
     catch (err) {
       return err;
     }
+  }
+
+  // Vérifie si l'utilisateur existe.
+  static async getUser(username, password) {
+    const res = await axios.post(`${url}/get_user`, { "username": username, "password": password });
+    return res.data;
   }
 }

@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import DatetimePicker from 'vuetify-datetime-picker'
-import HomeView from '../views/HomeView.vue'
+import LoginView from '../views/LoginView.vue'
 import CSVImportView from '../views/CSVImportView.vue'
 import StudentListView from '../views/StudentListView.vue'
 import StudentFormView from '../views/StudentFormView.vue'
@@ -12,8 +12,8 @@ Vue.use(DatetimePicker)
 const routes = [
   {
     path: '/',
-    name: 'home',
-    component: HomeView
+    name: 'login',
+    component: LoginView
   },
   {
     path: '/csv_import',

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const API = require("../controllers/api");
 const Student = require("../controllers/student");
+const Login = require("../controllers/login");
 
 // Students
 router.get("/student_list", Student.getAllStudent);
@@ -19,5 +20,10 @@ router.post("/sondageMathematiques", API.addSondageMathematiques);
 
 // Internationals
 router.post("/etudiantsInternationaux", API.addEtudiantsInternationaux);
+
+// Login
+router.post("/get_user", Login.get_user);
+
+
 
 module.exports = router;

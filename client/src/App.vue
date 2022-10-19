@@ -38,6 +38,9 @@
 </template>
 
 <script>
+  import VueSession from 'vue-session';
+  // Vue.use(VueSession);
+
   export default {
     data: () => ({
       drawer: null,
@@ -50,6 +53,20 @@
         { name: "Vincent Lamy", programme: "Programmation" } // TODO Modifier pour aller chercher les données dans la BD
       ]
     }),
+    beforeCreate: function () {
+      if (!this.$session.exists()) {
+        this.$router.push('/')
+      }
+      else {
+        console.log(this.$session)
+      }
+    },
+    methods: {
+      logout: function () {
+        this.$session.destroy()
+        this.$router.push('/')
+      }
+    }
   }
 </script>
 
