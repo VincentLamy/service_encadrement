@@ -25,32 +25,28 @@
     </v-container>
   </template>
     
-  <script>
-    import API from '../api';
-  
-      export default {
-        name: "supervisor_list",
-        data() {
-          return {
-              headers: [
-                { text: 'Adresse courriel',               value: 'courriel' },
-                { text: 'Nom complet',                    value: 'employe' },
-                { text: 'Actif',                          value: 'actif' },
-                { text: 'Date d\'activation',             value: 'date_activation' },
-                { text: 'Date de désactivation',          value: 'date_desactivation' }
-              ],
-              supervisor: []
-            };   
-          },
-          async created() {
-            const response = await API.getAllSupervisor();
-            this.supervisor = response;
+<script>
+import API from '../api';
 
-            const options = { year: 'numeric', month: 'long', day: 'numeric' };
-  
-            for (let index = 0; index < this.supervisor.length; index++) {
+export default {
+  name: "supervisor_list",
+  data() {
+    return {
+      headers: [
+        { text: 'Adresse courriel', value: 'courriel' },
+        { text: 'Nom complet', value: 'employe' },
+        { text: 'Actif', value: 'actif' },
+        { text: 'Date d\'activation', value: 'date_activation' },
+        { text: 'Date de désactivation', value: 'date_desactivation' }
+      ],
+      supervisor: []
+    };
+  },
+  async created() {
+    const response = await API.getAllSupervisor();
+    this.supervisor = response;
 
-                this.supervisor[index].employe = this.supervisor[index].employe.nom + ", " + this.supervisor[index].employe.prenom;
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
 
                 if (this.supervisor[index].date_activation !== this.supervisor[index].date_desactivation) {
                   this.supervisor[index].date_activation = new Date(this.supervisor[index].date_activation);
@@ -80,17 +76,11 @@
           },
           methods: {
             rowClick(item, row) {
-                let URL = `/supervisor_form/${item.id}`
-                window.location = URL;
-                window.location.href = URL;
-                window.location.assign(URL);
-            },
+            this.$router.push({ name: 'supervisor_form', params: { id: item.id } });
+              },
             addSupervisor() {
-                let URL = `/add_supervisor`
-                window.location = URL;
-                window.location.href = URL;
-                window.location.assign(URL);
-            }
-          }, 
-        }
-    </script>
+              this.$router.push({ name: 'add_supervisor' });
+            };
+          };
+        
+</script>
