@@ -27,7 +27,6 @@ export default {
   },
   methods: {
     updateData() {
-      console.log("caught event, emitting from CommentList");
       this.$emit("update-data");
     },
   },

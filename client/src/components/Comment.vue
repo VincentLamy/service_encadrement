@@ -38,9 +38,11 @@
       <v-comment-input
         :show="editing"
         :remark-codes="remarkCodes"
-        method="edit"
         :id-edited-comment="data.id"
+        :base-comment="data"
+        method="edit"
         @updated="updateData"
+        @cancel="editing = false"
       />
     </v-row>
   </v-list-item>
@@ -83,7 +85,6 @@ export default {
       this.editing = !this.editing;
     },
     updateData() {
-      console.log("caught event, emitting from Comment");
       this.$emit("updated");
     },
   },

@@ -1,6 +1,20 @@
 <template>
   <v-card v-if="show" class="mb-5" style="width: 100%" outlined>
     <v-card-text>
+      <v-alert
+        v-model="success"
+        dense
+        text
+        type="success"
+        dismissible
+      >
+        Le commentaire a été <strong>modifié</strong> avec succès!
+      </v-alert>
+      <v-progress-linear
+        v-if="loading"
+        indeterminate
+        class="mb-4"
+      ></v-progress-linear>
       <v-form>
         <v-row>
           <v-col cols="8">
@@ -84,12 +98,25 @@ export default {
     idEditedComment: {
       type: Number,
     },
+    baseComment: {
+      type: Object,
+      default: () => ({
+        titre: "",
+        contenu: "",
+        code_remarque: {
+          id: 0,
+          code: "",
+        }
+      }),
+    },
   },
   data() {
     return {
+      loading: false,
+      success: false,
       comment: {
         title: {
-          value: "",
+          value: this.baseComment.titre,
           rules: [
             (v) => !!v || "Un titre est requis",
             (v) =>
@@ -97,7 +124,7 @@ export default {
           ],
         },
         description: {
-          value: "",
+          value: this.baseComment.contenu,
           rules: [
             (v) => !!v || "Une description est requise",
             (v) =>
@@ -106,7 +133,7 @@ export default {
           ],
         },
         remark_id: {
-          value: null,
+          value: this.baseComment.code_remarque,
           rules: [(v) => !!v || "Un code de remarque doit être choisi"],
         },
       },
@@ -114,6 +141,7 @@ export default {
   },
   methods: {
     async addComment() {
+      this.loading = true;
       await API.addComment({
         no_etudiant: this.noEtudiant,
         no_employe: 6, // TODO - Mettre le no_employe de l'utilisateur
@@ -123,22 +151,25 @@ export default {
         contenu: this.comment.description.value,
       });
       this.$emit("published");
+      this.loading = false;
     },
     async editComment() {
+      this.loading = true;
       await API.editComment({
         id: this.idEditedComment,
         titre: this.comment.title.value,
         contenu: this.comment.description.value,
         id_code_remarque: this.comment.remark_id.value,
       });
-      console.log("emitting from CommentInput");
       this.$emit("updated");
+      this.loading = false;
+      this.success = true;
     },
     async cancelComment() {
-      this.show_add_comment = false;
-      this.comment.title.value = null;
-      this.comment.description.value = null;
-      this.comment.remark_id.value = null;
+      this.$emit("cancel");
+      this.comment.title.value = "";
+      this.comment.description.value = "";
+      this.comment.remark_id.value = "";
     },
   },
 };

@@ -248,6 +248,7 @@
                 :no-etudiant="student.no_etudiant"
                 :remark-codes="remark_codes"
                 method="publish"
+                @cancel="show_add_comment = false"
               />
 
               <!-- Commentaires de la session -->
@@ -524,7 +525,6 @@ export default {
           ),
         };
       });
-      console.log(this.semesters[0].student_groups[0].groupe.Commentaire);
     },
   },
   async created() {

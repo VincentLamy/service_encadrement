@@ -32,6 +32,7 @@ module.exports = class Comment {
 
   static async editComment(req, res) {
     const { id, titre, contenu, id_code_remarque } = req.body;
+    
     try {
       await prisma.commentaire.update({
         where: {
@@ -48,6 +49,6 @@ module.exports = class Comment {
         .json({ message: "Le commentaire a été modifié avec succès" });
     } catch (err) {
       res.status(400).json({ message: err.message });
-    }
+    };
   }
 };
