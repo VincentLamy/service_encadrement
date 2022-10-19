@@ -1,21 +1,19 @@
 <template>
   <v-card v-if="show" class="mb-5" style="width: 100%" outlined>
     <v-card-text>
-      <v-alert
-        v-model="success"
-        dense
-        text
-        type="success"
-        dismissible
-      >
-        Le commentaire a été <strong>modifié</strong> avec succès!
+      <v-alert v-model="success" dense text type="success" dismissible>
+        Le commentaire a été
+        <strong>
+          {{ method === "publish" ? "publié" : "modifié" }}
+        </strong>
+        avec succès!
       </v-alert>
       <v-progress-linear
         v-if="loading"
         indeterminate
         class="mb-4"
       ></v-progress-linear>
-      <v-form>
+      <v-form ref="commentForm">
         <v-row>
           <v-col cols="8">
             <v-text-field
@@ -141,6 +139,9 @@ export default {
   },
   methods: {
     async addComment() {
+      // Cancel if form isn't valid
+      if (!this.$refs.commentForm.validate()) return;
+
       this.loading = true;
       await API.addComment({
         no_etudiant: this.noEtudiant,
@@ -152,8 +153,12 @@ export default {
       });
       this.$emit("published");
       this.loading = false;
+      this.success = true;
     },
     async editComment() {
+      // Cancel if form isn't valid
+      if (!this.$refs.commentForm.validate()) return;
+
       this.loading = true;
       await API.editComment({
         id: this.idEditedComment,
@@ -167,9 +172,12 @@ export default {
     },
     async cancelComment() {
       this.$emit("cancel");
-      this.comment.title.value = (this.method === "publish" ? "" : this.baseComment.titre);
-      this.comment.description.value = (this.method === "publish" ? "" : this.baseComment.contenu);
-      this.comment.remark_id.value = (this.method === "publish" ? "" : this.baseComment.id_code_remarque);
+      this.comment.title.value =
+        this.method === "publish" ? "" : this.baseComment.titre;
+      this.comment.description.value =
+        this.method === "publish" ? "" : this.baseComment.contenu;
+      this.comment.remark_id.value =
+        this.method === "publish" ? "" : this.baseComment.id_code_remarque;
     },
   },
 };
