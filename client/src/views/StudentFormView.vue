@@ -250,58 +250,21 @@
                 :code-session="semester.code"
                 method="publish"
                 @cancel="show_add_comment = false"
+                @published="getData"
               />
 
               <!-- Commentaires de la session -->
               <h4 class="d-flex justify-center my-4">
                 Commentaires de la session
               </h4>
-
-              <v-list class="px-5" outlined>
-                <template v-for="k in 3">
-                  <v-list-item class="py-3">
-                    <v-row class="align-center">
-                      <!-- Titre + commentaire -->
-                      <v-list-item-content :key="k">
-                        <v-list-item-title>
-                          <span class="black--text">
-                            Commentaire sur la session #{{ k }}
-                          </span>
-                        </v-list-item-title>
-                        <v-list-item-subtitle>
-                          Informations additionnelles
-                        </v-list-item-subtitle>
-                      </v-list-item-content>
-
-                      <!-- Catégories du commentaire + date de publication -->
-                      <v-list-item-action
-                        class="d-flex flex-column justify-space-between"
-                      >
-                        <v-list-item-action-text>
-                          <div class="d-flex justify-end">
-                            <v-chip class="ms-1 font-weight-bold" x-small>
-                              AUTN
-                            </v-chip>
-                          </div>
-                          <p class="ma-0 black--text text-end">
-                            Lapalme, Jocelyn
-                            <span class="ms-4 grey--text"
-                              >24 sept. 2021 10:15</span
-                            >
-                          </p>
-                        </v-list-item-action-text>
-                      </v-list-item-action>
-
-                      <!-- Boutons de modification -->
-                      <v-btn class="ms-2" text icon>
-                        <v-icon>mdi-pencil-outline</v-icon>
-                      </v-btn>
-                    </v-row>
-                  </v-list-item>
-                  <v-divider v-if="k < 3" :key="k"></v-divider>
-                </template>
-              </v-list>
-
+              <v-card class="px-5" outlined>
+                <v-comment-list
+                  :data="semester.comments"
+                  :remark-codes="remark_codes"
+                  :editable-if="() => true"
+                  @update-data="getData"
+                />
+              </v-card>
               <!-- Commentaires d'un cours -->
               <h4 class="d-flex justify-center my-4">
                 Commentaires sur les cours de l'étudiant
@@ -510,7 +473,7 @@ export default {
 
       // Get all remark codes
       this.remark_codes = await API.getRemarkCode();
-      
+
       // Get all semesters the student is in
       let duplicate_semesters = this.student.TA_EtudiantGroupe.map(
         (x) => x.groupe.session
@@ -518,11 +481,15 @@ export default {
       this.semesters = Array.from(
         new Set(duplicate_semesters.map((s) => s.id))
       ).map((id) => {
+        const code = duplicate_semesters.find((s) => s.id === id).code;
         return {
           id: id,
-          code: duplicate_semesters.find((s) => s.id === id).code,
+          code: code,
           student_groups: this.student.TA_EtudiantGroupe.filter(
             (g) => g.groupe.session.id === id
+          ),
+          comments: this.student.semester_comments.filter(
+            (s) => s.groupe.code_session === code
           ),
         };
       });

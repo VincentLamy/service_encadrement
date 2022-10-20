@@ -27,7 +27,7 @@ module.exports = class Comment {
           },
         },
       }));
-      
+
     // Créer le commentaire associé à une session
     try {
       await prisma.commentaire.create({

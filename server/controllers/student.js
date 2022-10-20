@@ -44,7 +44,9 @@ module.exports = class Student {
 
   static async getStudentFormInfo(req, res) {
     const no_etudiant = req.params.no_etudiant;
-    const students = await prisma.Etudiant.findUnique({
+
+    // Get all necessary info for student form
+    const student = await prisma.Etudiant.findUnique({
       where: {
         no_etudiant: Number(no_etudiant),
       },
@@ -63,6 +65,9 @@ module.exports = class Student {
                   where: {
                     no_etudiant: Number(no_etudiant),
                   },
+                  orderBy: {
+                    date_creation: "desc",
+                  },
                   include: {
                     employe: true,
                     code_remarque: true,
@@ -75,6 +80,26 @@ module.exports = class Student {
         },
       },
     });
-    res.json(students);
+
+    // Get semester comments for all semesters student has classes in
+    const semester_comments = await prisma.commentaire.findMany({
+      where: {
+        no_etudiant: Number(no_etudiant),
+        groupe: {
+          no_groupe: 0,
+        },
+      },
+      orderBy: {
+        date_creation: "desc",
+      },
+      include: {
+        groupe: true,
+        employe: true,
+        code_remarque: true,
+      }
+    });
+    student.semester_comments = semester_comments;
+
+    res.json(student);
   }
 };
