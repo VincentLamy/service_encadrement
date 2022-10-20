@@ -15,7 +15,7 @@
       ></v-progress-linear>
       <v-form ref="commentForm">
         <v-row>
-          <v-col cols="8">
+          <v-col md="8" cols="12">
             <v-text-field
               class="mb-3"
               label="Titre"
@@ -35,7 +35,7 @@
               required
             />
           </v-col>
-          <v-col cols="4">
+          <v-col md="4" cols="12">
             <v-select
               class="mb-3"
               label="Remarque"
