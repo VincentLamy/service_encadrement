@@ -51,6 +51,15 @@ module.exports = class Student {
         no_etudiant: Number(no_etudiant),
       },
       include: {
+        FormulaireMath: {
+          include: {
+            TA_Math: {
+              include: {
+                cours_math: true,
+              },
+            },
+          },
+        },        
         TA_EtudiantGroupe: {
           include: {
             groupe: {
