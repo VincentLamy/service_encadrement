@@ -1,15 +1,29 @@
 <template>
-  <v-container>
-    <h2>Liste des responsables</h2>
-
-    <v-data-table id="list_student" :headers="headers" :items="supervisor" :sort-desc="[false, true]"
-      class="elevation-1" @click:row="rowClick">
-      <!-- <template v-slot:header.student_critical_state>
+    <v-container>
+  
+        <h2>Liste des responsables</h2>
+  
+        <v-data-table
+        id="list_student"
+        :headers="headers"
+        :items="supervisor"
+        :sort-desc="[false, true]"
+        class="elevation-1"
+        @click:row="rowClick"
+        >
+          <!-- <template v-slot:header.student_critical_state>
             <v-icon color="red">mdi-alert-circle</v-icon>
           </template> -->
-    </v-data-table>
-  </v-container>
-</template>
+      </v-data-table>
+      <v-btn 
+          color="primary" 
+          dark 
+          @click="addSupervisor()"
+        >
+          Ajouter un responsable d'encadrement
+        </v-btn>
+    </v-container>
+  </template>
     
 <script>
 import API from '../api';
@@ -36,32 +50,42 @@ export default {
 
     for (let index = 0; index < this.supervisor.length; index++) {
 
-      this.supervisor[index].employe = this.supervisor[index].employe.nom + ", " + this.supervisor[index].employe.prenom;
+        if (this.supervisor[index].date_activation !== this.supervisor[index].date_desactivation) {
+          this.supervisor[index].date_activation = new Date(this.supervisor[index].date_activation);
+          this.supervisor[index].date_activation.setDate(this.supervisor[index].date_activation.getDate());
+          this.supervisor[index].date_activation = this.supervisor[index].date_activation.toLocaleDateString("fr-CA", options);
 
-      this.supervisor[index].date_activation = new Date(this.supervisor[index].date_activation);
-      this.supervisor[index].date_activation.setDate(this.supervisor[index].date_activation.getDate() + 1);
-      this.supervisor[index].date_activation = this.supervisor[index].date_activation.toLocaleDateString("fr-CA", options);
+          this.supervisor[index].date_desactivation = new Date(this.supervisor[index].date_desactivation);
+          this.supervisor[index].date_desactivation.setDate(this.supervisor[index].date_desactivation.getDate());
+          this.supervisor[index].date_desactivation = this.supervisor[index].date_desactivation.toLocaleDateString("fr-CA", options);
+        }
+        else {
+          this.supervisor[index].date_activation = new Date(this.supervisor[index].date_activation);
+          this.supervisor[index].date_activation.setDate(this.supervisor[index].date_activation.getDate());
+          this.supervisor[index].date_activation = this.supervisor[index].date_activation.toLocaleDateString("fr-CA", options);
 
-      this.supervisor[index].date_desactivation = new Date(this.supervisor[index].date_desactivation);
-      this.supervisor[index].date_desactivation.setDate(this.supervisor[index].date_desactivation.getDate() + 1);
-      this.supervisor[index].date_desactivation = this.supervisor[index].date_desactivation.toLocaleDateString("fr-CA", options);
+          this.supervisor[index].date_desactivation = "Non applicable";
+        }
 
+        if (this.supervisor[index].actif === true) {
+            this.supervisor[index].actif = "Oui"
+        } else {
+            this.supervisor[index].actif = "Non"
+        };
 
-      if (this.supervisor[index].actif === true) {
-        this.supervisor[index].actif = "Oui"
-      } else {
-        this.supervisor[index].actif = "Non"
-      };
+        this.supervisor[index].employe = this.supervisor[index].employe.nom + ", " + this.supervisor[index].employe.prenom;
 
     }
-
-    console.log(this.supervisor);
-
   },
+            
   methods: {
     rowClick(item, row) {
-      this.$router.push({ name: 'supervisor_form', params: { id: item.id } });
-    }
+    this.$router.push({ name: 'supervisor_form', params: { id: item.id } });
+      },
+    addSupervisor() {
+      this.$router.push({ name: 'add_supervisor' });
+    },
   },
 }
+
 </script>

@@ -53,7 +53,7 @@ model Groupe {
 model Utilisateur {
   id                  Int             @id @default(autoincrement())
   employe             Employe         @relation(fields: [no_employe], references: [no_employe])
-  no_employe          Int
+  no_employe          Int             @unique
   type_utilisateur    TypeUtilisateur @relation(fields: [id_type_utilisateur], references: [id])
   id_type_utilisateur Int
   courriel            String          @db.VarChar(255)
@@ -61,6 +61,7 @@ model Utilisateur {
   date_activation     DateTime
   date_desactivation  DateTime        
   actif               Boolean
+
 }
 
 model TypeUtilisateur {
