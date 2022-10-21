@@ -4,7 +4,7 @@
       <v-comment
         :data="comment"
         :remark-codes="remarkCodes"
-        editable
+        :editable="editableIf()"
         @updated="updateData"
       />
       <v-divider v-if="i < data.length - 1" :key="i"></v-divider>
@@ -23,6 +23,10 @@ export default {
     },
     remarkCodes: {
       type: Array,
+    },
+    editableIf: {
+      type: Function,
+      default: () => false,
     },
   },
   methods: {

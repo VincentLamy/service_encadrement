@@ -6,17 +6,35 @@ module.exports = class Comment {
     const {
       no_etudiant,
       no_employe,
-      id_groupe,
+      code_session,
       id_code_remarque,
       titre,
       contenu,
     } = req.body;
+
+    // Sélectionner le groupe représentant une session s'il existe, sinon le créer.
+    const groupe =
+      (await prisma.groupe.findFirst({
+        where: {
+          no_groupe: 0,
+          code_session: code_session,
+        },
+      })) ||
+      (await prisma.groupe.create({
+        data: {
+          session: {
+            connect: { code: code_session },
+          },
+        },
+      }));
+
+    // Créer le commentaire associé à une session
     try {
       await prisma.commentaire.create({
         data: {
           no_etudiant: Number(no_etudiant),
           no_employe: Number(no_employe),
-          id_groupe: Number(id_groupe),
+          id_groupe: groupe.id,
           id_code_remarque: id_code_remarque,
           titre: titre,
           contenu: contenu,
@@ -32,7 +50,7 @@ module.exports = class Comment {
 
   static async editComment(req, res) {
     const { id, titre, contenu, id_code_remarque } = req.body;
-    
+
     try {
       await prisma.commentaire.update({
         where: {
@@ -49,6 +67,6 @@ module.exports = class Comment {
         .json({ message: "Le commentaire a été modifié avec succès" });
     } catch (err) {
       res.status(400).json({ message: err.message });
-    };
+    }
   }
 };

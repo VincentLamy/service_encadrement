@@ -28,9 +28,9 @@ CREATE TABLE `TypeEmploye` (
 -- CreateTable
 CREATE TABLE `Groupe` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `no_groupe` INTEGER NOT NULL,
-    `no_employe` INTEGER NOT NULL,
-    `code_cours` VARCHAR(10) NOT NULL,
+    `no_groupe` INTEGER NULL DEFAULT 0,
+    `no_employe` INTEGER NULL,
+    `code_cours` VARCHAR(10) NULL,
     `code_session` VARCHAR(5) NOT NULL,
 
     UNIQUE INDEX `Groupe_no_groupe_code_cours_code_session_key`(`no_groupe`, `code_cours`, `code_session`),
@@ -231,10 +231,10 @@ CREATE TABLE `TA_EtudiantPaysStatut` (
 ALTER TABLE `Employe` ADD CONSTRAINT `Employe_id_type_employe_fkey` FOREIGN KEY (`id_type_employe`) REFERENCES `TypeEmploye`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Groupe` ADD CONSTRAINT `Groupe_no_employe_fkey` FOREIGN KEY (`no_employe`) REFERENCES `Employe`(`no_employe`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Groupe` ADD CONSTRAINT `Groupe_no_employe_fkey` FOREIGN KEY (`no_employe`) REFERENCES `Employe`(`no_employe`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Groupe` ADD CONSTRAINT `Groupe_code_cours_fkey` FOREIGN KEY (`code_cours`) REFERENCES `Cours`(`code`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Groupe` ADD CONSTRAINT `Groupe_code_cours_fkey` FOREIGN KEY (`code_cours`) REFERENCES `Cours`(`code`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Groupe` ADD CONSTRAINT `Groupe_code_session_fkey` FOREIGN KEY (`code_session`) REFERENCES `Session`(`code`) ON DELETE RESTRICT ON UPDATE CASCADE;

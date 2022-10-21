@@ -1,23 +1,21 @@
 <template>
   <v-card v-if="show" class="mb-5" style="width: 100%" outlined>
     <v-card-text>
-      <v-alert
-        v-model="success"
-        dense
-        text
-        type="success"
-        dismissible
-      >
-        Le commentaire a été <strong>modifié</strong> avec succès!
+      <v-alert v-model="success" dense text type="success" dismissible>
+        Le commentaire a été
+        <strong>
+          {{ method === "publish" ? "publié" : "modifié" }}
+        </strong>
+        avec succès!
       </v-alert>
       <v-progress-linear
         v-if="loading"
         indeterminate
         class="mb-4"
       ></v-progress-linear>
-      <v-form>
+      <v-form ref="commentForm">
         <v-row>
-          <v-col cols="8">
+          <v-col md="8" cols="12">
             <v-text-field
               class="mb-3"
               label="Titre"
@@ -37,7 +35,7 @@
               required
             />
           </v-col>
-          <v-col cols="4">
+          <v-col md="4" cols="12">
             <v-select
               class="mb-3"
               label="Remarque"
@@ -92,6 +90,9 @@ export default {
     noEtudiant: {
       type: Number,
     },
+    codeSession: {
+      type: String,
+    },
     remarkCodes: {
       type: Array,
     },
@@ -103,10 +104,7 @@ export default {
       default: () => ({
         titre: "",
         contenu: "",
-        code_remarque: {
-          id: 0,
-          code: "",
-        }
+        id_code_remarque: 0,
       }),
     },
   },
@@ -133,7 +131,7 @@ export default {
           ],
         },
         remark_id: {
-          value: this.baseComment.code_remarque,
+          value: this.baseComment.id_code_remarque,
           rules: [(v) => !!v || "Un code de remarque doit être choisi"],
         },
       },
@@ -141,19 +139,26 @@ export default {
   },
   methods: {
     async addComment() {
+      // Cancel if form isn't valid
+      if (!this.$refs.commentForm.validate()) return;
+
       this.loading = true;
       await API.addComment({
         no_etudiant: this.noEtudiant,
         no_employe: 6, // TODO - Mettre le no_employe de l'utilisateur
-        id_groupe: 4, // TODO - Mettre l'id_groupe à null, marche pas pour le moment
+        code_session: this.codeSession,
         id_code_remarque: this.comment.remark_id.value,
         titre: this.comment.title.value,
         contenu: this.comment.description.value,
       });
       this.$emit("published");
       this.loading = false;
+      this.success = true;
     },
     async editComment() {
+      // Cancel if form isn't valid
+      if (!this.$refs.commentForm.validate()) return;
+
       this.loading = true;
       await API.editComment({
         id: this.idEditedComment,
@@ -167,9 +172,12 @@ export default {
     },
     async cancelComment() {
       this.$emit("cancel");
-      this.comment.title.value = "";
-      this.comment.description.value = "";
-      this.comment.remark_id.value = "";
+      this.comment.title.value =
+        this.method === "publish" ? "" : this.baseComment.titre;
+      this.comment.description.value =
+        this.method === "publish" ? "" : this.baseComment.contenu;
+      this.comment.remark_id.value =
+        this.method === "publish" ? "" : this.baseComment.id_code_remarque;
     },
   },
 };

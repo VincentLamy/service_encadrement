@@ -4,9 +4,9 @@
       <!-- Titre + commentaire -->
       <v-list-item-content>
         <v-list-item-title>
-          <span class="black--text"> {{ data.titre }} </span>
+          <span class="black--text text-wrap"> {{ data.titre }} </span>
         </v-list-item-title>
-        <v-list-item-subtitle>
+        <v-list-item-subtitle class="text-wrap">
           {{ data.contenu }}
         </v-list-item-subtitle>
       </v-list-item-content>
