@@ -130,21 +130,21 @@
           <v-row class="mt-10" no-gutters>
             <!-- Heure de début -->
             <v-col class="px-3" sm="6" cols="12">
-              <v-datetime-picker
+              <v-text-field
                 label="Heure de début"
                 :value="student.FormulaireMath[0].heure_debut"
                 outlined
-                disabled
+                readonly
               />
             </v-col>
 
             <!-- Heure de fin -->
             <v-col class="px-3" sm="6" cols="12">
-              <v-datetime-picker
+              <v-text-field
                 label="Heure de fin"
                 :value="student.FormulaireMath[0].heure_fin"
                 outlined
-                disabled
+                readonly
               />
             </v-col>
           </v-row>
