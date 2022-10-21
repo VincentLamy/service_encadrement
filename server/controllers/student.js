@@ -65,6 +65,7 @@ module.exports = class Student {
                 },
               },
             },
+            code_remarque_note_finale: true,
           },
         },
       });

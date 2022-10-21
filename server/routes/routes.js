@@ -3,6 +3,10 @@ const router = express.Router();
 const API = require("../controllers/api");
 const Student = require("../controllers/student");
 const Supervisor = require("../controllers/supervisor");
+const Course = require("../controllers/course");
+const Comment = require("../controllers/comment");
+const RemarkCode = require("../controllers/remark_code");
+
 const multer = require('multer');
 
 let upload = multer().single();
@@ -22,6 +26,16 @@ router.get("/next_supervisor_form/:id", upload, Supervisor.getNextSupervisor);
 // Semesters
 router.post("/addSession", API.addSession);
 router.get("/getSession", API.getSession);
+
+// Courses
+router.patch("/changeCourseName", Course.changeCourseName);
+
+// Comments
+router.post("/addComment", Comment.addComment);
+router.patch("/editComment", Comment.editComment);
+
+// Remark codes
+router.get("/getRemarkCodes", RemarkCode.getRemarkCode);
 
 // Reports
 router.post("/rapportEncadrement", API.addRapportEncadrement);

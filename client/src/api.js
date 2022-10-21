@@ -59,8 +59,13 @@ export default class API {
 
   // Gets all responsable
   static async getAllSupervisor() {
-    const res = await axios.get(`${url}/supervisor_list`);
-    return res.data;
+    try {
+      const res = await axios.get(`${url}/supervisor_list`);
+      return res.data;
+    }
+    catch (err) {
+      return err;
+    }
   }
 
   // Gets supervisor form info by ID
@@ -76,9 +81,14 @@ export default class API {
 
   // to insert Supervisor into database
   static async addSupervisor(data) {
-    const res = await axios.post(`${url}/add_supervisor/`, data);
-    return res.data;
-}
+    try {
+      const res = await axios.post(`${url}/add_supervisor/`, data);
+      return res.data;
+    }
+    catch (err) {
+      return err;
+    }
+  }
 
   // Updates supervisor form info by ID
   static async updateSupervisorFormInfo(id, post) {
@@ -106,6 +116,50 @@ export default class API {
   static async getNextSupervisor(id, post) {
     try {
       const res = await axios.get(`${url}/next_supervisor_form/${id}`, post)
+      return res.data;
+    }
+    catch (err) {
+      return err;
+    }
+  }
+
+  // Update course name
+  static async changeCourseName(course) {
+    try {
+      const res = await axios.patch(`${url}/changeCourseName`, course);
+      return res.data;
+    }
+    catch (err) {
+      return err;
+    }
+  }
+
+  // Add comment
+  static async addComment(comment) {
+    try {
+      const res = await axios.post(`${url}/addComment`, comment);
+      return res.data;
+    }
+    catch (err) {
+      return err;
+    }
+  }
+
+  // Edit comment
+  static async editComment(comment) {
+    try {
+      const res = await axios.patch(`${url}/editComment`, comment);
+      return res.data;
+    }
+    catch (err) {
+      return err;
+    }
+  }
+
+  // Get all remark codes
+  static async getRemarkCode() {
+    try {
+      const res = await axios.get(`${url}/getRemarkCodes`);
       return res.data;
     }
     catch (err) {
