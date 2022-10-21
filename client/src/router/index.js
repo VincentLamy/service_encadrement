@@ -1,17 +1,14 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import DatetimePicker from 'vuetify-datetime-picker'
-import HomeView from '../views/HomeView'
-import CSVImportView from '../views/CSVImportView'
-import StudentListView from '../views/StudentListView'
-import StudentFormView from '../views/StudentFormView'
-
+import HomeView from '../views/HomeView.vue'
+import CSVImportView from '../views/CSVImportView.vue'
+import StudentListView from '../views/StudentListView.vue'
+import StudentFormView from '../views/StudentFormView.vue'
 import SupervisorFormView from '../views/SupervisorFormView'
 import SupervisorListView from '../views/SupervisorListView'
 import SupervisorAddView from '../views/SupervisorAddView'
 
 Vue.use(VueRouter)
-Vue.use(DatetimePicker)
 
 const routes = [
   {

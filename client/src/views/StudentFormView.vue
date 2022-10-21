@@ -101,7 +101,7 @@
         Questionnaire de mathématiques
         ************************************************ 
       -->
-      <v-expansion-panel v-if="student.FormulaireMath">
+      <v-expansion-panel v-if="student.FormulaireMath[0]">
         <v-expansion-panel-header class="outlined">
           <h3>Questionnaire de mathématiques</h3>
         </v-expansion-panel-header>
@@ -109,48 +109,56 @@
           <v-row class="mt-10" no-gutters>
             <!-- Heure de début -->
             <v-col class="px-3" sm="6" cols="12">
-              <v-datetime-picker label="Heure de début" outlined disabled />
+              <v-text-field label="Heure de début" :value="student.FormulaireMath[0].heure_debut" outlined readonly />
             </v-col>
 
             <!-- Heure de fin -->
             <v-col class="px-3" sm="6" cols="12">
-              <v-datetime-picker label="Heure de fin" outlined disabled />
-            </v-col>
-          </v-row>
-
-          <!-- Cours de mathématiques suivis -->
-          <v-row v-for="(math_class, i) in math_form.classes" :key="i" no-gutters>
-            <!-- Code du cours -->
-            <v-col class="px-3" lg="3" sm="6" cols="12">
-              <v-text-field label="Code du cours" :value="math_class.code" prepend-icon="mdi-school" outlined
-                readonly />
-            </v-col>
-
-            <!-- Nom du cours de math -->
-            <v-col class="px-3" lg="3" sm="6" cols="12">
-              <v-text-field label="Nom du cours" :value="math_class.name" outlined readonly />
-            </v-col>
-
-            <!-- Note de l'étudiant dans le cours -->
-            <v-col class="px-3" lg="3" sm="6" cols="12">
-              <v-text-field label="Note de l'étudiant" :value="math_class.mark" outlined readonly />
-            </v-col>
-
-            <!-- Année durant laquelle l'étudiant a suivi le cours -->
-            <v-col class="px-3" lg="3" sm="6" cols="12">
-              <v-text-field label="Année" :value="math_class.year" outlined readonly />
+              <v-text-field label="Heure de fin" :value="student.FormulaireMath[0].heure_fin" outlined readonly />
             </v-col>
           </v-row>
 
           <v-row no-gutters>
             <!-- Effort fourni -->
             <v-col class="px-3" sm="6" cols="12">
-              <v-textarea label="Effort fourni" outlined readonly />
+              <v-textarea label="Effort fourni" :value="student.FormulaireMath[0].effort_fourni" outlined readonly
+                no-resize />
             </v-col>
 
             <!-- Expérience en informatique -->
             <v-col class="px-3" sm="6" cols="12">
-              <v-textarea label="Expérience en informatique" outlined readonly />
+              <v-textarea label="Expérience en informatique" :value="student.FormulaireMath[0].experience_informatique"
+                outlined readonly no-resize />
+            </v-col>
+          </v-row>
+
+          <!-- Cours de mathématiques suivis -->
+
+          <h4 class="d-flex justify-center my-4">
+            Cours de mathématiques de l'étudiant
+          </h4>
+
+          <!-- TODO - FormulaireMath[0], on modifie la BD ou on laisse ça de même? -->
+          <v-row v-for="(ta_math, i) in student.FormulaireMath[0].TA_Math" :key="i" no-gutters>
+            <!-- Code du cours -->
+            <v-col class="px-3" lg="3" sm="6" cols="12">
+              <v-text-field label="Code du cours" :value="ta_math.cours_math.code" prepend-icon="mdi-school" outlined
+                readonly />
+            </v-col>
+
+            <!-- Nom du cours de math -->
+            <v-col class="px-3" lg="3" sm="6" cols="12">
+              <v-text-field label="Nom du cours" :value="ta_math.cours_math.name" outlined readonly />
+            </v-col>
+
+            <!-- Note de l'étudiant dans le cours -->
+            <v-col class="px-3" lg="3" sm="6" cols="12">
+              <v-text-field label="Note de l'étudiant" :value="ta_math.cours_math.mark" outlined readonly />
+            </v-col>
+
+            <!-- Année durant laquelle l'étudiant a suivi le cours -->
+            <v-col class="px-3" lg="3" sm="6" cols="12">
+              <v-text-field label="Année" :value="ta_math.cours_math.year" outlined readonly />
             </v-col>
           </v-row>
         </v-expansion-panel-content>
@@ -378,24 +386,6 @@ export default {
           rules: [(v) => !!v || "Un code de remarque doit être choisi"],
         },
       },
-      math_form: {
-        start_time: null,
-        end_time: null,
-        classes: [
-          {
-            code: "SN-473D",
-            name: "Sec.4 SN",
-            mark: 71,
-            year: "Secondaire 4",
-          },
-          {
-            code: "CST-1123F",
-            name: "Sec.5 CST",
-            mark: 94,
-            year: "Secondaire 5",
-          },
-        ],
-      },
     };
   },
   methods: {
@@ -406,11 +396,7 @@ export default {
       });
     },
     async onCourseMenuToggle(opened) {
-      if (!opened) {
-        this.course_name = "";
-      } else {
-        console.log(this.$refs.course_name_field);
-      }
+      if (!opened) this.course_input.value = "";
     },
     async getData(no_etudiant) {
       // Get student info
@@ -459,11 +445,16 @@ export default {
   async created() {
     // Get student info
     await this.getData();
-
-    // Get amount of classes the student is currently failing
-    this.amount_classes_in_difficulty = this.student.TA_EtudiantGroupe.filter(
-      (g) => g.pourcentage_note_cumulee < 60
-    ).length;
+    console.log(this.student.FormulaireMath);
+  },
+  computed: {
+    amountClassesInDifficulty() {
+      return this.student.TA_EtudiantGroupe
+        ? this.student.TA_EtudiantGroupe.filter(
+          (g) => g.pourcentage_note_cumulee < 60
+        ).length
+        : 0;
+    },
   },
   components: {
     "v-comment-list": CommentList,
