@@ -43,35 +43,35 @@ module.exports = class Student {
   }
 
   static async getStudentFormInfo(req, res) {
-    try {
-      const no_etudiant = req.params.no_etudiant;
-      const students = await prisma.Etudiant.findUnique({
-        where: {
-          no_etudiant: Number(no_etudiant),
-        },
-        include: {
-          TA_EtudiantGroupe: {
-            include: {
-              groupe: {
-                include: {
-                  cours: true,
-                  session: true,
-                  Commentaire: {
-                    include: {
-                      employe: true,
-                      code_remarque: true,
-                    }
-                  },
+    // try {
+    const no_etudiant = req.params.no_etudiant;
+    const students = await prisma.Etudiant.findUnique({
+      where: {
+        no_etudiant: Number(no_etudiant),
+      },
+      include: {
+        TA_EtudiantGroupe: {
+          include: {
+            groupe: {
+              include: {
+                cours: true,
+                session: true,
+                Commentaire: {
+                  include: {
+                    employe: true,
+                    code_remarque: true,
+                  }
                 },
               },
             },
             code_remarque_note_finale: true,
           },
         },
-      });
-      res.status(200).json(students);
-    } catch (error) {
-      res.status(404).json({ message: error.message });
-    }
+      },
+    });
+    res.status(200).json(students);
+    // } catch (error) {
+    //   res.status(404).json({ message: error.message });
+    // }
   }
 };

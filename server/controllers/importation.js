@@ -285,7 +285,7 @@ module.exports = class Importation {
                                 no_etudiant: etudiant.no_etudiant || 0,
                                 titre: titre,
                                 contenu: contenu,
-                                id_code_remarque: file[i]['Code de la remarque'] || 0,
+                                id_code_remarque: String(file[i]['Code de la remarque']) || 0,
                                 date_creation: new Date(file[i]['Date de saisie de la remarque']) || 0,
                             }
                         },
