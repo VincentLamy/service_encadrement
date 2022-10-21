@@ -44,7 +44,7 @@
 
           <!-- Nombre de cours en difficulté -->
           <v-col class="px-3" lg="3" sm="6" cols="12">
-            <v-text-field label="Nb. de cours en difficulté" :value="amount_classes_in_difficulty" outlined readonly />
+            <v-text-field label="Nb. de cours en difficulté" :value="amountClassesInDifficulty" outlined readonly />
           </v-col>
         </v-row>
         <v-row no-gutters>
@@ -65,10 +65,6 @@
           </v-col>
         </v-row>
       </v-card-text>
-      <!-- <v-card-actions class="px-5 d-flex justify-space-between">
-        <v-btn color="grey" disabled plain>Annuler</v-btn>
-        <v-btn type="submit" color="primary" plain>Mettre à jour</v-btn>
-      </v-card-actions> -->
     </v-card>
 
     <v-expansion-panels v-if="student.TA_EtuStatut || student.FormulaireMath" class="mb-5" multiple flat>
@@ -109,12 +105,14 @@
           <v-row class="mt-10" no-gutters>
             <!-- Heure de début -->
             <v-col class="px-3" sm="6" cols="12">
-              <v-text-field label="Heure de début" :value="student.FormulaireMath[0].heure_debut" outlined readonly />
+              <v-text-field label="Heure de début" :value="formattedDate(student.FormulaireMath[0].heure_debut)"
+                outlined readonly />
             </v-col>
 
             <!-- Heure de fin -->
             <v-col class="px-3" sm="6" cols="12">
-              <v-text-field label="Heure de fin" :value="student.FormulaireMath[0].heure_fin" outlined readonly />
+              <v-text-field label="Heure de fin" :value="formattedDate(student.FormulaireMath[0].heure_fin)" outlined
+                readonly />
             </v-col>
           </v-row>
 
@@ -134,33 +132,41 @@
 
           <!-- Cours de mathématiques suivis -->
 
-          <h4 class="d-flex justify-center my-4">
+          <h4 class="d-flex justify-center mb-6">
             Cours de mathématiques de l'étudiant
           </h4>
 
           <!-- TODO - FormulaireMath[0], on modifie la BD ou on laisse ça de même? -->
-          <v-row v-for="(ta_math, i) in student.FormulaireMath[0].TA_Math" :key="i" no-gutters>
-            <!-- Code du cours -->
+          <template v-for="(ta_math, i) in student.FormulaireMath[0].TA_Math">
+            <v-row no-gutters>
+              <!-- Code du cours 
             <v-col class="px-3" lg="3" sm="6" cols="12">
-              <v-text-field label="Code du cours" :value="ta_math.cours_math.code" prepend-icon="mdi-school" outlined
-                readonly />
-            </v-col>
+              <v-text-field
+                label="Code du cours"
+                :value="ta_math.cours_math.code"
+                prepend-icon="mdi-school"
+                outlined
+                readonly
+              />
+            </v-col>-->
 
-            <!-- Nom du cours de math -->
-            <v-col class="px-3" lg="3" sm="6" cols="12">
-              <v-text-field label="Nom du cours" :value="ta_math.cours_math.name" outlined readonly />
-            </v-col>
+              <!-- Nom du cours de math -->
+              <v-col class="px-3" md="4" cols="12">
+                <v-text-field label="Cours" :value="ta_math.cours_math.nom" outlined readonly />
+              </v-col>
 
-            <!-- Note de l'étudiant dans le cours -->
-            <v-col class="px-3" lg="3" sm="6" cols="12">
-              <v-text-field label="Note de l'étudiant" :value="ta_math.cours_math.mark" outlined readonly />
-            </v-col>
+              <!-- Note de l'étudiant dans le cours -->
+              <v-col class="px-3" md="4" cols="12">
+                <v-text-field label="Note de l'étudiant" :value="ta_math.note_obtenue" outlined readonly />
+              </v-col>
 
-            <!-- Année durant laquelle l'étudiant a suivi le cours -->
-            <v-col class="px-3" lg="3" sm="6" cols="12">
-              <v-text-field label="Année" :value="ta_math.cours_math.year" outlined readonly />
-            </v-col>
-          </v-row>
+              <!-- Année durant laquelle l'étudiant a suivi le cours -->
+              <v-col class="px-3" md="4" cols="12">
+                <v-text-field label="Année" :value="'Secondaire ' + ta_math.cours_math.annee" outlined readonly />
+              </v-col>
+            </v-row>
+            <v-divider v-if="i < student.FormulaireMath[0].TA_Math.length - 1 " :key="i" class="mb-7"></v-divider>
+          </template>
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
@@ -195,54 +201,22 @@
                 Ajouter un commentaire
               </v-btn>
               <v-comment-input :show="show_add_comment" :no-etudiant="student.no_etudiant" :remark-codes="remark_codes"
-                method="publish" @cancel="show_add_comment = false" />
+                :code-session="semester.code" method="publish" @cancel="show_add_comment = false"
+                @published="getData" />
 
               <!-- Commentaires de la session -->
               <h4 class="d-flex justify-center my-4">
                 Commentaires de la session
               </h4>
+              <v-card class="px-5" outlined>
+                <!-- Message si l'étudiant n'a aucun commentaire dans la session -->
+                <h4 v-if="semester.comments.length === 0" class="my-5 grey--text">
+                  L'étudiant n'a aucun commentaire sur cette session!
+                </h4>
 
-              <v-list class="px-5" outlined>
-                <template v-for="k in 3">
-                  <v-list-item class="py-3">
-                    <v-row class="align-center">
-                      <!-- Titre + commentaire -->
-                      <v-list-item-content :key="k">
-                        <v-list-item-title>
-                          <span class="black--text">
-                            Commentaire sur la session #{{ k }}
-                          </span>
-                        </v-list-item-title>
-                        <v-list-item-subtitle>
-                          Informations additionnelles
-                        </v-list-item-subtitle>
-                      </v-list-item-content>
-
-                      <!-- Catégories du commentaire + date de publication -->
-                      <v-list-item-action class="d-flex flex-column justify-space-between">
-                        <v-list-item-action-text>
-                          <div class="d-flex justify-end">
-                            <v-chip class="ms-1 font-weight-bold" x-small>
-                              AUTN
-                            </v-chip>
-                          </div>
-                          <p class="ma-0 black--text text-end">
-                            Lapalme, Jocelyn
-                            <span class="ms-4 grey--text">24 sept. 2021 10:15</span>
-                          </p>
-                        </v-list-item-action-text>
-                      </v-list-item-action>
-
-                      <!-- Boutons de modification -->
-                      <v-btn class="ms-2" text icon>
-                        <v-icon>mdi-pencil-outline</v-icon>
-                      </v-btn>
-                    </v-row>
-                  </v-list-item>
-                  <v-divider v-if="k < 3" :key="k"></v-divider>
-                </template>
-              </v-list>
-
+                <v-comment-list :data="semester.comments" :remark-codes="remark_codes" :editable-if="() => true"
+                  @update-data="getData" />
+              </v-card>
               <!-- Commentaires d'un cours -->
               <h4 class="d-flex justify-center my-4">
                 Commentaires sur les cours de l'étudiant
@@ -250,34 +224,41 @@
 
               <!-- Cours de la session -->
               <v-expansion-panels accordion flat>
-                <v-expansion-panel v-for="student_group in semester.student_groups">
+                <v-expansion-panel v-for="(student_group, sg_index) in semester.student_groups">
                   <v-expansion-panel-header class="outlined">
                     <v-container class="pa-0 pe-3">
                       <div class="d-flex flex-md-row flex-column justify-space-between col-12 pa-0">
                         <div class="d-flex flex-column col-md">
                           <div class="font-weight-bold">
-                            <span v-if="student_group.groupe.cours.nom">
-                              {{ student_group.groupe.cours.nom }}
-                            </span>
-                            <span v-else>
-                              <v-menu @input="onCourseMenuToggle">
+                            <span>
+                              <!-- Modifier le nom du cours -->
+                              <v-menu v-model="course_input.show_menu[sg_index]" :close-on-content-click="false"
+                                @input="onCourseMenuToggle">
                                 <template v-slot:activator="{ on, attrs }">
-                                  <v-btn x-small outlined color="blue darken-3" class="mb-1" @click.native.stop
-                                    v-bind="attrs" v-on="on">
-                                    Ajouter un nom au cours
+                                  <v-btn x-small outlined color="blue darken-3" class="mb-1" v-bind="attrs" v-on="on">
+                                    {{
+                                    student_group.groupe.cours.nom ||
+                                    "Ajouter un nom au cours"
+                                    }}
                                   </v-btn>
                                 </template>
                                 <template>
                                   <v-card>
+                                    <v-card-title>
+                                      Modifier le nom du cours
+                                    </v-card-title>
                                     <v-card-text>
-                                      <v-text-field label="Nom du cours" outlined hide-details v-model="course_name"
-                                        ref="course_name_field" :append-outer-icon="'mdi-arrow-right'"
-                                        @click:append-outer="
-                                          updateCourseName(
-                                            student_group.groupe.cours.code,
-                                            course_name
-                                          )
-                                        " @click.stop />
+                                      <v-form ref="courseNameForm">
+                                        <v-text-field label="Nom du cours" outlined v-model="course_input.value"
+                                          counter="64" :rules="course_input.rules"
+                                          :append-outer-icon="'mdi-arrow-right'" @click:append-outer="
+                                            updateCourseName(
+                                              student_group.groupe.cours.code,
+                                              course_input.value,
+                                              sg_index
+                                            )
+                                          " />
+                                      </v-form>
                                     </v-card-text>
                                   </v-card>
                                 </template>
@@ -359,10 +340,18 @@ export default {
       remark_codes: [],
       semesters: [],
       semester_tab: null,
-      amount_classes_in_difficulty: 0,
-      course_name: "",
       show_add_comment: false,
       loading: false,
+      course_input: {
+        show_menu: [],
+        value: "",
+        rules: [
+          (v) => !!v || "Un nom de cours est requis",
+          (v) =>
+            v.length <= 64 ||
+            "Le nom du cours doit contenir moins de 64 caractères",
+        ],
+      },
       comment: {
         title: {
           value: "",
@@ -389,11 +378,15 @@ export default {
     };
   },
   methods: {
-    async updateCourseName(code, name) {
+    async updateCourseName(code, name, input_index) {
+      if (!this.$refs.courseNameForm[input_index].validate()) return;
+
       await API.changeCourseName({
         code: code,
         name: name,
       });
+      this.course_input.show_menu[input_index] = false;
+      await this.getData();
     },
     async onCourseMenuToggle(opened) {
       if (!opened) this.course_input.value = "";
@@ -412,11 +405,15 @@ export default {
       this.semesters = Array.from(
         new Set(duplicate_semesters.map((s) => s.id))
       ).map((id) => {
+        const code = duplicate_semesters.find((s) => s.id === id).code;
         return {
           id: id,
-          code: duplicate_semesters.find((s) => s.id === id).code,
+          code: code,
           student_groups: this.student.TA_EtudiantGroupe.filter(
             (g) => g.groupe.session.id === id
+          ),
+          comments: this.student.semester_comments.filter(
+            (s) => s.groupe.code_session === code
           ),
         };
       });
@@ -428,7 +425,7 @@ export default {
       const previousStudent = await API.getPreviousStudent(this.student.no_etudiant);
       await this.getData(previousStudent[0].no_etudiant);
 
-      await this.$router.push({ name: 'student_form', params: { id: previousStudent[0].no_etudiant } });
+      await this.$router.push({ name: 'student_form', params: { id: this.student.no_etudiant } });
       this.loading = false;
     },
     async gotoNextStudent() {
@@ -438,14 +435,23 @@ export default {
       const nextStudent = await API.getNextStudent(this.student.no_etudiant);
       await this.getData(nextStudent[0].no_etudiant);
 
-      await this.$router.push({ name: 'student_form', params: { id: nextStudent[0].no_etudiant } });
+      await this.$router.push({ name: 'student_form', params: { id: this.student.no_etudiant } });
       this.loading = false;
+    },
+    formattedDate(string_date) {
+      let d = new Date(Date.parse(string_date));
+      const options = {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+      };
+      return d.toLocaleDateString("fr-CA", options);
     },
   },
   async created() {
-    // Get student info
     await this.getData();
-    console.log(this.student.FormulaireMath);
   },
   computed: {
     amountClassesInDifficulty() {
