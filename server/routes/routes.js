@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const API = require("../controllers/api");
+const Importation = require("../controllers/importation");
 const Student = require("../controllers/student");
 const Supervisor = require("../controllers/supervisor");
 const Course = require("../controllers/course");
@@ -24,8 +24,8 @@ router.get("/previous_supervisor_form/:id", upload, Supervisor.getPreviousSuperv
 router.get("/next_supervisor_form/:id", upload, Supervisor.getNextSupervisor);
 
 // Semesters
-router.post("/addSession", API.addSession);
-router.get("/getSession", API.getSession);
+router.post("/addSession", Importation.addSession);
+router.get("/getSession", Importation.getSession);
 
 // Courses
 router.patch("/changeCourseName", Course.changeCourseName);
@@ -38,12 +38,12 @@ router.patch("/editComment", Comment.editComment);
 router.get("/getRemarkCodes", RemarkCode.getRemarkCode);
 
 // Reports
-router.post("/rapportEncadrement", API.addRapportEncadrement);
+router.post("/rapportEncadrement", Importation.addRapportEncadrement);
 
 // Math form
-router.post("/sondageMathematiques", API.addSondageMathematiques);
+router.post("/sondageMathematiques", Importation.addSondageMathematiques);
 
 // Internationals
-router.post("/etudiantsInternationaux", API.addEtudiantsInternationaux);
+router.post("/etudiantsInternationaux", Importation.addEtudiantsInternationaux);
 
 module.exports = router;

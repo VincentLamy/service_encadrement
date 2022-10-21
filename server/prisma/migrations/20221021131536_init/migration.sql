@@ -33,7 +33,7 @@ CREATE TABLE `Groupe` (
     `code_cours` VARCHAR(10) NOT NULL,
     `code_session` VARCHAR(5) NOT NULL,
 
-    UNIQUE INDEX `Groupe_no_groupe_code_session_key`(`no_groupe`, `code_session`),
+    UNIQUE INDEX `Groupe_no_groupe_code_cours_code_session_key`(`no_groupe`, `code_cours`, `code_session`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -48,6 +48,7 @@ CREATE TABLE `Utilisateur` (
     `date_desactivation` DATETIME(3) NOT NULL,
     `actif` BOOLEAN NOT NULL,
 
+    UNIQUE INDEX `Utilisateur_no_employe_key`(`no_employe`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -57,6 +58,7 @@ CREATE TABLE `TypeUtilisateur` (
     `nom` VARCHAR(64) NOT NULL,
     `description` VARCHAR(255) NOT NULL,
 
+    UNIQUE INDEX `TypeUtilisateur_nom_key`(`nom`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -69,9 +71,9 @@ CREATE TABLE `Commentaire` (
     `id_code_remarque` VARCHAR(191) NOT NULL,
     `titre` VARCHAR(64) NOT NULL,
     `contenu` VARCHAR(255) NOT NULL,
-    `date_creation` DATETIME(3) NOT NULL,
+    `date_creation` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
-    UNIQUE INDEX `Commentaire_no_etudiant_id_code_remarque_date_creation_key`(`no_etudiant`, `id_code_remarque`, `date_creation`),
+    UNIQUE INDEX `Commentaire_no_etudiant_id_code_remarque_titre_contenu_date__key`(`no_etudiant`, `id_code_remarque`, `titre`, `contenu`, `date_creation`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 

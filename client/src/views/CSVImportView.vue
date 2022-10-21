@@ -8,21 +8,24 @@
 
       <v-col class="text-center">
         <!-- Button for Rapport d'encadrement -->
-        <v-btn color="primary" dark :loading="isSelecting" @click="handleFileImport('rapport_encadrement')">
+        <v-btn color="primary" dark :loading="isSelecting" @click="handleFileImport('rapport_encadrement')"
+          v-if="!loading">
           Importer Rapport d'encadrement
         </v-btn>
       </v-col>
 
       <v-col class="text-center">
         <!-- Button for Sondage mathématiques -->
-        <v-btn color="primary" dark id :loading="isSelecting" @click="handleFileImport('sondage_mathematiques')">
+        <v-btn color="primary" dark id :loading="isSelecting" @click="handleFileImport('sondage_mathematiques')"
+          v-if="!loading">
           Importer Sondage mathématiques
         </v-btn>
       </v-col>
 
-      <v-col class="text-center">
+      <v-col class="text-center" style="padding-bottom: 5%;">
         <!-- Button for Etudiants Internationaux -->
-        <v-btn color="primary" dark id :loading="isSelecting" @click="handleFileImport('etudiants_internationaux')">
+        <v-btn color="primary" dark id :loading="isSelecting" @click="handleFileImport('etudiants_internationaux')"
+          v-if="!loading">
           Importer Liste étudiants internationaux
         </v-btn>
       </v-col>
@@ -31,6 +34,9 @@
       <input ref="uploader" class="d-none" type="file"
         accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
         @change="onFileChanged">
+
+      <v-progress-linear :active="loading" :indeterminate="loading" absolute bottom color="deep-purple accent-4">
+      </v-progress-linear>
     </v-card>
   </v-container>
 </template>
@@ -43,8 +49,14 @@ export default {
   data() {
     return {
       isSelecting: false,
-      selectedFile: null
+      selectedFile: null,
+      loading: false
     }
+  },
+  mounted() {
+    let script = document.createElement('script');
+    script.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.2/xlsx.js');
+    document.head.appendChild(script);
   },
   methods: {
     handleFileImport(button) {
@@ -63,49 +75,45 @@ export default {
     },
     onFileChanged(e) {
       this.selectedFile = e.target.files[0];
-      const extension = this.selectedFile.name.split('.').pop();
+      this.loading = true;
 
       let reader = new FileReader();
 
-      // To Object
-      reader.addEventListener("loadend", async () => {
-        let data = {};
+      reader.onload = (function (id, outsideRouter) {
+        const button_id = id;
+        const router = outsideRouter;
 
-        if (extension === "csv" || extension === "xlsx") {
-          let temp = reader.result.split("\r\n");
+        return function (e) {
+          var data = e.target.result;
+          var workbook = XLSX.read(data, {
+            type: 'binary'
+          });
 
-          for (let i in temp) {
-            temp[i] = temp[i].split(/;(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/);
-          }
+          workbook.SheetNames.forEach(async function (sheetName) {
+            // File to object
+            var XL_row_object = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { defval: '' });
 
-          for (let i in temp[0]) {
-            data[temp[0][i]] = [];
-            for (let j = 1; j < temp.length; j++) {
-              data[temp[0][i]].push(temp[j][i]);
+            // Rapport encadrement
+            if (button_id === "rapport_encadrement") {
+              const response = await API.addRapportEncadrement(XL_row_object);
+              router.push({ name: 'home', params: { response: response } });
             }
-          }
-        }
+            // Sondage mathématiques
+            else if (button_id === "sondage_mathematiques") {
+              const response = await API.addSondageMathematiques(XL_row_object);
+              router.push({ name: 'home', params: { response: response } });
+            }
+            // Etudiants internationaux
+            else if (button_id === "etudiants_internationaux") {
+              const response = await API.addEtudiantsInternationaux(XL_row_object);
+              router.push({ name: 'home', params: { response: response } });
+            }
+          })
+        };
+      })(e.target.id, this.$router);
 
-        // Rapport encadrement
-        if (e.target.id === "rapport_encadrement") {
-          const response = await API.addRapportEncadrement(data);
-          this.$router.push({ name: 'home', params: { response: response } });
-        }
-        // Sondage mathématiques
-        else if (e.target.id === "sondage_mathematiques") {
-          const response = await API.addSondageMathematiques(data);
-          this.$router.push({ name: 'home', params: { response: response } });
-        }
-        // Etudiants internationaux
-        else if (e.target.id === "etudiants_internationaux") {
-          const response = await API.addEtudiantsInternationaux(data);
-          this.$router.push({ name: 'home', params: { response: response } });
-        }
-      });
-
-      reader.readAsText(this.selectedFile);
+      reader.readAsBinaryString(this.selectedFile);
     },
-  }
+  },
 }
-
 </script>
