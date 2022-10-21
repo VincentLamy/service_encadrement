@@ -1,69 +1,56 @@
 <template>
+  <!--
+    ************************************************
+    Informations de l'étudiant
+    ************************************************ 
+  -->
   <v-container>
-    <h2 class="my-2 d-flex justify-center">
-      {{ student.prenom }} {{ student.nom }}
-    </h2>
+    <div style="display: flex">
+      <!-- Previous -->
+      <div class="d-flex" style="align-items: center;">
+        <v-btn type="submit" outlined @click="gotoPreviousStudent()" :loading="loading">Précédent
+        </v-btn>
+      </div>
 
-    <!--
-      ************************************************
-      Informations de l'étudiant
-      ************************************************ 
-    -->
+      <h2 class="my-2 d-flex justify-center" style="flex-grow: 1;">
+        {{ student.prenom }} {{ student.nom }}
+      </h2>
+
+      <!-- Next -->
+      <div class="d-flex" style="align-items: center;">
+        <v-btn type="submit" outlined @click="gotoNextStudent()" :loading="loading">Suivant</v-btn>
+      </div>
+
+    </div>
     <v-card class="py-2 px-3 mb-5" outlined>
       <v-card-text>
         <h3 class="d-flex justify-center mb-4">Informations de l'étudiant</h3>
         <v-row no-gutters>
           <!-- Numéro de dossier -->
           <v-col class="px-3" lg="3" sm="6" cols="12">
-            <v-text-field
-              label="No. de dossier"
-              :value="student.no_etudiant"
-              type="number"
-              hide-spin-buttons
-              outlined
-              readonly
-            />
+            <v-text-field label="No. de dossier" :value="student.no_etudiant" type="number" hide-spin-buttons outlined
+              readonly />
           </v-col>
 
           <!-- Code permanent -->
           <v-col class="px-3" lg="3" sm="6" cols="12">
-            <v-text-field
-              label="Code permanent"
-              :value="student.code_permanent"
-              outlined
-              readonly
-            />
+            <v-text-field label="Code permanent" :value="student.code_permanent" outlined readonly />
           </v-col>
 
           <!-- Numéro de programme -->
           <v-col class="px-3" lg="3" sm="6" cols="12">
-            <v-text-field
-              label="No. de programme"
-              :value="student.code_programme"
-              outlined
-              readonly
-            />
+            <v-text-field label="No. de programme" :value="student.code_programme" outlined readonly />
           </v-col>
 
           <!-- Nombre de cours en difficulté -->
           <v-col class="px-3" lg="3" sm="6" cols="12">
-            <v-text-field
-              label="Nb. de cours en difficulté"
-              :value="amountClassesInDifficulty"
-              outlined
-              readonly
-            />
+            <v-text-field label="Nb. de cours en difficulté" :value="amount_classes_in_difficulty" outlined readonly />
           </v-col>
         </v-row>
         <v-row no-gutters>
           <!-- Prénom de l'étudiant -->
           <v-col class="px-3" lg="3" sm="6" cols="12">
-            <v-text-field
-              label="Prénom"
-              :value="student.prenom"
-              outlined
-              readonly
-            />
+            <v-text-field label="Prénom" :value="student.prenom" outlined readonly />
           </v-col>
 
           <!-- Nom de l'étudiant -->
@@ -73,26 +60,18 @@
 
           <!-- Numéro de la session -->
           <v-col class="px-3" lg="3" sm="6" cols="12">
-            <v-text-field
-              label="No. de la session"
-              :value="student.session_actuelle"
-              type="number"
-              min="0"
-              max="99"
-              outlined
-              readonly
-            />
+            <v-text-field label="No. de la session" :value="student.session_actuelle" type="number" min="0" max="99"
+              outlined readonly />
           </v-col>
         </v-row>
       </v-card-text>
+      <!-- <v-card-actions class="px-5 d-flex justify-space-between">
+        <v-btn color="grey" disabled plain>Annuler</v-btn>
+        <v-btn type="submit" color="primary" plain>Mettre à jour</v-btn>
+      </v-card-actions> -->
     </v-card>
 
-    <v-expansion-panels
-      v-if="student.TA_EtuStatut || student.FormulaireMath"
-      class="mb-5"
-      multiple
-      flat
-    >
+    <v-expansion-panels v-if="student.TA_EtuStatut || student.FormulaireMath" class="mb-5" multiple flat>
       <!--
         ************************************************
         Informations de l'étudiant à l'international
@@ -140,50 +119,26 @@
           </v-row>
 
           <!-- Cours de mathématiques suivis -->
-          <v-row
-            v-for="(math_class, i) in math_form.classes"
-            :key="i"
-            no-gutters
-          >
+          <v-row v-for="(math_class, i) in math_form.classes" :key="i" no-gutters>
             <!-- Code du cours -->
             <v-col class="px-3" lg="3" sm="6" cols="12">
-              <v-text-field
-                label="Code du cours"
-                :value="math_class.code"
-                prepend-icon="mdi-school"
-                outlined
-                readonly
-              />
+              <v-text-field label="Code du cours" :value="math_class.code" prepend-icon="mdi-school" outlined
+                readonly />
             </v-col>
 
             <!-- Nom du cours de math -->
             <v-col class="px-3" lg="3" sm="6" cols="12">
-              <v-text-field
-                label="Nom du cours"
-                :value="math_class.name"
-                outlined
-                readonly
-              />
+              <v-text-field label="Nom du cours" :value="math_class.name" outlined readonly />
             </v-col>
 
             <!-- Note de l'étudiant dans le cours -->
             <v-col class="px-3" lg="3" sm="6" cols="12">
-              <v-text-field
-                label="Note de l'étudiant"
-                :value="math_class.mark"
-                outlined
-                readonly
-              />
+              <v-text-field label="Note de l'étudiant" :value="math_class.mark" outlined readonly />
             </v-col>
 
             <!-- Année durant laquelle l'étudiant a suivi le cours -->
             <v-col class="px-3" lg="3" sm="6" cols="12">
-              <v-text-field
-                label="Année"
-                :value="math_class.year"
-                outlined
-                readonly
-              />
+              <v-text-field label="Année" :value="math_class.year" outlined readonly />
             </v-col>
           </v-row>
 
@@ -195,11 +150,7 @@
 
             <!-- Expérience en informatique -->
             <v-col class="px-3" sm="6" cols="12">
-              <v-textarea
-                label="Expérience en informatique"
-                outlined
-                readonly
-              />
+              <v-textarea label="Expérience en informatique" outlined readonly />
             </v-col>
           </v-row>
         </v-expansion-panel-content>
@@ -232,43 +183,58 @@
           <v-tabs-items v-model="semester_tab" v-if="semesters.length !== 0">
             <v-tab-item v-for="(semester, i) in semesters" :key="i">
               <!-- Ajouter un commentaire -->
-              <v-btn
-                block
-                color="primary my-3"
-                @click="show_add_comment = !show_add_comment"
-              >
+              <v-btn block color="primary my-3" @click="show_add_comment = !show_add_comment">
                 Ajouter un commentaire
               </v-btn>
-              <v-comment-input
-                :show="show_add_comment"
-                :no-etudiant="student.no_etudiant"
-                :remark-codes="remark_codes"
-                :code-session="semester.code"
-                method="publish"
-                @cancel="show_add_comment = false"
-                @published="getData"
-              />
+              <v-comment-input :show="show_add_comment" :no-etudiant="student.no_etudiant" :remark-codes="remark_codes"
+                method="publish" @cancel="show_add_comment = false" />
 
               <!-- Commentaires de la session -->
               <h4 class="d-flex justify-center my-4">
                 Commentaires de la session
               </h4>
-              <v-card class="px-5" outlined>
-                <!-- Message si l'étudiant n'a aucun commentaire dans la session -->
-                <h4
-                  v-if="semester.comments.length === 0"
-                  class="my-5 grey--text"
-                >
-                  L'étudiant n'a aucun commentaire sur cette session!
-                </h4>
 
-                <v-comment-list
-                  :data="semester.comments"
-                  :remark-codes="remark_codes"
-                  :editable-if="() => true"
-                  @update-data="getData"
-                />
-              </v-card>
+              <v-list class="px-5" outlined>
+                <template v-for="k in 3">
+                  <v-list-item class="py-3">
+                    <v-row class="align-center">
+                      <!-- Titre + commentaire -->
+                      <v-list-item-content :key="k">
+                        <v-list-item-title>
+                          <span class="black--text">
+                            Commentaire sur la session #{{ k }}
+                          </span>
+                        </v-list-item-title>
+                        <v-list-item-subtitle>
+                          Informations additionnelles
+                        </v-list-item-subtitle>
+                      </v-list-item-content>
+
+                      <!-- Catégories du commentaire + date de publication -->
+                      <v-list-item-action class="d-flex flex-column justify-space-between">
+                        <v-list-item-action-text>
+                          <div class="d-flex justify-end">
+                            <v-chip class="ms-1 font-weight-bold" x-small>
+                              AUTN
+                            </v-chip>
+                          </div>
+                          <p class="ma-0 black--text text-end">
+                            Lapalme, Jocelyn
+                            <span class="ms-4 grey--text">24 sept. 2021 10:15</span>
+                          </p>
+                        </v-list-item-action-text>
+                      </v-list-item-action>
+
+                      <!-- Boutons de modification -->
+                      <v-btn class="ms-2" text icon>
+                        <v-icon>mdi-pencil-outline</v-icon>
+                      </v-btn>
+                    </v-row>
+                  </v-list-item>
+                  <v-divider v-if="k < 3" :key="k"></v-divider>
+                </template>
+              </v-list>
+
               <!-- Commentaires d'un cours -->
               <h4 class="d-flex justify-center my-4">
                 Commentaires sur les cours de l'étudiant
@@ -276,61 +242,34 @@
 
               <!-- Cours de la session -->
               <v-expansion-panels accordion flat>
-                <v-expansion-panel
-                  v-for="(student_group, sg_index) in semester.student_groups"
-                >
+                <v-expansion-panel v-for="student_group in semester.student_groups">
                   <v-expansion-panel-header class="outlined">
                     <v-container class="pa-0 pe-3">
-                      <div
-                        class="d-flex flex-md-row flex-column justify-space-between col-12 pa-0"
-                      >
+                      <div class="d-flex flex-md-row flex-column justify-space-between col-12 pa-0">
                         <div class="d-flex flex-column col-md">
                           <div class="font-weight-bold">
-                            <span>
-                              <!-- Modifier le nom du cours -->
-                              <v-menu
-                                v-model="course_input.show_menu[sg_index]"
-                                :close-on-content-click="false"
-                                @input="onCourseMenuToggle"
-                              >
+                            <span v-if="student_group.groupe.cours.nom">
+                              {{ student_group.groupe.cours.nom }}
+                            </span>
+                            <span v-else>
+                              <v-menu @input="onCourseMenuToggle">
                                 <template v-slot:activator="{ on, attrs }">
-                                  <v-btn
-                                    x-small
-                                    outlined
-                                    color="blue darken-3"
-                                    class="mb-1"
-                                    v-bind="attrs"
-                                    v-on="on"
-                                  >
-                                    {{
-                                      student_group.groupe.cours.nom ||
-                                      "Ajouter un nom au cours"
-                                    }}
+                                  <v-btn x-small outlined color="blue darken-3" class="mb-1" @click.native.stop
+                                    v-bind="attrs" v-on="on">
+                                    Ajouter un nom au cours
                                   </v-btn>
                                 </template>
                                 <template>
                                   <v-card>
-                                    <v-card-title>
-                                      Modifier le nom du cours
-                                    </v-card-title>
                                     <v-card-text>
-                                      <v-form ref="courseNameForm">
-                                        <v-text-field
-                                          label="Nom du cours"
-                                          outlined
-                                          v-model="course_input.value"
-                                          counter="64"
-                                          :rules="course_input.rules"
-                                          :append-outer-icon="'mdi-arrow-right'"
-                                          @click:append-outer="
-                                            updateCourseName(
-                                              student_group.groupe.cours.code,
-                                              course_input.value,
-                                              sg_index
-                                            )
-                                          "
-                                        />
-                                      </v-form>
+                                      <v-text-field label="Nom du cours" outlined hide-details v-model="course_name"
+                                        ref="course_name_field" :append-outer-icon="'mdi-arrow-right'"
+                                        @click:append-outer="
+                                          updateCourseName(
+                                            student_group.groupe.cours.code,
+                                            course_name
+                                          )
+                                        " @click.stop />
                                     </v-card-text>
                                   </v-card>
                                 </template>
@@ -358,9 +297,7 @@
                         </div>
                       </div>
                       <v-divider></v-divider>
-                      <div
-                        class="d-flex flex-md-row flex-column justify-space-between col-12 pa-0"
-                      >
+                      <div class="d-flex flex-md-row flex-column justify-space-between col-12 pa-0">
                         <div class="d-flex flex-column col-md">
                           <div>
                             Note pondérée : {{ student_group.note_ponderee }}
@@ -383,19 +320,13 @@
                   </v-expansion-panel-header>
                   <v-expansion-panel-content class="outlined">
                     <!-- Message si aucun commentaire n'est associé au cours -->
-                    <h4
-                      v-if="student_group.groupe.Commentaire.length === 0"
-                      class="mt-5 grey--text"
-                    >
+                    <h4 v-if="student_group.groupe.Commentaire.length === 0" class="mt-5 grey--text">
                       L'étudiant n'a aucun commentaire sur ce cours!
                     </h4>
 
                     <!-- Commentaires du cours -->
-                    <v-comment-list
-                      :data="student_group.groupe.Commentaire"
-                      :remark-codes="remark_codes"
-                      @update-data="getData"
-                    />
+                    <v-comment-list :data="student_group.groupe.Commentaire" :remark-codes="remark_codes"
+                      @update-data="getData" />
                   </v-expansion-panel-content>
                 </v-expansion-panel>
               </v-expansion-panels>
@@ -420,17 +351,10 @@ export default {
       remark_codes: [],
       semesters: [],
       semester_tab: null,
+      amount_classes_in_difficulty: 0,
+      course_name: "",
       show_add_comment: false,
-      course_input: {
-        show_menu: [],
-        value: "",
-        rules: [
-          (v) => !!v || "Un nom de cours est requis",
-          (v) =>
-            v.length <= 64 ||
-            "Le nom du cours doit contenir moins de 64 caractères",
-        ],
-      },
+      loading: false,
       comment: {
         title: {
           value: "",
@@ -475,24 +399,22 @@ export default {
     };
   },
   methods: {
-    async updateCourseName(code, name, input_index) {
-      if (!this.$refs.courseNameForm[input_index].validate()) return;
-
+    async updateCourseName(code, name) {
       await API.changeCourseName({
         code: code,
         name: name,
       });
-      this.course_input.show_menu[input_index] = false;
-      await this.getData();
     },
     async onCourseMenuToggle(opened) {
       if (!opened) {
-        this.course_input.value = "";
+        this.course_name = "";
+      } else {
+        console.log(this.$refs.course_name_field);
       }
     },
-    async getData() {
+    async getData(no_etudiant) {
       // Get student info
-      this.student = await API.getStudentFormInfo(this.$route.params.id);
+      this.student = await API.getStudentFormInfo(no_etudiant || this.$route.params.id);
 
       // Get all remark codes
       this.remark_codes = await API.getRemarkCode();
@@ -504,31 +426,44 @@ export default {
       this.semesters = Array.from(
         new Set(duplicate_semesters.map((s) => s.id))
       ).map((id) => {
-        const code = duplicate_semesters.find((s) => s.id === id).code;
         return {
           id: id,
-          code: code,
+          code: duplicate_semesters.find((s) => s.id === id).code,
           student_groups: this.student.TA_EtudiantGroupe.filter(
             (g) => g.groupe.session.id === id
-          ),
-          comments: this.student.semester_comments.filter(
-            (s) => s.groupe.code_session === code
           ),
         };
       });
     },
+    async gotoPreviousStudent() {
+      // Get previous student info
+      this.loading = true;
+
+      const previousStudent = await API.getPreviousStudent(this.student.no_etudiant);
+      await this.getData(previousStudent[0].no_etudiant);
+
+      await this.$router.push({ name: 'student_form', params: { id: previousStudent[0].no_etudiant } });
+      this.loading = false;
+    },
+    async gotoNextStudent() {
+      // Get next student info
+      this.loading = true;
+
+      const nextStudent = await API.getNextStudent(this.student.no_etudiant);
+      await this.getData(nextStudent[0].no_etudiant);
+
+      await this.$router.push({ name: 'student_form', params: { id: nextStudent[0].no_etudiant } });
+      this.loading = false;
+    },
   },
   async created() {
+    // Get student info
     await this.getData();
-  },
-  computed: {
-    amountClassesInDifficulty() {
-      return this.student.TA_EtudiantGroupe
-        ? this.student.TA_EtudiantGroupe.filter(
-            (g) => g.pourcentage_note_cumulee < 60
-          ).length
-        : 0;
-    },
+
+    // Get amount of classes the student is currently failing
+    this.amount_classes_in_difficulty = this.student.TA_EtudiantGroupe.filter(
+      (g) => g.pourcentage_note_cumulee < 60
+    ).length;
   },
   components: {
     "v-comment-list": CommentList,

@@ -102,4 +102,174 @@ module.exports = class Student {
 
     res.json(student);
   }
+
+  static async getPreviousStudent(req, res) {
+    try {
+      const no_etudiant = req.params.no_etudiant;
+
+      let prev = await prisma.Etudiant.findMany({
+        take: 1,
+        where: {
+          no_etudiant: {
+            lt: Number(no_etudiant),
+          },
+        },
+        include: {
+          TA_EtudiantGroupe: {
+            include: {
+              groupe: {
+                include: {
+                  cours: {
+                    include: {
+                      campus: true,
+                    },
+                  },
+                  session: true,
+                  Commentaire: {
+                    where: {
+                      no_etudiant: Number(no_etudiant),
+                    },
+                    orderBy: {
+                      date_creation: "desc",
+                    },
+                    include: {
+                      employe: true,
+                      code_remarque: true,
+                    },
+                  },
+                },
+              },
+              code_remarque_note_finale: true,
+            },
+          },
+        },
+        orderBy: {
+          no_etudiant: "desc",
+        },
+      });
+
+      if (prev === undefined || prev.length == 0) {
+        prev = await prisma.Etudiant.findMany({
+          take: -1,
+          include: {
+            TA_EtudiantGroupe: {
+              include: {
+                groupe: {
+                  include: {
+                    cours: {
+                      include: {
+                        campus: true,
+                      },
+                    },
+                    session: true,
+                    Commentaire: {
+                      where: {
+                        no_etudiant: Number(no_etudiant),
+                      },
+                      orderBy: {
+                        date_creation: "desc",
+                      },
+                      include: {
+                        employe: true,
+                        code_remarque: true,
+                      },
+                    },
+                  },
+                },
+                code_remarque_note_finale: true,
+              },
+            },
+          },
+        });
+      }
+      res.status(200).json(prev);
+    } catch (error) {
+      res.status(404).json({ message: error.message });
+    }
+  }
+
+  static async getNextStudent(req, res) {
+    try {
+      const no_etudiant = req.params.no_etudiant;
+
+      let next = await prisma.Etudiant.findMany({
+        take: 1,
+        where: {
+          no_etudiant: {
+            gt: Number(no_etudiant),
+          },
+        },
+        include: {
+          TA_EtudiantGroupe: {
+            include: {
+              groupe: {
+                include: {
+                  cours: {
+                    include: {
+                      campus: true,
+                    },
+                  },
+                  session: true,
+                  Commentaire: {
+                    where: {
+                      no_etudiant: Number(no_etudiant),
+                    },
+                    orderBy: {
+                      date_creation: "desc",
+                    },
+                    include: {
+                      employe: true,
+                      code_remarque: true,
+                    },
+                  },
+                },
+              },
+              code_remarque_note_finale: true,
+            },
+          },
+        },
+        orderBy: {
+          no_etudiant: "asc",
+        },
+      });
+
+      if (next === undefined || next.length == 0) {
+        next = await prisma.Etudiant.findMany({
+          take: 1,
+          include: {
+            TA_EtudiantGroupe: {
+              include: {
+                groupe: {
+                  include: {
+                    cours: {
+                      include: {
+                        campus: true,
+                      },
+                    },
+                    session: true,
+                    Commentaire: {
+                      where: {
+                        no_etudiant: Number(no_etudiant),
+                      },
+                      orderBy: {
+                        date_creation: "desc",
+                      },
+                      include: {
+                        employe: true,
+                        code_remarque: true,
+                      },
+                    },
+                  },
+                },
+                code_remarque_note_finale: true,
+              },
+            },
+          },
+        });
+      }
+      res.status(200).json(next);
+    } catch (error) {
+      res.status(404).json({ message: error.message });
+    }
+  }
 };

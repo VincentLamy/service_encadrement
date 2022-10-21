@@ -108,9 +108,9 @@ export default class API {
   }
 
   // Gets previous supervisor by ID
-  static async getPreviousSupervisor(id, post) {
+  static async getPreviousSupervisor(id) {
     try {
-      const res = await axios.get(`${url}/previous_supervisor_form/${id}`, post)
+      const res = await axios.get(`${url}/previous_supervisor_form/${id}`)
       return res.data;
     }
     catch (err) {
@@ -119,9 +119,9 @@ export default class API {
   }
 
   // Gets next supervisor by ID
-  static async getNextSupervisor(id, post) {
+  static async getNextSupervisor(id) {
     try {
-      const res = await axios.get(`${url}/next_supervisor_form/${id}`, post)
+      const res = await axios.get(`${url}/next_supervisor_form/${id}`)
       return res.data;
     }
     catch (err) {
@@ -163,6 +163,27 @@ export default class API {
   static async getRemarkCode() {
     try {
       const res = await axios.get(`${url}/getRemarkCodes`);
+      return res.data;
+    } catch (err) {
+      return err;
+    }
+  }
+
+  // Gets previous supervisor by numero etudiant
+  static async getPreviousStudent(numero_etudiant) {
+    try {
+      const res = await axios.get(`${url}/previous_student_form/${numero_etudiant}`);
+      return res.data;
+    } catch (err) {
+      return err;
+    }
+  }
+
+
+  // Gets next supervisor by numero etudiant
+  static async getNextStudent(numero_etudiant) {
+    try {
+      const res = await axios.get(`${url}/next_student_form/${numero_etudiant}`);
       return res.data;
     } catch (err) {
       return err;
