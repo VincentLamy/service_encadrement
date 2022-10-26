@@ -58,7 +58,7 @@ Tableau Liste étudiante
     border: 1px solid rgba(0, 0, 0, 0.12);
 }
 
-#connection_error {
+#login_alert {
     position: absolute;
     visibility: hidden;
     width: 450px;

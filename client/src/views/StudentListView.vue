@@ -60,7 +60,7 @@
             // }
           }
 
-          console.log(this.students);
+          // console.log(this.students);
         },
         methods: {
           rowClick(item, row) {

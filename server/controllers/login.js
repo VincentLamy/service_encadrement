@@ -14,7 +14,7 @@ module.exports = class Responsable {
                         select: {
                             prenom: true,
                             nom:    true,
-                            Groupe: true,
+                            // departement: true,
                         }
                     },
                     type_utilisateur: {

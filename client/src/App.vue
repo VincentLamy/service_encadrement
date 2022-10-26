@@ -1,7 +1,7 @@
 <template>
   <v-app id="inspire">
     <v-navigation-drawer v-model="drawer" app>
-      <v-list-item v-for="(responsable, i) in responsable" :key="i">
+      <v-list-item>
         <v-list-item-content>
           <v-list-item-title class="text-h6 blue--text text--darken-3" v-text="responsable.name"></v-list-item-title>
           <v-list-item-subtitle v-text="responsable.programme"></v-list-item-subtitle>
@@ -48,10 +48,27 @@
         { title: 'Liste des responsables',  icon: 'mdi-account-multiple', link: "/user_list" },
         { title: 'Importer un fichier CSV', icon: 'mdi-attachment', link: "/csv_import" },
       ],
-      responsable: [
-        { name: "Vincent Lamy", programme: "Programmation" } // TODO Modifier pour aller chercher les données dans la BD
-      ]
-    })
+      responsable: { name: "", programme: "Programmation" }
+    }),
+    beforeCreate() {
+      vm.$forceUpdate()
+    },
+    beforeMount() {
+      const authentication = JSON.parse(localStorage.getItem('auth'));
+      // console.log(authentication);
+
+      this.responsable.name = authentication.first_name + " " + authentication.last_name;
+    
+      // console.log(this.responsable)
+      // this.responsable.programme = store.departement;
+    },
+    methods: {
+      logout() {
+        this.$router.push("/");
+        localStorage.clear();
+        console.log(localStorage.getItem('auth'))
+      }
+    }
   }
 </script>
 

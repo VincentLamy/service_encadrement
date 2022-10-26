@@ -1,6 +1,8 @@
 <template>
-    
     <v-container fluid fill-height>
+        <v-alert id="login_alert" close-text="Close Alert" color="red accent-4 red--text" type="error" text dark>
+        </v-alert>
+
         <v-card id="loginForm" class="px-4">
             <v-card-text>
                 <v-form ref="loginForm" v-model="valid" lazy-validation>
@@ -24,6 +26,8 @@
  </template>
 
 <script>
+    import { mapWritableState  } from 'pinia'
+    import { useAuthenticationStore } from '@/store/authentication'
     import API from "@/api";
 
     export default {
@@ -43,20 +47,77 @@
             rules: {
                 required: value => !!value || "Required.",
                 min: v => (v && v.length >= 8) || "Min 8 characters"
-            }
+            },
+            store: null,
         }),
+        computed: {
+            ...mapWritableState(useAuthenticationStore, ['first_name']),
+            ...mapWritableState(useAuthenticationStore, ['last_name']),
+            ...mapWritableState(useAuthenticationStore, ['type']),
+            ...mapWritableState(useAuthenticationStore, ['departement']),
+            ...mapWritableState (useAuthenticationStore, ['is_activated']),
+        },
         methods: {
             async validate() {
+                let is_connected = false;
+                
                 if (this.$refs.loginForm.validate()) {
-                    // submit form to server/API here...
+                    const store = useAuthenticationStore()
+                    
                     await API.getUser(this.loginEmail, this.loginPassword)
                     .then(
                         function (response) {
                             response = response[0];
-                            
-                            console.log(response);
+
+                            if (response == undefined) {
+                                let alert = document.getElementById("login_alert");
+
+                                alert.innerHTML = "Le courriel ou le mot de passe est invalide!";
+                                alert.style.visibility = "visible";
+
+                                setTimeout(() => {document.getElementById("login_alert").style.visibility = "hidden"}, 3000);
+                            } else if (response.employe.actif == false) {
+                                let alert = document.getElementById("login_alert")
+
+                                alert.innerHTML = "Vous devez activez votre compte avant de pouvoir accéder au contenu du site!";
+                                alert.style.visibility = "visible";
+
+                                setTimeout(() => {document.getElementById("login_alert").style.visibility = "hidden"}, 3000);
+                            } else {
+                                store.$patch({
+                                    first_name: response.employe.prenom,
+                                    last_name: response.employe.nom,
+                                    type: response.type_utilisateur.nom,
+                                    is_activated: response.actif, 
+                                });
+
+                                store.$subscribe((mutation, state) => {
+                                    // import { MutationType } from 'pinia'
+                                    mutation.type // 'direct' | 'patch object' | 'patch function'
+                                    // same as cartStore.$id
+                                    mutation.first_name
+                                    mutation.last_name 
+                                    mutation.type
+                                    mutation.is_activated
+                                    // only available with mutation.type === 'patch object'
+                                    mutation.payload // patch object passed to cartStore.$patch()
+
+
+                                    // persist the whole state to the local storage whenever it changes
+                                    localStorage.setItem('auth', JSON.stringify(state))
+                                });
+
+                                console.log(localStorage.getItem('auth'));
+   
+                                is_connected = true;
+                            }
                         }
                     )
+
+                    if(is_connected)
+                        // console.log(store)
+                        // console.log(localStorage.getItem('auth'))
+                        this.$router.push("/student_list");
                 }
             },
             reset() {
