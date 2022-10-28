@@ -1,33 +1,44 @@
 <template>
     <v-container fluid fill-height>
-        <v-alert id="login_alert" close-text="Close Alert" color="red accent-4 red--text" type="error" text dark>
-        </v-alert>
-
+        
+        <!-- Alerte lorsque les informations d'identification sont invalides. -->
+        <v-alert id="login_alert" close-text="Close Alert" color="red accent-4 red--text" type="error" text dark></v-alert>
+        
         <v-card id="loginForm" class="px-4">
             <v-card-text>
+                
+                <!-- Formulaire de connexion -->
                 <v-form ref="loginForm" v-model="valid" lazy-validation>
                     <v-row>
+                        
+                        <!-- Courriel -->
                         <v-col cols="12">
                             <v-text-field v-model="loginEmail" :rules="loginEmailRules" label="E-mail" required></v-text-field>
                         </v-col>
+                        
+                        <!-- Mot de passe -->
                         <v-col cols="12">
                             <v-text-field v-model="loginPassword" :append-icon="show1?'eye':'eye-off'" :rules="[rules.required, rules.min]" :type="show1 ? 'text' : 'password'" name="input-10-1" label="Password" hint="At least 8 characters" counter @click:append="show1 = !show1"></v-text-field>
                         </v-col>
-                        <v-col class="d-flex" cols="12" sm="6" xsm="12">
-                        </v-col>
+                        
+                        <!-- Colonne vide -->
+                        <v-col class="d-flex" cols="12" sm="6" xsm="12"></v-col>
+                        
+                        <!-- Bouton de connexion -->
                         <v-col class="d-flex" cols="12" sm="6" xsm="12" align-end>
                             <v-btn x-large block :disabled="!valid" color="success" @click="validate"> Login </v-btn>
                         </v-col>
+
                     </v-row>
                 </v-form>
+
             </v-card-text>
         </v-card>
+        
     </v-container> 
- </template>
+</template>
 
 <script>
-    import { mapWritableState  } from 'pinia'
-    import { useAuthenticationStore } from '@/store/authentication'
     import API from "@/api";
 
     export default {
@@ -48,22 +59,17 @@
                 required: value => !!value || "Required.",
                 min: v => (v && v.length >= 8) || "Min 8 characters"
             },
-            store: null,
         }),
-        computed: {
-            ...mapWritableState(useAuthenticationStore, ['first_name']),
-            ...mapWritableState(useAuthenticationStore, ['last_name']),
-            ...mapWritableState(useAuthenticationStore, ['type']),
-            ...mapWritableState(useAuthenticationStore, ['departement']),
-            ...mapWritableState (useAuthenticationStore, ['is_activated']),
+        beforeCreate() {
+            if(sessionStorage.getItem('authentication')) {
+                this.$router.push("/");
+                sessionStorage.clear();
+                this.name = "";
+            }
         },
         methods: {
             async validate() {
-                let is_connected = false;
-                
                 if (this.$refs.loginForm.validate()) {
-                    const store = useAuthenticationStore()
-                    
                     await API.getUser(this.loginEmail, this.loginPassword)
                     .then(
                         function (response) {
@@ -84,40 +90,16 @@
 
                                 setTimeout(() => {document.getElementById("login_alert").style.visibility = "hidden"}, 3000);
                             } else {
-                                store.$patch({
-                                    first_name: response.employe.prenom,
-                                    last_name: response.employe.nom,
-                                    type: response.type_utilisateur.nom,
-                                    is_activated: response.actif, 
-                                });
-
-                                store.$subscribe((mutation, state) => {
-                                    // import { MutationType } from 'pinia'
-                                    mutation.type // 'direct' | 'patch object' | 'patch function'
-                                    // same as cartStore.$id
-                                    mutation.first_name
-                                    mutation.last_name 
-                                    mutation.type
-                                    mutation.is_activated
-                                    // only available with mutation.type === 'patch object'
-                                    mutation.payload // patch object passed to cartStore.$patch()
-
-
-                                    // persist the whole state to the local storage whenever it changes
-                                    localStorage.setItem('auth', JSON.stringify(state))
-                                });
-
-                                console.log(localStorage.getItem('auth'));
-   
-                                is_connected = true;
+                                sessionStorage.setItem('authentication', JSON.stringify(response));
                             }
                         }
                     )
 
-                    if(is_connected)
-                        // console.log(store)
-                        // console.log(localStorage.getItem('auth'))
+                    if (JSON.parse(sessionStorage.getItem('authentication')).type_utilisateur.nom == 'Administrateur') {
+                        this.$router.push("/user_list");
+                    }else if (JSON.parse(sessionStorage.getItem('authentication')).type_utilisateur.nom == 'Responsable') {
                         this.$router.push("/student_list");
+                    }
                 }
             },
             reset() {
