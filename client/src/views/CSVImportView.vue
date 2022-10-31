@@ -1,5 +1,9 @@
 <template>
   <v-container>
+    <v-alert id="csv_alert" close-text="Close Alert" :color="alertColor" :type="alertType" text dark v-if="alert">
+      {{ alertContent }}
+    </v-alert>
+
     <h2 style="color: #FC8D33" class="mb-5">Exportation des données</h2>
     <v-card>
       <v-col class="text-center">
@@ -50,7 +54,11 @@ export default {
     return {
       isSelecting: false,
       selectedFile: null,
-      loading: false
+      loading: false,
+      alert: false,
+      alertContent: "",
+      alertColor: "green",
+      alertType: "success",
     }
   },
   mounted() {
@@ -79,38 +87,53 @@ export default {
 
       let reader = new FileReader();
 
-      reader.onload = (function (id, outsideRouter) {
+      reader.onload = (function (id, outsideRouter, file) {
         const button_id = id;
         const router = outsideRouter;
 
         return function (e) {
-          var data = e.target.result;
-          var workbook = XLSX.read(data, {
+          let data = e.target.result;
+          let workbook = XLSX.read(data, {
             type: 'binary'
           });
 
           workbook.SheetNames.forEach(async function (sheetName) {
             // File to object
-            var XL_row_object = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { defval: '' });
+            let XL_row_object = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { defval: '' });
+
+            let response;
 
             // Rapport encadrement
             if (button_id === "rapport_encadrement") {
-              const response = await API.addRapportEncadrement(XL_row_object);
-              router.push({ name: 'home', params: { response: response } });
+              response = await API.addRapportEncadrement(XL_row_object);
             }
             // Sondage mathématiques
             else if (button_id === "sondage_mathematiques") {
-              const response = await API.addSondageMathematiques(XL_row_object);
-              router.push({ name: 'home', params: { response: response } });
+              response = await API.addSondageMathematiques(XL_row_object);
             }
             // Etudiants internationaux
             else if (button_id === "etudiants_internationaux") {
-              const response = await API.addEtudiantsInternationaux(XL_row_object);
-              router.push({ name: 'home', params: { response: response } });
+              response = await API.addEtudiantsInternationaux(XL_row_object);
             }
+
+            // If error
+            if (response.code === 'ERR_BAD_REQUEST') {
+              file.alertContent = response.response.data.message;
+              file.alertColor = "red";
+              file.alertType = "error";
+            }
+            // If it works
+            else {
+              file.alertContent = response.message;
+              file.alertColor = "green";
+              file.alertType = "success";
+            }
+
+            file.alert = true;
+            file.loading = false;
           })
         };
-      })(e.target.id, this.$router);
+      })(e.target.id, this.$router, this);
 
       reader.readAsBinaryString(this.selectedFile);
     },
