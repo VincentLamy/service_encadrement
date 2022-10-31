@@ -7,7 +7,7 @@
           <v-list-item-subtitle v-text="responsable.programme"></v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
-      
+
       <v-divider></v-divider>
 
       <v-list nav dense>
@@ -25,10 +25,11 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-app-bar app >
+    <v-app-bar app>
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 
-      <v-toolbar-title fluid style="width: 100%" class="text-center blue--text text--darken-3">Service d'encadrement</v-toolbar-title>
+      <v-toolbar-title fluid style="width: 100%" class="text-center blue--text text--darken-3">Service d'encadrement
+      </v-toolbar-title>
     </v-app-bar>
 
     <v-main>
@@ -38,41 +39,45 @@
 </template>
 
 <script>
-  const dev = {
-    "liste_etudiants": true,
-    "liste_responsables": true,
-    "csv": true,
-  }
+const dev = {
+  "liste_etudiants": true,
+  "liste_responsables": true,
+  "csv_import": true,
+  "csv_export": true,
+}
 
-  const admin = {
-    "liste_etudiants": false,
-    "liste_responsables": true,
-    "csv": false,
-  }
+const admin = {
+  "liste_etudiants": false,
+  "liste_responsables": true,
+  "csv_import": false,
+  "csv_export": true,
+}
 
-  const responsable = {
-    "liste_etudiants": true,
-    "liste_responsables": false,
-    "csv": true,
-  }
+const responsable = {
+  "liste_etudiants": true,
+  "liste_responsables": false,
+  "csv_import": true,
+  "csv_export": true,
+}
 
-  const current = dev;
+const current = dev;
 
-  export default {
-    data: () => ({
-      drawer: null,
-      items: [
-        { title: 'Liste des étudiants',     icon: 'mdi-account-multiple', link: "/student_list", info: current.liste_etudiants },
-        { title: 'Liste des responsables',  icon: 'mdi-account-multiple', link: "/user_list", info: current.liste_responsables },
-        { title: 'Importer un fichier CSV', icon: 'mdi-attachment', link: "/csv_import", info: current.csv },
-      ],
-      responsable: [
-        { name: "Vincent Lamy", programme: "Programmation" } // TODO Modifier pour aller chercher les données dans la BD
-      ]
-    }),
-  }
+export default {
+  data: () => ({
+    drawer: null,
+    items: [
+      { title: 'Liste des étudiants', icon: 'mdi-account-multiple', link: "/student_list", info: current.liste_etudiants },
+      { title: 'Liste des responsables', icon: 'mdi-account-multiple', link: "/user_list", info: current.liste_responsables },
+      { title: 'Importer un fichier CSV', icon: 'mdi-attachment', link: "/csv_import", info: current.csv_import },
+      { title: 'Exporter un fichier CSV', icon: 'mdi-attachment', link: "/csv_export", info: current.csv_export },
+    ],
+    responsable: [
+      { name: "Vincent Lamy", programme: "Programmation" } // TODO Modifier pour aller chercher les données dans la BD
+    ]
+  }),
+}
 </script>
 
 <style>
-  @import './assets/styles/style.css';
+@import './assets/styles/style.css';
 </style>

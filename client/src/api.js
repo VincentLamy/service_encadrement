@@ -13,9 +13,15 @@ export default class API {
     }
   }
 
-  static async getAllStudent() {
-    const res = await axios.get(`${url}/student_list`);
-    return res.data;
+  // To export a rapport d'encadrement
+  static async exportRapportEncadrement() {
+    try {
+      const res = await axios.get(`${url}/exportRapportEncadrement`);
+      return res.data;
+    }
+    catch (err) {
+      return err;
+    }
   }
 
   // To insert a sondage mathematiques

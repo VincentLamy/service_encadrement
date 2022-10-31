@@ -3,9 +3,9 @@ import VueRouter from 'vue-router'
 import DatetimePicker from 'vuetify-datetime-picker'
 import HomeView from '../views/HomeView'
 import CSVImportView from '../views/CSVImportView'
+import CSVExportView from '../views/CSVExportView'
 import StudentListView from '../views/StudentListView'
 import StudentFormView from '../views/StudentFormView'
-
 import SupervisorFormView from '../views/SupervisorFormView'
 
 Vue.use(VueRouter)
@@ -21,6 +21,11 @@ const routes = [
     path: '/csv_import',
     name: 'csv-import',
     component: CSVImportView
+  },
+  {
+    path: '/csv_export',
+    name: 'csv-export',
+    component: CSVExportView
   },
   {
     path: '/student_list',

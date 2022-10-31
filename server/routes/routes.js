@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Importation = require("../controllers/importation");
+const Exportation = require("../controllers/exportation");
 const Student = require("../controllers/student");
 const Supervisor = require("../controllers/supervisor");
 const multer = require('multer');
@@ -21,6 +22,7 @@ router.get("/getSession", Importation.getSession);
 
 // Reports
 router.post("/rapportEncadrement", Importation.addRapportEncadrement);
+router.get("/exportRapportEncadrement", Exportation.exportRapportEncadrement);
 
 // Math form
 router.post("/sondageMathematiques", Importation.addSondageMathematiques);

@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <h2 style="color: #FC8D33" class="mb-5">Exportation des données</h2>
+    <h2 style="color: #FC8D33" class="mb-5">Importation des données</h2>
     <v-card>
       <v-col class="text-center">
         <p style="color: black" class="body-1 mt-7">Seulement les fichiers Excel ou CSV sont acceptés.</p>
@@ -50,7 +50,7 @@ export default {
     return {
       isSelecting: false,
       selectedFile: null,
-      loading: false
+      loading: false,
     }
   },
   mounted() {
@@ -74,8 +74,8 @@ export default {
       this.$refs.uploader.id = button;
     },
     onFileChanged(e) {
-      this.selectedFile = e.target.files[0];
       this.loading = true;
+      this.selectedFile = e.target.files[0];
 
       let reader = new FileReader();
 
