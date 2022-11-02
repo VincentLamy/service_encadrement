@@ -111,29 +111,53 @@ export default {
       const switch_actif = document.getElementById("actif").ariaChecked;
       const supervisor_actif = this.supervisor.actif.toString();
 
+      const today =  new Date();
+
       // If the activation switch has changed
       if (switch_actif != supervisor_actif) {
         // If the activation switch is now true
         if (document.getElementById("actif").ariaChecked === 'true') {
-          formData.append('date_desactivation', document.getElementById("date_activation_input").value);
+
+          
+          formData.append('date_desactivation', this.supervisor.date_activation);
+          
           this.date_desactivation = 'Non applicable';
+
+          formData.append('date_activation', this.supervisor.date_activation);
+          this.date_activation = this.dateToString(this.supervisor.date_activation);
+
         }
         // If the activation switch is now false
         else if (document.getElementById("actif").ariaChecked === 'false') {
-          formData.append('date_desactivation', this.dateToString(Date.now()));
-          this.date_desactivation = this.dateToString(Date.now());
+
+          
+          this.supervisor.date_desactivation = today;
+          
+          formData.append('date_desactivation', this.supervisor.date_desactivation);
+          
+          this.date_desactivation = this.dateToString(this.supervisor.date_desactivation);
+
         }
         this.supervisor.actif = !this.supervisor.actif;
         // If the activation switch hasn't changed
-      } else {
+      } 
+  
+      /*
+      else {
         // Prevent problems if date desactivation is Non applicable
         if (document.getElementById("date_desactivation_input").value === 'Non applicable') {
-          formData.append('date_desactivation', document.getElementById("date_activation_input").value);
+          
+          formData.append('date_desactivation', this.date_activation);
         } else {
-          formData.append('date_desactivation', document.getElementById("date_desactivation_input").value);
+          this.supervisor.date_activation = new Date(this.supervisor.date_activation);
+          this.supervisor.date_activation.setDate(this.supervisor.date_activation.getDate());
+          this.supervisor.date_activation = this.supervisor.date_activation.toLocaleDateString("fr-CA", options);
+          
+          formData.append('date_desactivation', this.supervisor.date_activation);
         }
-        this.date_desactivation = document.getElementById("date_desactivation_input").value;
+        this.date_desactivation = this.supervisor.date_activation;
       }
+      */
 
       if (this.$refs.form.validate()) {
         const response = await API.updateSupervisorFormInfo(this.supervisor.id, formData);
@@ -149,6 +173,9 @@ export default {
       if (this.date_activation !== this.dateToString(this.supervisor.date_desactivation)) {
         this.date_desactivation = this.dateToString(this.supervisor.date_desactivation);
       } else {
+        if (this.supervisor.date_activation === this.supervisor.date_desactivation && this.supervisor.actif === false) {
+        this.date_activation = 'Non applicable';
+        }
         this.date_desactivation = 'Non applicable';
       }
 
@@ -165,6 +192,9 @@ export default {
       if (this.date_activation !== this.dateToString(this.supervisor.date_desactivation)) {
         this.date_desactivation = this.dateToString(this.supervisor.date_desactivation);
       } else {
+        if (this.supervisor.date_activation === this.supervisor.date_desactivation && this.supervisor.actif === false) {
+          this.date_activation = 'Non applicable';
+        }
         this.date_desactivation = 'Non applicable';
       }
 
@@ -189,9 +219,14 @@ export default {
 
     this.date_activation = this.dateToString(this.supervisor.date_activation);
 
-    if (this.date_activation !== this.dateToString(this.supervisor.date_desactivation)) {
+    console.log(this.supervisor);
+
+    if (this.supervisor.date_activation !== this.supervisor.date_desactivation) {
       this.date_desactivation = this.dateToString(this.supervisor.date_desactivation);
     } else {
+      if (this.supervisor.date_activation === this.supervisor.date_desactivation && this.supervisor.actif === false) {
+        this.date_activation = 'Non applicable';
+      }
       this.date_desactivation = 'Non applicable';
     }
   },

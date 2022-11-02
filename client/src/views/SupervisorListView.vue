@@ -16,6 +16,7 @@
           </template> -->
       </v-data-table>
       <v-btn 
+          class=mt-2
           color="primary" 
           dark 
           @click="addSupervisor()"
@@ -47,6 +48,7 @@ export default {
     this.supervisor = response;
 
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    
 
     for (let index = 0; index < this.supervisor.length; index++) {
 
@@ -60,9 +62,14 @@ export default {
           this.supervisor[index].date_desactivation = this.supervisor[index].date_desactivation.toLocaleDateString("fr-CA", options);
         }
         else {
-          this.supervisor[index].date_activation = new Date(this.supervisor[index].date_activation);
-          this.supervisor[index].date_activation.setDate(this.supervisor[index].date_activation.getDate());
-          this.supervisor[index].date_activation = this.supervisor[index].date_activation.toLocaleDateString("fr-CA", options);
+
+          if (this.supervisor[index].date_activation === this.supervisor[index].date_desactivation && this.supervisor[index].actif === false) {
+            this.supervisor[index].date_activation = "Non applicable";
+          } else {
+            this.supervisor[index].date_activation = new Date(this.supervisor[index].date_activation);
+            this.supervisor[index].date_activation.setDate(this.supervisor[index].date_activation.getDate());
+            this.supervisor[index].date_activation = this.supervisor[index].date_activation.toLocaleDateString("fr-CA", options);
+          }
 
           this.supervisor[index].date_desactivation = "Non applicable";
         }
