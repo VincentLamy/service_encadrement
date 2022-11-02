@@ -46,9 +46,9 @@
               <v-col class="px-3" lg="6" sm="6" cols="12">
                 <v-text-field id="nom_input" label="Nom" :value="supervisor.employe.nom" :rules="rules" outlined />
               </v-col>
-              <!-- Date d'activation -->
+              <!-- Date de création -->
               <v-col class="px-3" lg="6" sm="6" cols="12">
-                <v-text-field id="date_activation_input" label="Date d'activation" :value="date_activation" outlined
+                <v-text-field id="date_activation_input" label="Date de création" :value="date_activation" outlined
                   readonly />
               </v-col>
             </v-row>
