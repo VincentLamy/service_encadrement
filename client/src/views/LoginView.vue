@@ -4,8 +4,6 @@
         <!-- Alerte lorsque les informations d'identification sont invalides. -->
         <v-alert id="login_alert" close-text="Close Alert" color="red accent-4 red--text" type="error" text dark></v-alert>
         
-        <!-- TODO <iframe id="f1" ref="frame1" :src="'/recoverPassword.html'"></iframe> -->
-
         <v-card id="loginForm" class="px-4">
             <v-card-text>
                 <v-form ref="loginForm" v-model="valid" lazy-validation>
@@ -17,8 +15,15 @@
                             <v-text-field v-model="loginPassword" :append-icon="show1?'eye':'eye-off'" :rules="[rules.required, rules.min]" :type="show1 ? 'text' : 'password'" name="input-10-1" label="Password" hint="At least 8 characters" counter @click:append="show1 = !show1"></v-text-field>
                         </v-col>
                         
+<<<<<<< HEAD
                         <v-col class="d-flex" cols="12" sm="6" xsm="12"></v-col>
 
+=======
+                        <!-- Colonne vide -->
+                        <v-col class="d-flex" cols="12" sm="6" xsm="12"></v-col>
+                        
+                        <!-- Bouton de connexion -->
+>>>>>>> parent of 77c69a6 (recoverPassword in coming)
                         <v-col class="d-flex" cols="12" sm="6" xsm="12" align-end>
                             <v-btn x-large block :disabled="!valid" color="success" @click="validate"> Login </v-btn>
                         </v-col>
@@ -26,6 +31,10 @@
                 </v-form>
             </v-card-text>
         </v-card>
+<<<<<<< HEAD
+=======
+        
+>>>>>>> parent of 77c69a6 (recoverPassword in coming)
     </v-container> 
  </template>
 

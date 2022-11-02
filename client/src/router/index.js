@@ -16,11 +16,6 @@ const routes = [
     component: LoginView
   },
   {
-    path: '/recoverPassword',
-    name: 'recoverPassword',
-    component: RecoverPasswordView,
-  },
-  {
     path: '/csv_import',
     name: 'csv-import',
     component: CSVImportView
