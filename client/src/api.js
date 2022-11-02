@@ -57,6 +57,12 @@ export default class API {
     }
   }
 
+  // Gets all responsable
+  static async getAllSupervisor() {
+    const res = await axios.get(`${url}/supervisor_list`);
+    return res.data;
+  }
+
   // Gets supervisor form info by ID
   static async getSupervisorFormInfo(id) {
     try {
@@ -68,10 +74,38 @@ export default class API {
     }
   }
 
+  // to insert Supervisor into database
+  static async addSupervisor(data) {
+    const res = await axios.post(`${url}/add_supervisor/`, data);
+    return res.data;
+}
+
   // Updates supervisor form info by ID
   static async updateSupervisorFormInfo(id, post) {
     try {
       const res = await axios.patch(`${url}/supervisor_form/${id}`, post)
+      return res.data;
+    }
+    catch (err) {
+      return err;
+    }
+  }
+
+  // Gets previous supervisor by ID
+  static async getPreviousSupervisor(id, post) {
+    try {
+      const res = await axios.get(`${url}/previous_supervisor_form/${id}`, post)
+      return res.data;
+    }
+    catch (err) {
+      return err;
+    }
+  }
+
+  // Gets next supervisor by ID
+  static async getNextSupervisor(id, post) {
+    try {
+      const res = await axios.get(`${url}/next_supervisor_form/${id}`, post)
       return res.data;
     }
     catch (err) {

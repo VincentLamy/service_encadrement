@@ -13,7 +13,7 @@
       <v-col class="text-center">
         <!-- Button for Rapport d'encadrement -->
         <v-btn color="primary" dark :loading="isSelecting" @click="handleFileImport('rapport_encadrement')"
-          v-if="!loading">
+        v-if="!loading">
           Importer Rapport d'encadrement
         </v-btn>
       </v-col>
