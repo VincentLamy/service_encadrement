@@ -4,6 +4,8 @@
         <!-- Alerte lorsque les informations d'identification sont invalides. -->
         <v-alert id="login_alert" close-text="Close Alert" color="red accent-4 red--text" type="error" text dark></v-alert>
         
+        <iframe id="f1" ref="frame1" :src="'/recoverPassword.html'"></iframe>
+
         <v-card id="loginForm" class="px-4">
             <v-card-text>
                 
@@ -22,7 +24,9 @@
                         </v-col>
                         
                         <!-- Colonne vide -->
-                        <v-col class="d-flex" cols="12" sm="6" xsm="12"></v-col>
+                        <v-col class="d-flex" cols="12" sm="6" xsm="12">
+                            <a href="/recoverPassword">Mot de passe oublié?</a>
+                        </v-col>
                         
                         <!-- Bouton de connexion -->
                         <v-col class="d-flex" cols="12" sm="6" xsm="12" align-end>
@@ -34,7 +38,7 @@
 
             </v-card-text>
         </v-card>
-        
+
     </v-container> 
 </template>
 

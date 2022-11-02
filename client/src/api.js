@@ -57,4 +57,10 @@ export default class API {
     const res = await axios.post(`${url}/get_user`, { "username": username, "password": password });
     return res.data;
   }
+
+  // Vérifie si l'utilisateur existe pour retrouver le mot de passe.
+  static async recoverPassword(username, password) {
+    const res = await axios.post(`${url}/get_user`, { "username": username });
+    return res.data;
+  }
 }
