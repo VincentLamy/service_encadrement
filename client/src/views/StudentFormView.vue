@@ -87,8 +87,9 @@
       </v-card-text>
     </v-card>
 
+    <!-- Panneaux expansion (international & form. math) -->
     <v-expansion-panels
-      v-if="student.TA_EtuStatut || student.FormulaireMath"
+      v-if="student.TA_EtudiantPaysStatut || student.FormulaireMath"
       class="mb-5"
       multiple
       flat
@@ -98,7 +99,7 @@
         Informations de l'étudiant à l'international
         ************************************************ 
       -->
-      <v-expansion-panel v-if="student.TA_EtuStatut">
+      <v-expansion-panel v-if="student.TA_EtudiantPaysStatut">
         <v-expansion-panel-header class="outlined">
           <h3>Informations de l'étudiant à l'international</h3>
         </v-expansion-panel-header>
@@ -106,12 +107,22 @@
           <v-row no-gutters class="mt-10">
             <!-- Statut -->
             <v-col class="px-3" sm="6" cols="12">
-              <v-select label="Statut" outlined readonly />
+              <v-text-field
+                label="Statut"
+                :value="student.TA_EtudiantPaysStatut[0].statut.nom"
+                outlined
+                readonly
+              />
             </v-col>
 
             <!-- Pays d'origine -->
             <v-col class="px-3" sm="6" cols="12">
-              <v-select label="Pays d'origine" outlined readonly />
+              <v-text-field
+                label="Pays d'origine"
+                :value="student.TA_EtudiantPaysStatut[0].pays.nom"
+                outlined
+                readonly
+              />
             </v-col>
           </v-row>
         </v-expansion-panel-content>
@@ -122,7 +133,7 @@
         Questionnaire de mathématiques
         ************************************************ 
       -->
-      <v-expansion-panel v-if="student.FormulaireMath">
+      <v-expansion-panel v-if="student.FormulaireMath[0]">
         <v-expansion-panel-header class="outlined">
           <h3>Questionnaire de mathématiques</h3>
         </v-expansion-panel-header>
@@ -132,7 +143,7 @@
             <v-col class="px-3" sm="6" cols="12">
               <v-text-field
                 label="Heure de début"
-                :value="student.FormulaireMath[0].heure_debut"
+                :value="formattedDate(student.FormulaireMath[0].heure_debut)"
                 outlined
                 readonly
               />
@@ -142,7 +153,7 @@
             <v-col class="px-3" sm="6" cols="12">
               <v-text-field
                 label="Heure de fin"
-                :value="student.FormulaireMath[0].heure_fin"
+                :value="formattedDate(student.FormulaireMath[0].heure_fin)"
                 outlined
                 readonly
               />
@@ -175,17 +186,14 @@
 
           <!-- Cours de mathématiques suivis -->
 
-          <h4 class="d-flex justify-center my-4">
+          <h4 class="d-flex justify-center mb-6">
             Cours de mathématiques de l'étudiant
           </h4>
 
           <!-- TODO - FormulaireMath[0], on modifie la BD ou on laisse ça de même? -->
-          <v-row
-            v-for="(ta_math, i) in student.FormulaireMath[0].TA_Math"
-            :key="i"
-            no-gutters
-          >
-            <!-- Code du cours -->
+          <template v-for="(ta_math, i) in student.FormulaireMath[0].TA_Math">
+            <v-row no-gutters>
+              <!-- Code du cours 
             <v-col class="px-3" lg="3" sm="6" cols="12">
               <v-text-field
                 label="Code du cours"
@@ -194,38 +202,44 @@
                 outlined
                 readonly
               />
-            </v-col>
+            </v-col>-->
 
-            <!-- Nom du cours de math -->
-            <v-col class="px-3" lg="3" sm="6" cols="12">
-              <v-text-field
-                label="Nom du cours"
-                :value="ta_math.cours_math.name"
-                outlined
-                readonly
-              />
-            </v-col>
+              <!-- Nom du cours de math -->
+              <v-col class="px-3" md="4" cols="12">
+                <v-text-field
+                  label="Cours"
+                  :value="ta_math.cours_math.nom"
+                  outlined
+                  readonly
+                />
+              </v-col>
 
-            <!-- Note de l'étudiant dans le cours -->
-            <v-col class="px-3" lg="3" sm="6" cols="12">
-              <v-text-field
-                label="Note de l'étudiant"
-                :value="ta_math.cours_math.mark"
-                outlined
-                readonly
-              />
-            </v-col>
+              <!-- Note de l'étudiant dans le cours -->
+              <v-col class="px-3" md="4" cols="12">
+                <v-text-field
+                  label="Note de l'étudiant"
+                  :value="ta_math.note_obtenue"
+                  outlined
+                  readonly
+                />
+              </v-col>
 
-            <!-- Année durant laquelle l'étudiant a suivi le cours -->
-            <v-col class="px-3" lg="3" sm="6" cols="12">
-              <v-text-field
-                label="Année"
-                :value="ta_math.cours_math.year"
-                outlined
-                readonly
-              />
-            </v-col>
-          </v-row>
+              <!-- Année durant laquelle l'étudiant a suivi le cours -->
+              <v-col class="px-3" md="4" cols="12">
+                <v-text-field
+                  label="Année"
+                  :value="'Secondaire ' + ta_math.cours_math.annee"
+                  outlined
+                  readonly
+                />
+              </v-col>
+            </v-row>
+            <v-divider
+              v-if="i < student.FormulaireMath[0].TA_Math.length - 1"
+              :key="i"
+              class="mb-7"
+            ></v-divider>
+          </template>
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
@@ -497,7 +511,6 @@ export default {
     async getData() {
       // Get student info
       this.student = await API.getStudentFormInfo(this.$route.params.id);
-      console.log(this.student);
 
       // Get all remark codes
       this.remark_codes = await API.getRemarkCode();
@@ -522,10 +535,20 @@ export default {
         };
       });
     },
+    formattedDate(string_date) {
+      let d = new Date(Date.parse(string_date));
+      const options = {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+      };
+      return d.toLocaleDateString("fr-CA", options);
+    },
   },
   async created() {
     await this.getData();
-    console.log(this.student.FormulaireMath);
   },
   computed: {
     amountClassesInDifficulty() {

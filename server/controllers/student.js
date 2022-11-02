@@ -50,16 +50,7 @@ module.exports = class Student {
       where: {
         no_etudiant: Number(no_etudiant),
       },
-      include: {
-        FormulaireMath: {
-          include: {
-            TA_Math: {
-              include: {
-                cours_math: true,
-              },
-            },
-          },
-        },        
+      include: {      
         TA_EtudiantGroupe: {
           include: {
             groupe: {
@@ -85,6 +76,21 @@ module.exports = class Student {
               },
             },
             code_remarque_note_finale: true,
+          },
+        },
+        FormulaireMath: {
+          include: {
+            TA_Math: {
+              include: {
+                cours_math: true,
+              },
+            },
+          },
+        },
+        TA_EtudiantPaysStatut: {
+          include: {
+            pays: true,
+            statut: true,
           },
         },
       },
