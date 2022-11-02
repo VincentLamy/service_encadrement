@@ -53,8 +53,6 @@ export default {
       //   this.students[index].student_critical_state = false;
       // }
     }
-
-    console.log(this.students);
   },
   methods: {
     rowClick(item, row) {
