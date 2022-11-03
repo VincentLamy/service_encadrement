@@ -15,11 +15,11 @@ const routes = [
     name: 'login',
     component: LoginView,
   },
-  // {
-  //   path: '/recoverPassword',
-  //   name: 'recoverPassword',
-  //   component: RecoverPasswordView,
-  // },
+  {
+    path: '/recoverPassword',
+    name: 'recoverPassword',
+    component: RecoverPasswordView,
+  },
   {
     path: '/csv_import',
     name: 'csv-import',
