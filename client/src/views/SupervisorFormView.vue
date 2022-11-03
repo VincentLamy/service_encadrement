@@ -90,7 +90,9 @@ export default {
   name: "FicheSuperviseur",
   data() {
     return {
-      supervisor: {},
+      supervisor: {
+        employe: {},
+      },
       date_activation: null,
       date_desactivation: null,
       show: false,
