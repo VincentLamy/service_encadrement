@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE `commentaire` MODIFY `date_creation` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);

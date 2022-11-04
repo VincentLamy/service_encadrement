@@ -268,7 +268,7 @@ module.exports = class Importation {
                         else if (file[i]['Description de la remarque'] === "2") {
                             contenu = "Moyennes";
                         }
-                        else if (file['Description de la remarque'][i] === "3") {
+                        else if (file[i]['Description de la remarque'] === "3") {
                             contenu = "Bonnes";
                         }
                         else if (file[i]['Description de la remarque'] === "4") {
@@ -283,10 +283,10 @@ module.exports = class Importation {
                         where: {
                             no_etudiant_id_code_remarque_titre_contenu_date_creation: {
                                 no_etudiant: etudiant.no_etudiant || 0,
-                                id_code_remarque: file['Code de la remarque'][i] || 0,
+                                id_code_remarque: String(file[i]['Code de la remarque']) || "",
                                 titre: titre,
                                 contenu: contenu,
-                                date_creation: new Date(file['Date de saisie de la remarque'][i]) || 0,
+                                date_creation: new Date(file[i]['Date de saisie de la remarque']) || 0,
                             }
                         },
                         update: {},
@@ -339,6 +339,7 @@ module.exports = class Importation {
             }
             res.status(201).json({ message: 'Le rapport d\'encadrement a été ajouté avec succès' });
         } catch (err) {
+            console.log(err);
             res.status(400).json({ message: 'Le rapport d\'encadrement n\'a pas pu être ajouté' });
         }
     };
