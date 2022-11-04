@@ -38,7 +38,6 @@ module.exports = class Importation {
 
             const size_array = array_code.length;
 
-
             for (let i = 0; i < size_array; i++) {
                 // Insert Code remarque
                 const code_remarque = await prisma.codeRemarque.upsert({
@@ -225,6 +224,9 @@ module.exports = class Importation {
                 });
 
                 if (file[i]['Date de saisie de la remarque']) {
+                    // Traitement de la date
+                    const dateRemarque = excelDateToJSDate(file[i]['Date de saisie de la remarque']);
+
                     // Traitement des remarques
                     let titre = "";
                     let contenu = "";
@@ -286,7 +288,7 @@ module.exports = class Importation {
                                 id_code_remarque: String(file[i]['Code de la remarque']) || "",
                                 titre: titre,
                                 contenu: contenu,
-                                date_creation: new Date(file[i]['Date de saisie de la remarque']) || 0,
+                                date_creation: dateRemarque || 0,
                             }
                         },
                         update: {},
@@ -295,7 +297,7 @@ module.exports = class Importation {
                             no_employe: employe.no_employe,
                             id_groupe: groupe.id,
                             id_code_remarque: String(file[i]['Code de la remarque']) || 0,
-                            date_creation: new Date(file[i]['Date de saisie de la remarque']) || 0,
+                            date_creation: dateRemarque || 0,
                             titre: titre,
                             contenu: contenu,
                         },
@@ -339,7 +341,6 @@ module.exports = class Importation {
             }
             res.status(201).json({ message: 'Le rapport d\'encadrement a été ajouté avec succès' });
         } catch (err) {
-            console.log(err);
             res.status(400).json({ message: 'Le rapport d\'encadrement n\'a pas pu être ajouté' });
         }
     };
@@ -486,3 +487,22 @@ module.exports = class Importation {
     };
 };
 
+// function to convert excel date to normal js date  
+function excelDateToJSDate(serial) {
+    var utc_days = Math.floor(serial - 25569);
+    var utc_value = utc_days * 86400;
+    var date_info = new Date(utc_value * 1000);
+
+    var fractional_day = serial - Math.floor(serial) + 0.0000001;
+
+    var total_seconds = Math.floor(86400 * fractional_day);
+
+    var seconds = total_seconds % 60;
+
+    total_seconds -= seconds;
+
+    var hours = Math.floor(total_seconds / (60 * 60));
+    var minutes = Math.floor(total_seconds / 60) % 60;
+
+    return new Date(date_info.getFullYear(), date_info.getMonth(), date_info.getDate() + 1, hours, minutes, seconds);
+}
