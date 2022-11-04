@@ -368,7 +368,17 @@
                                       Modifier le nom du cours
                                     </v-card-title>
                                     <v-card-text>
-                                      <v-form ref="courseNameForm">
+                                      <v-form
+                                        ref="courseNameForm"
+                                        onSubmit="return false;"
+                                        @keyup.native.enter="
+                                          updateCourseName(
+                                            student_group.groupe.cours.code,
+                                            course_input.value,
+                                            sg_index
+                                          )
+                                        "
+                                      >
                                         <v-text-field
                                           label="Nom du cours"
                                           outlined
