@@ -4,26 +4,26 @@
             Création d'un responsable
           </h2>
           <v-form ref="form" @submit.prevent="submitForm" class="pa-5" enctype="multipart/form-data">
-            <v-card class="py-2 px-3 mb-5" outlined>
+            <v-card class="py-2 px-3 mb-5 mx-auto" outlined max-width="50%">
 
                   <!-- Prénom -->
-                  <v-col class="px-3" lg="6" sm="6" cols="12">
+                  <v-col class="px-3" lg="12" sm="12" cols="12">
                     <v-text-field id="prenom_input" label="Prénom" :rules="rules"
                       outlined />
                   </v-col>
                 
                   <!-- Nom -->
-                  <v-col class="px-3" lg="6" sm="6" cols="12">
+                  <v-col class="px-3" lg="12" sm="12" cols="12">
                     <v-text-field id="nom_input" label="Nom" :rules="rules" outlined />
                   </v-col>
 
                   <!-- Courriel -->
-                  <v-col class="px-3" lg="6" sm="6" cols="12">
+                  <v-col class="px-3" lg="12" sm="12" cols="12">
                     <v-text-field id="courriel_input" label="Courriel" :rules="rules" outlined />
                   </v-col>
             
                 <!-- Create -->
-                <v-btn type="submit" color="primary">Créer</v-btn>
+                <v-btn block type="submit" color="primary">Créer</v-btn>
         
             </v-card>
           </v-form>
