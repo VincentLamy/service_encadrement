@@ -1,14 +1,16 @@
-import axios from 'axios';
-const url = '/api';
+import axios from "axios";
+const url = "/api";
 
 export default class API {
   // To insert a rapport d'encadrement
   static async addRapportEncadrement(rapportEncadrement) {
     try {
-      const res = await axios.post(`${url}/rapportEncadrement`, rapportEncadrement);
+      const res = await axios.post(
+        `${url}/rapportEncadrement`,
+        rapportEncadrement
+      );
       return res.data;
-    }
-    catch (err) {
+    } catch (err) {
       return err;
     }
   }
@@ -21,10 +23,12 @@ export default class API {
   // To insert a sondage mathematiques
   static async addSondageMathematiques(sondageMathematiques) {
     try {
-      const res = await axios.post(`${url}/sondageMathematiques`, sondageMathematiques);
+      const res = await axios.post(
+        `${url}/sondageMathematiques`,
+        sondageMathematiques
+      );
       return res.data;
-    }
-    catch (err) {
+    } catch (err) {
       return err;
     }
   }
@@ -32,10 +36,12 @@ export default class API {
   // To insert a étudiants internationaux list
   static async addEtudiantsInternationaux(etudiantsInternationaux) {
     try {
-      const res = await axios.post(`${url}/etudiantsInternationaux`, etudiantsInternationaux);
+      const res = await axios.post(
+        `${url}/etudiantsInternationaux`,
+        etudiantsInternationaux
+      );
       return res.data;
-    }
-    catch (err) {
+    } catch (err) {
       return err;
     }
   }
@@ -78,7 +84,7 @@ export default class API {
   static async addSupervisor(data) {
     const res = await axios.post(`${url}/add_supervisor/`, data);
     return res.data;
-}
+  }
 
   // Updates supervisor form info by ID
   static async updateSupervisorFormInfo(id, post) {
@@ -109,6 +115,67 @@ export default class API {
       return res.data;
     }
     catch (err) {
+      return err;
+    }
+  }
+
+  // Update course name
+  static async changeCourseName(course) {
+    try {
+      const res = await axios.patch(`${url}/changeCourseName`, course);
+      return res.data;
+    } catch (err) {
+      return err;
+    }
+  }
+
+  // Add comment
+  static async addComment(comment) {
+    try {
+      const res = await axios.post(`${url}/addComment`, comment);
+      return res.data;
+    } catch (err) {
+      return err;
+    }
+  }
+
+  // Edit comment
+  static async editComment(comment) {
+    try {
+      const res = await axios.patch(`${url}/editComment`, comment);
+      return res.data;
+    } catch (err) {
+      return err;
+    }
+  }
+
+  // Get all remark codes
+  static async getRemarkCode() {
+    try {
+      const res = await axios.get(`${url}/getRemarkCodes`);
+      return res.data;
+    } catch (err) {
+      return err;
+    }
+  }
+
+  // Gets previous supervisor by numero etudiant
+  static async getPreviousStudent(numero_etudiant) {
+    try {
+      const res = await axios.get(`${url}/previous_student_form/${numero_etudiant}`);
+      return res.data;
+    } catch (err) {
+      return err;
+    }
+  }
+
+
+  // Gets next supervisor by numero etudiant
+  static async getNextStudent(numero_etudiant) {
+    try {
+      const res = await axios.get(`${url}/next_student_form/${numero_etudiant}`);
+      return res.data;
+    } catch (err) {
       return err;
     }
   }
