@@ -342,63 +342,10 @@
                           <div class="font-weight-bold">
                             <span>
                               <!-- Modifier le nom du cours -->
-                              <v-menu
-                                v-model="course_input.show_menu[sg_index]"
-                                :close-on-content-click="false"
-                                @input="onCourseMenuToggle"
-                              >
-                                <template v-slot:activator="{ on, attrs }">
-                                  <v-btn
-                                    x-small
-                                    outlined
-                                    color="blue darken-3"
-                                    class="mb-1"
-                                    v-bind="attrs"
-                                    v-on="on"
-                                  >
-                                    {{
-                                      student_group.groupe.cours.nom ||
-                                      "Ajouter un nom au cours"
-                                    }}
-                                  </v-btn>
-                                </template>
-                                <template>
-                                  <v-card>
-                                    <v-card-title>
-                                      Modifier le nom du cours
-                                    </v-card-title>
-                                    <v-card-text>
-                                      <v-form
-                                        ref="courseNameForm"
-                                        onSubmit="return false;"
-                                        @keyup.native.enter="
-                                          updateCourseName(
-                                            student_group.groupe.cours.code,
-                                            course_input.value,
-                                            sg_index
-                                          )
-                                        "
-                                      >
-                                        <v-text-field
-                                          label="Nom du cours"
-                                          outlined
-                                          v-model="course_input.value"
-                                          counter="64"
-                                          :rules="course_input.rules"
-                                          :append-outer-icon="'mdi-arrow-right'"
-                                          @click:append-outer="
-                                            updateCourseName(
-                                              student_group.groupe.cours.code,
-                                              course_input.value,
-                                              sg_index
-                                            )
-                                          "
-                                        />
-                                      </v-form>
-                                    </v-card-text>
-                                  </v-card>
-                                </template>
-                              </v-menu>
+                              <v-course-name-input
+                                :data="student_group.groupe.cours"
+                                @updated="getData"
+                              />
                             </span>
                             ({{ student_group.groupe.cours.code }})
                           </div>
@@ -475,6 +422,7 @@
 import API from "@/api";
 import CommentList from "@/components/CommentList";
 import CommentInput from "@/components/CommentInput";
+import CourseNameInput from "@/components/CourseNameInput";
 
 export default {
   name: "FicheEtudiante",
@@ -485,55 +433,12 @@ export default {
       semesters: [],
       semester_tab: null,
       show_add_comment: false,
-      course_input: {
-        show_menu: [],
-        value: "",
-        rules: [
-          (v) => !!v || "Un nom de cours est requis",
-          (v) =>
-            v.length <= 64 ||
-            "Le nom du cours doit contenir moins de 64 caractères",
-        ],
-      },
-      comment: {
-        title: {
-          value: "",
-          rules: [
-            (v) => !!v || "Un titre est requis",
-            (v) =>
-              v.length <= 64 || "Le titre doit contenir moins de 64 caractères",
-          ],
-        },
-        description: {
-          value: "",
-          rules: [
-            (v) => !!v || "Une description est requise",
-            (v) =>
-              v.length <= 255 ||
-              "La description doit contenir moins de 255 caractères",
-          ],
-        },
-        remark_id: {
-          value: null,
-          rules: [(v) => !!v || "Un code de remarque doit être choisi"],
-        },
-      },
     };
   },
+  async created() {
+    await this.getData();
+  },
   methods: {
-    async updateCourseName(code, name, input_index) {
-      if (!this.$refs.courseNameForm[input_index].validate()) return;
-
-      await API.changeCourseName({
-        code: code,
-        name: name,
-      });
-      this.course_input.show_menu[input_index] = false;
-      await this.getData();
-    },
-    async onCourseMenuToggle(opened) {
-      if (!opened) this.course_input.value = "";
-    },
     async getData() {
       // Get student info
       this.student = await API.getStudentFormInfo(this.$route.params.id);
@@ -573,9 +478,6 @@ export default {
       return d.toLocaleDateString("fr-CA", options);
     },
   },
-  async created() {
-    await this.getData();
-  },
   computed: {
     amountClassesInDifficulty() {
       return this.student.TA_EtudiantGroupe
@@ -588,6 +490,7 @@ export default {
   components: {
     "v-comment-list": CommentList,
     "v-comment-input": CommentInput,
+    "v-course-name-input": CourseNameInput,
   },
 };
 </script>
