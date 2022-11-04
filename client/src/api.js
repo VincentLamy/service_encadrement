@@ -84,7 +84,7 @@ export default class API {
   static async addSupervisor(data) {
     const res = await axios.post(`${url}/add_supervisor/`, data);
     return res.data;
-}
+  }
 
   // Updates supervisor form info by ID
   static async updateSupervisorFormInfo(id, post) {
@@ -153,6 +153,27 @@ export default class API {
   static async getRemarkCode() {
     try {
       const res = await axios.get(`${url}/getRemarkCodes`);
+      return res.data;
+    } catch (err) {
+      return err;
+    }
+  }
+
+  // Gets previous supervisor by numero etudiant
+  static async getPreviousStudent(numero_etudiant) {
+    try {
+      const res = await axios.get(`${url}/previous_student_form/${numero_etudiant}`);
+      return res.data;
+    } catch (err) {
+      return err;
+    }
+  }
+
+
+  // Gets next supervisor by numero etudiant
+  static async getNextStudent(numero_etudiant) {
+    try {
+      const res = await axios.get(`${url}/next_student_form/${numero_etudiant}`);
       return res.data;
     } catch (err) {
       return err;

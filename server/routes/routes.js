@@ -13,6 +13,8 @@ let upload = multer().single();
 // Students
 router.get("/student_list", Student.getAllStudent);
 router.get("/student_form/:no_etudiant", Student.getStudentFormInfo);
+router.get("/previous_student_form/:no_etudiant", Student.getPreviousStudent);
+router.get("/next_student_form/:no_etudiant", Student.getNextStudent);
 
 // Supervisor
 router.get("/supervisor_list", Supervisor.getAllSupervisor);
