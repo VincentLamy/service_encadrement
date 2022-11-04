@@ -51,20 +51,20 @@
             loginEmail: "",
 
             loginEmailRules: [
-                v => !!v || "Required",
-                v => /.+@.+\..+/.test(v) || "E-mail must be valid"
+                v => !!v || "Champ obligatoire",
+                v => /.+@.+\..+/.test(v) || "L\'adresse courriel doit être valide."
             ],
             show1: false,
             rules: {
-                required: value => !!value || "Required.",
-                min: v => (v && v.length >= 8) || "Min 8 characters"
+                required: value => !!value || "Champ obligatoire.",
+                min: v => (v && v.length >= 8) || "Vous devez avoir au moins une majuscule, une minuscule et un chiffre, en plus d'avoir au moins 8 caractères."
             },
         }),
         beforeCreate() {
             if(sessionStorage.getItem('authentication')) {
                 this.$router.push("/");
                 sessionStorage.clear();
-                this.name = "";
+                this.name = ""; 
             }
         },
         methods: {
@@ -75,6 +75,8 @@
                         function (response) {
                             response = response[0];
 
+                            console.log(response);
+
                             if (response == undefined) {
                                 let alert = document.getElementById("login_alert");
 
@@ -82,15 +84,23 @@
                                 alert.style.visibility = "visible";
 
                                 setTimeout(() => {document.getElementById("login_alert").style.visibility = "hidden"}, 3000);
-                            } else if (response.employe.actif == false) {
+                            } else if (response.actif == 0) {
                                 let alert = document.getElementById("login_alert")
 
                                 alert.innerHTML = "Vous devez activez votre compte avant de pouvoir accéder au contenu du site!";
                                 alert.style.visibility = "visible";
 
                                 setTimeout(() => {document.getElementById("login_alert").style.visibility = "hidden"}, 3000);
-                            } else {
+                            } else if (response.actif == 1) {
                                 sessionStorage.setItem('authentication', JSON.stringify(response));
+                            } else {
+                                let alert = document.getElementById("login_alert")
+
+                                alert.innerHTML = "Désolé, une erreur est survenu. Veuillez réessayer.";
+                                alert.style.visibility = "visible";
+
+                                setTimeout(() => {document.getElementById("login_alert").style.visibility = "hidden"}, 3000);
+                            
                             }
                         }
                     )
