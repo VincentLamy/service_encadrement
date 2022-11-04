@@ -12,15 +12,15 @@ module.exports = class Student {
           TA_EtuStatut: {
             select: {
               statut_etudiant: true,
-            }
+            },
           },
           TA_EtudiantGroupe: {
             select: {
               note_ponderee: true,
               pourcentage_note_cumulee: true,
-            }
-          }
-        }
+            },
+          },
+        },
       });
 
       for (let index = 0; index < students.length; index++) {
@@ -34,7 +34,6 @@ module.exports = class Student {
         });
 
         students[index].commentary_quantity = commentaire.length;
-
       }
       res.status(200).json(students);
     } catch (error) {
@@ -43,34 +42,78 @@ module.exports = class Student {
   }
 
   static async getStudentFormInfo(req, res) {
-    try {
-      const no_etudiant = req.params.no_etudiant;
-      const students = await prisma.Etudiant.findUnique({
-        where: {
-          no_etudiant: Number(no_etudiant),
-        },
-        include: {
-          TA_EtudiantGroupe: {
-            include: {
-              groupe: {
-                include: {
-                  cours: true,
-                  session: true,
-                  Commentaire: {
-                    include: {
-                      employe: true,
-                      code_remarque: true,
-                    }
+    const no_etudiant = req.params.no_etudiant;
+
+    // Get all necessary info for student form
+    const student = await prisma.Etudiant.findUnique({
+      where: {
+        no_etudiant: Number(no_etudiant),
+      },
+      include: {      
+        TA_EtudiantGroupe: {
+          include: {
+            groupe: {
+              include: {
+                cours: {
+                  include: {
+                    campus: true,
+                  },
+                },
+                session: true,
+                Commentaire: {
+                  where: {
+                    no_etudiant: Number(no_etudiant),
+                  },
+                  orderBy: {
+                    date_creation: "desc",
+                  },
+                  include: {
+                    employe: true,
+                    code_remarque: true,
                   },
                 },
               },
             },
+            code_remarque_note_finale: true,
           },
         },
-      });
-      res.status(200).json(students);
-    } catch (error) {
-      res.status(404).json({ message: error.message });
-    }
+        FormulaireMath: {
+          include: {
+            TA_Math: {
+              include: {
+                cours_math: true,
+              },
+            },
+          },
+        },
+        TA_EtudiantPaysStatut: {
+          include: {
+            pays: true,
+            statut: true,
+          },
+        },
+      },
+    });
+
+    // Get semester comments for all semesters student has classes in
+    const semester_comments = await prisma.commentaire.findMany({
+      where: {
+        no_etudiant: Number(no_etudiant),
+        groupe: {
+          no_groupe: 0,
+        },
+      },
+      orderBy: {
+        date_creation: "desc",
+      },
+      include: {
+        groupe: true,
+        employe: true,
+        code_remarque: true,
+      }
+    });
+    student.semester_comments = semester_comments;
+
+    res.json(student);
   }
 };

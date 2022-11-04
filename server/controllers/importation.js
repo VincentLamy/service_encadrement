@@ -281,10 +281,12 @@ module.exports = class Importation {
                     // Insert Commentaire
                     const commentaire = await prisma.commentaire.upsert({
                         where: {
-                            no_etudiant_id_code_remarque_date_creation: {
+                            no_etudiant_id_code_remarque_titre_contenu_date_creation: {
                                 no_etudiant: etudiant.no_etudiant || 0,
-                                id_code_remarque: String(file[i]['Code de la remarque']) || 0,
-                                date_creation: new Date(file[i]['Date de saisie de la remarque']) || 0,
+                                id_code_remarque: file['Code de la remarque'][i] || 0,
+                                titre: titre,
+                                contenu: contenu,
+                                date_creation: new Date(file['Date de saisie de la remarque'][i]) || 0,
                             }
                         },
                         update: {},
