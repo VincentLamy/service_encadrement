@@ -83,6 +83,22 @@
               readonly
             />
           </v-col>
+
+          <!-- Statut de étudiant (ex. SA)-->
+          <v-col
+            class="px-3"
+            lg="3"
+            sm="6"
+            cols="12"
+            v-if="student.TA_EtuStatut && student.TA_EtuStatut[0]"
+          >
+            <v-text-field
+              label="Statut"
+              :value="student.TA_EtuStatut[0].statut_etudiant.code"
+              outlined
+              readonly
+            />
+          </v-col>
         </v-row>
       </v-card-text>
     </v-card>
