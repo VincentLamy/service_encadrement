@@ -237,8 +237,8 @@
                                 <template v-slot:activator="{ on, attrs }">
                                   <v-btn x-small outlined color="blue darken-3" class="mb-1" v-bind="attrs" v-on="on">
                                     {{
-                                    student_group.groupe.cours.nom ||
-                                    "Ajouter un nom au cours"
+                                        student_group.groupe.cours.nom ||
+                                        "Ajouter un nom au cours"
                                     }}
                                   </v-btn>
                                 </template>
@@ -424,6 +424,10 @@ export default {
 
       const previousStudent = await API.getPreviousStudent(this.student.no_etudiant);
       await this.getData(previousStudent[0].no_etudiant);
+      if (this.student.no_etudiant === previousStudent[0].no_etudiant) {
+        this.loading = false;
+        return;
+      }
 
       await this.$router.push({ name: 'student_form', params: { id: this.student.no_etudiant } });
       this.loading = false;
@@ -434,6 +438,10 @@ export default {
 
       const nextStudent = await API.getNextStudent(this.student.no_etudiant);
       await this.getData(nextStudent[0].no_etudiant);
+      if (this.student.no_etudiant === nextStudent[0].no_etudiant) {
+        this.loading = false;
+        return;
+      }
 
       await this.$router.push({ name: 'student_form', params: { id: this.student.no_etudiant } });
       this.loading = false;

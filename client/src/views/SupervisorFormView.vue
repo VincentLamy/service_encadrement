@@ -150,6 +150,12 @@ export default {
       this.loading = true;
 
       const previousSupervisor = await API.getPreviousSupervisor(this.supervisor.id);
+      if (this.supervisor.id === previousSupervisor[0].id) {
+        this.loading = false;
+        this.success = false;
+        return;
+      }
+
       this.supervisor = previousSupervisor[0];
       this.activation_switch = this.supervisor.actif;
 
@@ -172,8 +178,11 @@ export default {
       this.loading = true;
 
       const nextSupervisor = await API.getNextSupervisor(this.supervisor.id);
-      this.supervisor = nextSupervisor[0];
-      this.activation_switch = this.supervisor.actif;
+      if (this.supervisor.id === nextSupervisor[0].id) {
+        this.loading = false;
+        this.success = false;
+        return;
+      }
 
       this.date_activation = this.dateToString(this.supervisor.date_activation);
       if (this.supervisor.date_activation !== this.supervisor.date_desactivation) {
