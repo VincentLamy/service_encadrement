@@ -2,6 +2,10 @@
   <v-container>
     <h2>Liste des étudiants</h2>
 
+    <v-autocomplete v-model="model" :hint="'Rechercher par numéro étudiant ou nom/prénom'" :items="students_info"
+      persistent-hint prepend-icon="mdi-magnify" @change="searchClick">
+    </v-autocomplete>
+
     <v-data-table id="list_student" :headers="headers" :items="students" :sort-desc="[false, true]" class="elevation-1"
       @click:row="rowClick">
       <!-- <template v-slot:header.student_critical_state>
@@ -26,7 +30,9 @@ export default {
         { text: 'Quantité de commentaires', value: 'commentary_quantity' },
         { text: 'Nombre de cours en difficulté', value: 'critical_course_quantity' }
       ],
-      students: []
+      students: [],
+      model: null,
+      students_info: [],
     };
   },
   async created() {
@@ -35,6 +41,8 @@ export default {
 
     for (let index = 0; index < this.students.length; index++) {
       let critical_course_quantity = 0;
+
+      this.students_info.push(this.students[index].prenom + " " + this.students[index].nom + " - " + this.students[index].no_etudiant);
 
       this.students[index].nom = this.students[index].nom + ", " + this.students[index].prenom;
 
@@ -55,8 +63,12 @@ export default {
     }
   },
   methods: {
-    rowClick(item, row) {
+    rowClick(item) {
       this.$router.push({ name: 'student_form', params: { id: item.no_etudiant } });
+    },
+    searchClick(item) {
+      const no_etudant = item.slice(item.lastIndexOf(' '));
+      this.$router.push({ name: 'student_form', params: { id: no_etudant } });
     }
   },
 }
