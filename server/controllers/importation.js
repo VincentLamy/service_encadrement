@@ -224,9 +224,6 @@ module.exports = class Importation {
                 });
 
                 if (file[i]['Date de saisie de la remarque']) {
-                    // Traitement de la date
-                    const dateRemarque = excelDateToJSDate(file[i]['Date de saisie de la remarque']);
-
                     // Traitement des remarques
                     let titre = "";
                     let contenu = "";
@@ -288,7 +285,7 @@ module.exports = class Importation {
                                 id_code_remarque: String(file[i]['Code de la remarque']) || "",
                                 titre: titre,
                                 contenu: contenu,
-                                date_creation: dateRemarque || 0,
+                                date_creation: excelDateToJSDate(file[i]['Date de saisie de la remarque']) || 0,
                             }
                         },
                         update: {},
@@ -297,7 +294,7 @@ module.exports = class Importation {
                             no_employe: employe.no_employe,
                             id_groupe: groupe.id,
                             id_code_remarque: String(file[i]['Code de la remarque']) || 0,
-                            date_creation: dateRemarque || 0,
+                            date_creation: excelDateToJSDate(file[i]['Date de saisie de la remarque']) || 0,
                             titre: titre,
                             contenu: contenu,
                         },
@@ -341,6 +338,7 @@ module.exports = class Importation {
             }
             res.status(201).json({ message: 'Le rapport d\'encadrement a été ajouté avec succès' });
         } catch (err) {
+            console.log(err);
             res.status(400).json({ message: 'Le rapport d\'encadrement n\'a pas pu être ajouté' });
         }
     };
@@ -391,8 +389,8 @@ module.exports = class Importation {
                     where: { no_etudiant: Number(noEtudiant[0]) || 0 },
                     update: {},
                     create: {
-                        heure_debut: new Date(file[i]['Heure de début']),
-                        heure_fin: new Date(file[i]['Heure de fin']),
+                        heure_debut: excelDateToJSDate(file[i]['Heure de début']),
+                        heure_fin: excelDateToJSDate(file[i]['Heure de fin']),
                         effort_fourni: file[i]['L\'effort fourni au secondaire pour réussir ?'],
                         experience_informatique: experienceInformatique,
                         no_etudiant: Number(noEtudiant[0]),
@@ -434,6 +432,7 @@ module.exports = class Importation {
 
             res.status(201).json({ message: 'Le sondage de mathématiques a été ajouté avec succès' });
         } catch (err) {
+            console.log(err);
             res.status(400).json({ message: 'Le sondage de mathématiques n\'a pas pu être ajouté' });
         }
     };
@@ -482,6 +481,7 @@ module.exports = class Importation {
             res.status(201).json({ message: 'La liste d\'étudiants internationaux a été ajouté avec succès' });
 
         } catch (err) {
+            console.log(err);
             res.status(400).json({ message: 'La liste d\'étudiants internationaux n\'a pas pu être ajouté' });
         }
     };
