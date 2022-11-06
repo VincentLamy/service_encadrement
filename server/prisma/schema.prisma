@@ -37,11 +37,11 @@ model TypeEmploye {
 
 model Groupe {
   id                Int                 @id @default(autoincrement())
-  no_groupe         Int
-  employe           Employe             @relation(fields: [no_employe], references: [no_employe])
-  no_employe        Int
-  cours             Cours               @relation(fields: [code_cours], references: [code])
-  code_cours        String              @db.VarChar(10)
+  no_groupe         Int?                @default(0)
+  employe           Employe?            @relation(fields: [no_employe], references: [no_employe])
+  no_employe        Int?
+  cours             Cours?              @relation(fields: [code_cours], references: [code])
+  code_cours        String?             @db.VarChar(10)
   session           Session             @relation(fields: [code_session], references: [code])
   code_session      String              @db.VarChar(5)
   Commentaire       Commentaire[]
@@ -53,16 +53,21 @@ model Groupe {
 model Utilisateur {
   id                  Int             @id @default(autoincrement())
   employe             Employe         @relation(fields: [no_employe], references: [no_employe])
-  no_employe          Int
+  no_employe          Int             @unique
   type_utilisateur    TypeUtilisateur @relation(fields: [id_type_utilisateur], references: [id])
   id_type_utilisateur Int
   // departement         Departement     @relation(fields: [id_departement], references: [id])
   // id_departement      Int
   courriel            String          @unique @db.VarChar(255)
   mdp                 String          @db.VarChar(255)
+<<<<<<< HEAD
   date_activation     DateTime        @default(now())
+=======
+  date_activation     DateTime
+>>>>>>> main
   date_desactivation  DateTime        
   actif               Boolean
+
 }
 
 // model Departement {
@@ -74,7 +79,7 @@ model Utilisateur {
 //TODO Modifier les valeurs dans la BD
 model TypeUtilisateur {
   id          Int           @id @default(autoincrement())
-  nom         String        @db.VarChar(64)
+  nom         String        @db.VarChar(64) @unique
   description String        @db.VarChar(255)
   Utilisateur Utilisateur[]
 }
@@ -91,9 +96,9 @@ model Commentaire {
   id_code_remarque String
   titre            String       @db.VarChar(64)
   contenu          String       @db.VarChar(255)
-  date_creation    DateTime
+  date_creation    DateTime     @default(now())
 
-  @@unique([no_etudiant, id_code_remarque, date_creation])
+  @@unique([no_etudiant, id_code_remarque, titre, contenu, date_creation])
 }
 
 model CodeRemarque {

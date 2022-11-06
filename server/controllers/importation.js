@@ -38,7 +38,6 @@ module.exports = class Importation {
 
             const size_array = array_code.length;
 
-
             for (let i = 0; i < size_array; i++) {
                 // Insert Code remarque
                 const code_remarque = await prisma.codeRemarque.upsert({
@@ -268,7 +267,7 @@ module.exports = class Importation {
                         else if (file[i]['Description de la remarque'] === "2") {
                             contenu = "Moyennes";
                         }
-                        else if (file['Description de la remarque'][i] === "3") {
+                        else if (file[i]['Description de la remarque'] === "3") {
                             contenu = "Bonnes";
                         }
                         else if (file[i]['Description de la remarque'] === "4") {
@@ -281,10 +280,12 @@ module.exports = class Importation {
                     // Insert Commentaire
                     const commentaire = await prisma.commentaire.upsert({
                         where: {
-                            no_etudiant_id_code_remarque_date_creation: {
+                            no_etudiant_id_code_remarque_titre_contenu_date_creation: {
                                 no_etudiant: etudiant.no_etudiant || 0,
-                                id_code_remarque: String(file[i]['Code de la remarque']) || 0,
-                                date_creation: new Date(file[i]['Date de saisie de la remarque']) || 0,
+                                id_code_remarque: String(file[i]['Code de la remarque']) || "",
+                                titre: titre,
+                                contenu: contenu,
+                                date_creation: excelDateToJSDate(file[i]['Date de saisie de la remarque']) || 0,
                             }
                         },
                         update: {},
@@ -293,7 +294,7 @@ module.exports = class Importation {
                             no_employe: employe.no_employe,
                             id_groupe: groupe.id,
                             id_code_remarque: String(file[i]['Code de la remarque']) || 0,
-                            date_creation: new Date(file[i]['Date de saisie de la remarque']) || 0,
+                            date_creation: excelDateToJSDate(file[i]['Date de saisie de la remarque']) || 0,
                             titre: titre,
                             contenu: contenu,
                         },
@@ -337,6 +338,7 @@ module.exports = class Importation {
             }
             res.status(201).json({ message: 'Le rapport d\'encadrement a été ajouté avec succès' });
         } catch (err) {
+            console.log(err);
             res.status(400).json({ message: 'Le rapport d\'encadrement n\'a pas pu être ajouté' });
         }
     };
@@ -387,8 +389,8 @@ module.exports = class Importation {
                     where: { no_etudiant: Number(noEtudiant[0]) || 0 },
                     update: {},
                     create: {
-                        heure_debut: new Date(file[i]['Heure de début']),
-                        heure_fin: new Date(file[i]['Heure de fin']),
+                        heure_debut: excelDateToJSDate(file[i]['Heure de début']),
+                        heure_fin: excelDateToJSDate(file[i]['Heure de fin']),
                         effort_fourni: file[i]['L\'effort fourni au secondaire pour réussir ?'],
                         experience_informatique: experienceInformatique,
                         no_etudiant: Number(noEtudiant[0]),
@@ -430,6 +432,7 @@ module.exports = class Importation {
 
             res.status(201).json({ message: 'Le sondage de mathématiques a été ajouté avec succès' });
         } catch (err) {
+            console.log(err);
             res.status(400).json({ message: 'Le sondage de mathématiques n\'a pas pu être ajouté' });
         }
     };
@@ -478,8 +481,28 @@ module.exports = class Importation {
             res.status(201).json({ message: 'La liste d\'étudiants internationaux a été ajouté avec succès' });
 
         } catch (err) {
+            console.log(err);
             res.status(400).json({ message: 'La liste d\'étudiants internationaux n\'a pas pu être ajouté' });
         }
     };
 };
 
+// function to convert excel date to normal js date  
+function excelDateToJSDate(serial) {
+    var utc_days = Math.floor(serial - 25569);
+    var utc_value = utc_days * 86400;
+    var date_info = new Date(utc_value * 1000);
+
+    var fractional_day = serial - Math.floor(serial) + 0.0000001;
+
+    var total_seconds = Math.floor(86400 * fractional_day);
+
+    var seconds = total_seconds % 60;
+
+    total_seconds -= seconds;
+
+    var hours = Math.floor(total_seconds / (60 * 60));
+    var minutes = Math.floor(total_seconds / 60) % 60;
+
+    return new Date(date_info.getFullYear(), date_info.getMonth(), date_info.getDate() + 1, hours, minutes, seconds);
+}

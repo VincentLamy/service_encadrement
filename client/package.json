@@ -12,8 +12,7 @@
     "pinia": "^2.0.23",
     "vue": "^2.7.10",
     "vue-router": "^3.5.1",
-    "vuetify": "^2.6.0",
-    "vuetify-datetime-picker": "github:vince-smdt/encadrement-datetime-picker"
+    "vuetify": "^2.6.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~5.0.0",

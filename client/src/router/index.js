@@ -1,15 +1,20 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+<<<<<<< HEAD
 import DatetimePicker from 'vuetify-datetime-picker'
 import LoginView from '../views/LoginView.vue'
+=======
+import HomeView from '../views/HomeView'
+>>>>>>> main
 import CSVImportView from '../views/CSVImportView'
 import StudentListView from '../views/StudentListView'
 import StudentFormView from '../views/StudentFormView'
 
 import SupervisorFormView from '../views/SupervisorFormView'
+import SupervisorListView from '../views/SupervisorListView'
+import SupervisorAddView from '../views/SupervisorAddView'
 
 Vue.use(VueRouter)
-Vue.use(DatetimePicker)
 
 const routes = [
   {
@@ -33,9 +38,19 @@ const routes = [
     component: StudentFormView
   },
   {
+    path: '/supervisor_list',
+    name: 'supervisor_list',
+    component: SupervisorListView
+  },
+  {
     path: '/supervisor_form/:id',
     name: 'supervisor_form',
     component: SupervisorFormView
+  },
+  {
+    path: '/add_supervisor',
+    name: 'add_supervisor',
+    component: SupervisorAddView
   },
   {
     path: '/about',
