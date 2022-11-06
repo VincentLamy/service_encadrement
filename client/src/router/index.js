@@ -2,9 +2,11 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import DatetimePicker from 'vuetify-datetime-picker'
 import LoginView from '../views/LoginView.vue'
-import CSVImportView from '../views/CSVImportView.vue'
-import StudentListView from '../views/StudentListView.vue'
-import StudentFormView from '../views/StudentFormView.vue'
+import CSVImportView from '../views/CSVImportView'
+import StudentListView from '../views/StudentListView'
+import StudentFormView from '../views/StudentFormView'
+
+import SupervisorFormView from '../views/SupervisorFormView'
 
 Vue.use(VueRouter)
 Vue.use(DatetimePicker)
@@ -29,6 +31,19 @@ const routes = [
     path: '/student_form/:id',
     name: 'student_form',
     component: StudentFormView
+  },
+  {
+    path: '/supervisor_form/:id',
+    name: 'supervisor_form',
+    component: SupervisorFormView
+  },
+  {
+    path: '/about',
+    name: 'about',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
   },
 ]
 

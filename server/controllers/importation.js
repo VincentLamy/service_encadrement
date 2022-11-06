@@ -5,7 +5,7 @@ const { Session } = require('inspector');
 
 const prisma = new PrismaClient();
 
-module.exports = class API {
+module.exports = class Importation {
     static async addSession(req, res) {
         const { code } = req.body;
         const session = await prisma.session.create({
@@ -24,7 +24,6 @@ module.exports = class API {
     static async addRapportEncadrement(req, res) {
         try {
             const file = req.body;
-            const fileSize = file['Numéro de dossier'].length - 1;
 
             // Traitement code de remarques
             const array_code = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "20", "21", "22", "23", "24", "25", "30", "31", "40", "41", "42", "AUTN", "PROG", "CHAN"];
@@ -39,8 +38,9 @@ module.exports = class API {
 
             const size_array = array_code.length;
 
-            // Insert Code remarques
+
             for (let i = 0; i < size_array; i++) {
+                // Insert Code remarque
                 const code_remarque = await prisma.codeRemarque.upsert({
                     where: { code: array_code[i] || 0 },
                     update: {},
@@ -95,65 +95,65 @@ module.exports = class API {
                 },
             });
 
-            for (let i = 0; i < fileSize; i++) {
+            for (let i = 0; i < file.length; i++) {
                 // Insert Programme
                 const programme = await prisma.programme.upsert({
-                    where: { code: file['Numéro du programme'][i] || 0 },
+                    where: { code: file[i]['Numéro du programme'] || 0 },
                     update: {},
                     create: {
-                        code: file['Numéro du programme'][i],
+                        code: String(file[i]['Numéro du programme']),
                         nom: '',
                         description: '',
                     },
                 });
 
                 // Split Etudiant name
-                const nomEtudiant = file['Nom de l\'étudiant'][i].split(',');
+                const nomEtudiant = file[i]['Nom de l\'étudiant'].split(',');
 
                 // Insert Etudiant
                 const etudiant = await prisma.etudiant.upsert({
-                    where: { no_etudiant: Number(file['Numéro de dossier'][i]) || 0 },
+                    where: { no_etudiant: Number(file[i]['Numéro de dossier']) || 0 },
                     update: {
-                        no_etudiant: Number(file['Numéro de dossier'][i]),
-                        code_permanent: file['Code permanent'][i],
+                        no_etudiant: Number(file[i]['Numéro de dossier']),
+                        code_permanent: file[i]['Code permanent'],
                         nom: nomEtudiant[0],
                         prenom: nomEtudiant[1],
-                        session_actuelle: Number(file['Session du programme d\'études'][i]),
+                        session_actuelle: Number(file[i]['Session du programme d\'études']),
                         code_programme: programme.code,
                     },
                     create: {
-                        no_etudiant: Number(file['Numéro de dossier'][i]),
-                        code_permanent: file['Code permanent'][i],
+                        no_etudiant: Number(file[i]['Numéro de dossier']),
+                        code_permanent: file[i]['Code permanent'],
                         nom: nomEtudiant[0],
                         prenom: nomEtudiant[1],
-                        session_actuelle: Number(file['Session du programme d\'études'][i]),
+                        session_actuelle: Number(file[i]['Session du programme d\'études']),
                         code_programme: programme.code,
                     },
                 });
 
                 // Insert Campus
                 const campus = await prisma.campus.upsert({
-                    where: { ville: file['Campus'][i] || '' },
+                    where: { ville: file[i]['Campus'] || '' },
                     update: {},
                     create: {
-                        ville: file['Campus'][i],
+                        ville: file[i]['Campus'],
                     },
                 });
 
                 // Insert Cours
                 const cours = await prisma.cours.upsert({
-                    where: { code: file['Numéro du cours'][i] || 0 },
+                    where: { code: file[i]['Numéro du cours'] || 0 },
                     update: {},
                     create: {
-                        code: file['Numéro du cours'][i],
+                        code: file[i]['Numéro du cours'],
                         nom: '',
-                        duree: Number(file['Nb heures du cours'][i]),
+                        duree: Number(file[i]['Nb heures du cours']),
                         id_campus: campus.id,
                     },
                 });
 
                 // Split Enseignant name
-                const nomEnseignant = file['Nom de l\'enseignant'][i].split(',');
+                const nomEnseignant = file[i]['Nom de l\'enseignant'].split(',');
 
                 // Insert Enseignant
                 const employe = await prisma.employe.upsert({
@@ -174,14 +174,15 @@ module.exports = class API {
                 // Insert Groupe
                 const groupe = await prisma.groupe.upsert({
                     where: {
-                        no_groupe_code_session: {
-                            no_groupe: Number(file['Numéro du groupe'][i]) || 0,
+                        no_groupe_code_cours_code_session: {
+                            no_groupe: Number(file[i]['Numéro du groupe']) || 0,
+                            code_cours: cours.code,
                             code_session: session.code || 0,
                         }
                     },
                     update: {},
                     create: {
-                        no_groupe: Number(file['Numéro du groupe'][i]),
+                        no_groupe: Number(file[i]['Numéro du groupe']),
                         code_cours: cours.code,
                         code_session: session.code,
                         no_employe: employe.no_employe,
@@ -190,10 +191,10 @@ module.exports = class API {
 
                 // Insert Code Remarque
                 const codeRemarqueNoteFinale = await prisma.codeRemarqueNoteFinale.upsert({
-                    where: { nom: file['Code de remarque de la note finale'][i] || '' },
+                    where: { nom: file[i]['Code de remarque de la note finale'] || '' },
                     update: {},
                     create: {
-                        nom: file['Code de remarque de la note finale'][i],
+                        nom: file[i]['Code de remarque de la note finale'],
                     },
                 });
 
@@ -209,81 +210,81 @@ module.exports = class API {
                         no_etudiant: etudiant.no_etudiant,
                         id_groupe: groupe.id,
                         id_code_remarque_note_finale: codeRemarqueNoteFinale.id,
-                        note_ponderee: parseFloat(file['Note Pondérée'][i].replace(',', '.')) || 0,
-                        pourcentage_note_cumulee: parseFloat(file['Pourcentage note cumulée'][i].replace(',', '.')) || 0,
-                        duree_absence: parseFloat(file['Nb heures d\'absences'][i].replace(',', '.')) || 0,
+                        note_ponderee: parseFloat(file[i]['Note Pondérée']) || 0,
+                        pourcentage_note_cumulee: parseFloat(file[i]['Pourcentage note cumulée']) || 0,
+                        duree_absence: parseFloat(file[i]['Nb heures d\'absences']) || 0,
                     },
                     create: {
                         no_etudiant: etudiant.no_etudiant,
                         id_groupe: groupe.id,
                         id_code_remarque_note_finale: codeRemarqueNoteFinale.id,
-                        note_ponderee: parseFloat(file['Note Pondérée'][i].replace(',', '.')) || 0,
-                        pourcentage_note_cumulee: parseFloat(file['Pourcentage note cumulée'][i].replace(',', '.')) || 0,
-                        duree_absence: parseFloat(file['Nb heures d\'absences'][i].replace(',', '.')) || 0,
+                        note_ponderee: parseFloat(file[i]['Note Pondérée']) || 0,
+                        pourcentage_note_cumulee: parseFloat(file[i]['Pourcentage note cumulée']) || 0,
+                        duree_absence: parseFloat(file[i]['Nb heures d\'absences']) || 0,
                     },
                 });
 
-                if (file['Date de saisie de la remarque'][i]) {
+                if (file[i]['Date de saisie de la remarque']) {
                     // Traitement des remarques
                     let titre = "";
                     let contenu = "";
 
-                    if (file['Type de remarque'][i] === "Remarque") {
-                        titre = file['Description de la remarque'][i];
-                        contenu = file['Commentaire'][i];
+                    if (file[i]['Type de remarque'] === "Remarque") {
+                        titre = file[i]['Description de la remarque'];
+                        contenu = file[i]['Commentaire'];
                     }
-                    else if (file['Type de remarque'][i] === "Chances de réussite") {
+                    else if (file[i]['Type de remarque'] === "Chances de réussite") {
                         titre = "Autre";
-                        contenu = file['Description de la remarque'][i];
+                        contenu = file[i]['Description de la remarque'];
                     }
-                    else if (file['Type de remarque'][i] === "4") {
+                    else if (file[i]['Type de remarque'] === "4") {
                         titre = "Progression";
 
-                        if (file['Description de la remarque'][i] === "0") {
+                        if (file[i]['Description de la remarque'] === "0") {
                             contenu = "Non applicable";
                         }
-                        else if (file['Description de la remarque'][i] === "1") {
+                        else if (file[i]['Description de la remarque'] === "1") {
                             contenu = "Faibles";
                         }
-                        else if (file['Description de la remarque'][i] === "2") {
+                        else if (file[i]['Description de la remarque'] === "2") {
                             contenu = "Moyennes";
                         }
-                        else if (file['Description de la remarque'][i] === "3") {
+                        else if (file[i]['Description de la remarque'] === "3") {
                             contenu = "Bonnes";
                         }
-                        else if (file['Description de la remarque'][i] === "4") {
+                        else if (file[i]['Description de la remarque'] === "4") {
                             contenu = "Très bonnes";
                         }
                     }
-                    else if (file['Type de remarque'][i] === "5") {
+                    else if (file[i]['Type de remarque'] === "5") {
                         titre = "Chances de réussite";
 
-                        if (file['Description de la remarque'][i] === "0") {
+                        if (file[i]['Description de la remarque'] === "0") {
                             contenu = "Non applicable";
                         }
-                        else if (file['Description de la remarque'][i] === "1") {
+                        else if (file[i]['Description de la remarque'] === "1") {
                             contenu = "Faibles";
                         }
-                        else if (file['Description de la remarque'][i] === "2") {
+                        else if (file[i]['Description de la remarque'] === "2") {
                             contenu = "Moyennes";
                         }
                         else if (file['Description de la remarque'][i] === "3") {
                             contenu = "Bonnes";
                         }
-                        else if (file['Description de la remarque'][i] === "4") {
+                        else if (file[i]['Description de la remarque'] === "4") {
                             contenu = "Très bonnes";
                         }
                     }
 
-                    if (file['Commentaire'][i] && (file['Type de remarque'][i] === "4" || file['Type de remarque'][i] === "5")) contenu += " - " + file['Commentaire'][i];
+                    if (file[i]['Commentaire'] && (file[i]['Type de remarque'] === "4" || file[i]['Type de remarque'] === "5")) contenu += " - " + file[i]['Commentaire'];
 
                     // Insert Commentaire
                     const commentaire = await prisma.commentaire.upsert({
                         where: {
                             no_etudiant_id_code_remarque_date_creation: {
                                 no_etudiant: etudiant.no_etudiant || 0,
-                                id_code_remarque: file['Code de la remarque'][i] || 0,
-                                date_creation: new Date(file['Date de saisie de la remarque'][i]) || 0,
+                                id_code_remarque: String(file[i]['Code de la remarque']) || 0,
+                                date_creation: new Date(file[i]['Date de saisie de la remarque']) || 0,
                             }
                         },
                         update: {},
@@ -291,8 +292,8 @@ module.exports = class API {
                             no_etudiant: etudiant.no_etudiant,
                             no_employe: employe.no_employe,
                             id_groupe: groupe.id,
-                            date_creation: new Date(file['Date de saisie de la remarque'][i]),
-                            id_code_remarque: file['Code de la remarque'][i],
+                            id_code_remarque: String(file[i]['Code de la remarque']) || 0,
+                            date_creation: new Date(file[i]['Date de saisie de la remarque']) || 0,
                             titre: titre,
                             contenu: contenu,
                         },
@@ -300,10 +301,8 @@ module.exports = class API {
                 }
 
                 // Traitement Statut Etudiant Cours
-                let statutEtuCours = file['StatutEtuCours'][i];
+                let statutEtuCours = file[i]['StatutEtuCours'];
                 statutEtuCours = statutEtuCours.replace(/\s/g, ''); // Deleting spaces
-
-                if (statutEtuCours.charAt(0) == "\"" && statutEtuCours.charAt(statutEtuCours.length - 1) == "\"") statutEtuCours = statutEtuCours.slice(1, -1); // Deleting quotation marks
 
                 statutEtuCours = statutEtuCours.split(';'); // Splitting by ;
 
@@ -336,29 +335,28 @@ module.exports = class API {
                     }
                 }
             }
-            res.status(201).json({ message: 'Le rapport d\'encadrement ajouté avec succès' });
+            res.status(201).json({ message: 'Le rapport d\'encadrement a été ajouté avec succès' });
         } catch (err) {
-            res.status(400).json({ message: err.message });
+            res.status(400).json({ message: 'Le rapport d\'encadrement n\'a pas pu être ajouté' });
         }
     };
 
     static async addSondageMathematiques(req, res) {
         try {
             const file = req.body;
-            const fileSize = file['Adresse de messagerie'].length - 1;
 
-            for (let i = 0; i < fileSize; i++) {
+            for (let i = 0; i < file.length; i++) {
                 // Insert Cours Math 4
                 const coursMath4 = await prisma.coursMath.upsert({
                     where: {
                         nom_annee: {
-                            nom: file['Le cours de mathématiques que vous avez suivi en secondaire 4 ?'][i],
+                            nom: file[i]['Le cours de mathématiques que vous avez suivi en secondaire 4 ?'],
                             annee: 4,
                         }
                     },
                     update: {},
                     create: {
-                        nom: file['Le cours de mathématiques que vous avez suivi en secondaire 4 ?'][i],
+                        nom: file[i]['Le cours de mathématiques que vous avez suivi en secondaire 4 ?'],
                         annee: 4,
                         code: "",
                     },
@@ -368,32 +366,30 @@ module.exports = class API {
                 const coursMath5 = await prisma.coursMath.upsert({
                     where: {
                         nom_annee: {
-                            nom: file['Le cours de mathématiques que vous avez suivi en secondaire 5 ?'][i],
+                            nom: file[i]['Le cours de mathématiques que vous avez suivi en secondaire 5 ?'],
                             annee: 5,
                         }
                     },
                     update: {},
                     create: {
-                        nom: file['Le cours de mathématiques que vous avez suivi en secondaire 5 ?'][i],
+                        nom: file[i]['Le cours de mathématiques que vous avez suivi en secondaire 5 ?'],
                         annee: 5,
                         code: "",
                     },
                 });
 
                 // Insert Formulaire Math
-                const noEtudiant = file['Adresse de messagerie'][i].split('@');
+                const noEtudiant = file[i]['Adresse de messagerie'].split('@');
 
-                let experienceInformatique = file['Indiquer votre expérience en informatique avant le Cégep (pas juste effleuré la chose) ?'][i];
-
-                if (experienceInformatique.charAt(0) == "\"" && experienceInformatique.charAt(experienceInformatique.length - 1) == "\"") experienceInformatique = experienceInformatique.slice(1, -1); // Deleting quotation marks
+                let experienceInformatique = file[i]['Indiquer votre expérience en informatique avant le Cégep (pas juste effleuré la chose) ?'];
 
                 const formulaireMath = await prisma.formulaireMath.upsert({
                     where: { no_etudiant: Number(noEtudiant[0]) || 0 },
                     update: {},
                     create: {
-                        heure_debut: new Date(file['Heure de début'][i]),
-                        heure_fin: new Date(file['Heure de fin'][i]),
-                        effort_fourni: file['L\'effort fourni au secondaire pour réussir ?'][i],
+                        heure_debut: new Date(file[i]['Heure de début']),
+                        heure_fin: new Date(file[i]['Heure de fin']),
+                        effort_fourni: file[i]['L\'effort fourni au secondaire pour réussir ?'],
                         experience_informatique: experienceInformatique,
                         no_etudiant: Number(noEtudiant[0]),
                     },
@@ -411,7 +407,7 @@ module.exports = class API {
                     create: {
                         id_cours_math: coursMath4.id,
                         id_formulaire_math: formulaireMath.id,
-                        note_obtenue: file['La note obtenue pour le cours de mathématiques que vous avez suivi en secondaire 4 ?'][i],
+                        note_obtenue: file[i]['La note obtenue pour le cours de mathématiques que vous avez suivi en secondaire 4 ?'],
                     },
                 });
 
@@ -427,38 +423,37 @@ module.exports = class API {
                     create: {
                         id_cours_math: coursMath5.id,
                         id_formulaire_math: formulaireMath.id,
-                        note_obtenue: file['La note obtenue pour le cours de mathématiques que vous avez suivi en secondaire 5 ?'][i],
+                        note_obtenue: file[i]['La note obtenue pour le cours de mathématiques que vous avez suivi en secondaire 5 ?'],
                     },
                 });
             }
 
-            res.status(201).json({ message: 'Le sondage de mathématiques ajouté avec succès' });
+            res.status(201).json({ message: 'Le sondage de mathématiques a été ajouté avec succès' });
         } catch (err) {
-            res.status(400).json({ message: err.message });
+            res.status(400).json({ message: 'Le sondage de mathématiques n\'a pas pu être ajouté' });
         }
     };
 
     static async addEtudiantsInternationaux(req, res) {
         try {
             const file = req.body;
-            const fileSize = file['Numero d\'étudiant'].length - 1;
 
-            for (let i = 0; i < fileSize; i++) {
+            for (let i = 0; i < file.length; i++) {
                 // Insert Pays
                 const pays = await prisma.pays.upsert({
-                    where: { nom: file['Pays d\'origine'][i] || '' },
+                    where: { nom: file[i]['Pays d\'origine'] || '' },
                     update: {},
                     create: {
-                        nom: file['Pays d\'origine'][i],
+                        nom: file[i]['Pays d\'origine'],
                     },
                 });
 
                 // Insert Statut
                 const statut = await prisma.statut.upsert({
-                    where: { nom: file['Statut'][i] || '' },
+                    where: { nom: file[i]['Statut'] || '' },
                     update: {},
                     create: {
-                        nom: file['Statut'][i],
+                        nom: file[i]['Statut'],
                         description: '',
                     },
                 });
@@ -469,21 +464,21 @@ module.exports = class API {
                         id_pays_id_statut_no_etudiant: {
                             id_pays: pays.id || 0,
                             id_statut: statut.id || 0,
-                            no_etudiant: Number(file['Numero d\'étudiant'][i]) || 0,
+                            no_etudiant: Number(file[i]['Numero d\'étudiant']) || 0,
                         },
                     },
                     update: {},
                     create: {
                         id_pays: pays.id,
                         id_statut: statut.id,
-                        no_etudiant: Number(file['Numero d\'étudiant'][i]),
+                        no_etudiant: Number(file[i]['Numero d\'étudiant']),
                     },
                 });
             }
-            res.status(201).json({ message: 'La liste d\'étudiants internationaux ajouté avec succès' });
+            res.status(201).json({ message: 'La liste d\'étudiants internationaux a été ajouté avec succès' });
 
         } catch (err) {
-            res.status(400).json({ message: err.message });
+            res.status(400).json({ message: 'La liste d\'étudiants internationaux n\'a pas pu être ajouté' });
         }
     };
 };
