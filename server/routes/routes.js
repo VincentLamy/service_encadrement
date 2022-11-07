@@ -2,13 +2,10 @@ const express = require('express');
 const router = express.Router();
 const Importation = require("../controllers/importation");
 const Student = require("../controllers/student");
-<<<<<<< HEAD
 const Login = require("../controllers/login");
-=======
 const Course = require("../controllers/course");
 const Comment = require("../controllers/comment");
 const RemarkCode = require("../controllers/remark_code");
->>>>>>> main
 const Supervisor = require("../controllers/supervisor");
 const multer = require('multer');
 

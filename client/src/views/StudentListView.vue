@@ -38,7 +38,6 @@ export default {
 
       this.students[index].nom = this.students[index].nom + ", " + this.students[index].prenom;
 
-<<<<<<< HEAD
             // if(this.students[index].critical_course_quantity > 0){
             //   document.getElementById("list_student").style.color = "red";
             // }
@@ -57,12 +56,6 @@ export default {
               window.location.assign(URL);
           }
         }, 
-=======
-      for (let index2 = 0; index2 < this.students[index].TA_EtudiantGroupe; index2++) {
-        if (this.students[index].TA_EtudiantGroupe[index2].note_ponderee / this.students[index].TA_EtudiantGroupe[index2].pourcentage_note_cumulee < 0.6) {
-          critical_course_quantity++;
-        }
->>>>>>> main
       }
 
       this.students[index].critical_course_quantity = critical_course_quantity;
@@ -73,12 +66,4 @@ export default {
       // else {
       //   this.students[index].student_critical_state = false;
       // }
-    }
-  },
-  methods: {
-    rowClick(item, row) {
-      this.$router.push({ name: 'student_form', params: { id: item.no_etudiant } });
-    }
-  },
-}
 </script>

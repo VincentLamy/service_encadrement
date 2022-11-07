@@ -97,14 +97,12 @@ export default class API {
     }
   }
 
-<<<<<<< HEAD
   // Vérifie si l'utilisateur existe.
   static async getUser(username, password) {
     const res = await axios.post(`${url}/get_user`, { "username": username, "password": password });
     return res.data;
   }
-}
-=======
+  
   // Gets previous supervisor by ID
   static async getPreviousSupervisor(id, post) {
     try {
@@ -188,4 +186,3 @@ export default class API {
     }
   }
 }
->>>>>>> main

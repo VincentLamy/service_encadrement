@@ -45,20 +45,12 @@
       </v-list>
     </v-navigation-drawer>
 
-<<<<<<< HEAD
     <v-app-bar app >
       <v-app-bar-nav-icon v-if="this.$route.name !== 'login'" @click="drawer = !drawer"></v-app-bar-nav-icon>
 
       <v-toolbar-title fluid style="width: 100%" class="text-center blue--text text--darken-3">Service d'encadrement</v-toolbar-title>
 
       <v-btn v-if="this.$route.name !== 'login'" id="disconnect_button" @click="logout()">Déconnexion</v-btn>
-=======
-    <v-app-bar app>
-      <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-
-      <v-toolbar-title fluid style="width: 100%" class="text-center blue--text text--darken-3">Service d'encadrement
-      </v-toolbar-title>
->>>>>>> main
     </v-app-bar>
 
     <v-main>
@@ -88,7 +80,6 @@ const responsable = {
 
 const current = dev;
 
-<<<<<<< HEAD
   export default {
     data: () => ({
       drawer: null,
@@ -127,21 +118,6 @@ const current = dev;
       }
     }
   }
-=======
-export default {
-  data: () => ({
-    drawer: null,
-    items: [
-      { title: 'Liste des étudiants', icon: 'mdi-account-multiple', link: "/student_list", info: current.liste_etudiants },
-      { title: 'Liste des responsables', icon: 'mdi-account-multiple', link: "/supervisor_list", info: current.liste_responsables },
-      { title: 'Importer un fichier CSV', icon: 'mdi-attachment', link: "/csv_import", info: current.csv },
-    ],
-    responsable: [
-      { name: "Vincent Lamy", programme: "Programmation" } // TODO Modifier pour aller chercher les données dans la BD
-    ]
-  }),
-}
->>>>>>> main
 </script>
 
 <style>
