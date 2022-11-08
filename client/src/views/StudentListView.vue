@@ -2,16 +2,21 @@
   <v-container>
     <h2>Liste des étudiants</h2>
 
-    <v-autocomplete v-model="model" :hint="'Rechercher par numéro étudiant ou nom/prénom'" :items="students_info"
-      persistent-hint prepend-icon="mdi-magnify" @change="searchClick">
-    </v-autocomplete>
+    <h3 id="filter" @click="filter = !filter">Filtrer</h3>
+    <v-container v-if="filter">
+      <v-checkbox v-model="statut_etudiant" label="A un statut etudiant"> </v-checkbox>
+      <v-checkbox v-model="commentaires" label="A des commentaires"> </v-checkbox>
+    </v-container>
 
+    <v-text-field v-model="search" append-icon="mdi-magnify" label="Rechercher"></v-text-field>
     <v-data-table id="list_student" :headers="headers" :items="students" :sort-desc="[false, true]" class="elevation-1"
-      @click:row="rowClick">
+      @click:row="rowClick" :search="search">
       <!-- <template v-slot:header.student_critical_state>
           <v-icon color="red">mdi-alert-circle</v-icon>
         </template> -->
     </v-data-table>
+
+
   </v-container>
 </template>
   
@@ -26,13 +31,32 @@ export default {
         // { text: '',                               value: 'critical_state(student_critical_state)'},
         { text: 'Numéro étudiant', value: 'no_etudiant' },
         { text: 'Nom complet', value: 'nom' },
-        { text: 'Statut étudiant', value: 'TA_EtuStatut[0].statut_etudiant.code' },
-        { text: 'Quantité de commentaires', value: 'commentary_quantity' },
-        { text: 'Nombre de cours en difficulté', value: 'critical_course_quantity' }
+        {
+          text: 'Statut étudiant', value: 'TA_EtuStatut[0].statut_etudiant.code', filter: value => {
+            if (this.statut_etudiant) {
+              if (!value) return false;
+              return true;
+            }
+            return true;
+          },
+        },
+        {
+          text: 'Quantité de commentaires', value: 'commentary_quantity', filter: value => {
+            if (this.commentaires) {
+              if (!value) return false;
+              return true;
+            }
+            return true;
+          },
+        },
+        { text: 'Nombre de cours en difficulté', value: 'critical_course_quantity' },
       ],
       students: [],
       model: null,
-      students_info: [],
+      search: '',
+      statut_etudiant: '',
+      commentaires: '',
+      filter: false,
     };
   },
   async created() {
@@ -41,8 +65,6 @@ export default {
 
     for (let index = 0; index < this.students.length; index++) {
       let critical_course_quantity = 0;
-
-      this.students_info.push(this.students[index].prenom + " " + this.students[index].nom + " - " + this.students[index].no_etudiant);
 
       this.students[index].nom = this.students[index].nom + ", " + this.students[index].prenom;
 
@@ -69,7 +91,7 @@ export default {
     searchClick(item) {
       const no_etudant = item.slice(item.lastIndexOf(' '));
       this.$router.push({ name: 'student_form', params: { id: no_etudant } });
-    }
+    },
   },
 }
 </script>

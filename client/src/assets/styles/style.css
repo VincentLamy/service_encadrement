@@ -59,3 +59,14 @@ Tableau Liste étudiante
 .outlined {
     border: 1px solid rgba(0, 0, 0, 0.12);
 }
+
+#filter {
+    text-align:left;
+    text-decoration: underline;
+    width:fit-content;
+}
+
+#filter:hover {
+    color: #FC8D33;
+    cursor: pointer;
+}
