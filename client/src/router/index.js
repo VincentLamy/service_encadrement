@@ -15,17 +15,17 @@ const routes = [
   {
     path: '/',
     name: 'login',
-    component: LoginView,
+    component: LoginView
   },
   {
     path: '/csv_import',
     name: 'csv-import',
-    component: CSVImportView,
+    component: CSVImportView
   },
   {
     path: '/student_list',
     name: 'student_list',
-    component: StudentListView,
+    component: StudentListView
   },
   {
     path: '/student_form/:id',
@@ -53,14 +53,6 @@ const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes
-})
-
-router.beforeEach((to, from, next) => {
-  if (to.name !== 'login' && !sessionStorage.getItem("authentication")) {
-    next({ name: 'login' });
-  } else {
-    next();
-  }
 })
 
 export default router

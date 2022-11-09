@@ -1,44 +1,33 @@
 <template>
     <v-container fluid fill-height>
-        
-        <!-- Alerte lorsque les informations d'identification sont invalides. -->
-        <v-alert id="login_alert" close-text="Close Alert" color="red accent-4 red--text" type="error" text dark></v-alert>
-        
+        <v-alert id="login_alert" close-text="Close Alert" color="red accent-4 red--text" type="error" text dark>
+        </v-alert>
+
         <v-card id="loginForm" class="px-4">
             <v-card-text>
-                
-                <!-- Formulaire de connexion -->
                 <v-form ref="loginForm" v-model="valid" lazy-validation>
                     <v-row>
-                        
-                        <!-- Courriel -->
                         <v-col cols="12">
                             <v-text-field v-model="loginEmail" :rules="loginEmailRules" label="E-mail" required></v-text-field>
                         </v-col>
-                        
-                        <!-- Mot de passe -->
                         <v-col cols="12">
                             <v-text-field v-model="loginPassword" :append-icon="show1?'eye':'eye-off'" :rules="[rules.required, rules.min]" :type="show1 ? 'text' : 'password'" name="input-10-1" label="Password" hint="At least 8 characters" counter @click:append="show1 = !show1"></v-text-field>
                         </v-col>
-                        
-                        <!-- Colonne vide -->
-                        <v-col class="d-flex" cols="12" sm="6" xsm="12"></v-col>
-                        
-                        <!-- Bouton de connexion -->
+                        <v-col class="d-flex" cols="12" sm="6" xsm="12">
+                        </v-col>
                         <v-col class="d-flex" cols="12" sm="6" xsm="12" align-end>
                             <v-btn x-large block :disabled="!valid" color="success" @click="validate"> Login </v-btn>
                         </v-col>
-
                     </v-row>
                 </v-form>
-
             </v-card-text>
         </v-card>
-        
     </v-container> 
-</template>
+ </template>
 
 <script>
+    import { mapWritableState  } from 'pinia'
+    import { useAuthenticationStore } from '@/store/authentication'
     import API from "@/api";
 
     export default {
@@ -59,6 +48,7 @@
                 required: value => !!value || "Champ obligatoire.",
                 min: v => (v && v.length >= 8) || "Vous devez avoir au moins une majuscule, une minuscule et un chiffre, en plus d'avoir au moins 8 caractères."
             },
+            store: null,
         }),
         beforeCreate() {
             if(sessionStorage.getItem('authentication')) {
@@ -69,7 +59,11 @@
         },
         methods: {
             async validate() {
+                let is_connected = false;
+                
                 if (this.$refs.loginForm.validate()) {
+                    const store = useAuthenticationStore()
+                    
                     await API.getUser(this.loginEmail, this.loginPassword)
                     .then(
                         function (response) {
@@ -105,11 +99,10 @@
                         }
                     )
 
-                    if (JSON.parse(sessionStorage.getItem('authentication')).type_utilisateur.nom == 'Administrateur') {
-                        this.$router.push("/user_list");
-                    }else if (JSON.parse(sessionStorage.getItem('authentication')).type_utilisateur.nom == 'Responsable') {
+                    if(is_connected)
+                        // console.log(store)
+                        // console.log(localStorage.getItem('auth'))
                         this.$router.push("/student_list");
-                    }
                 }
             },
             reset() {
