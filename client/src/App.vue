@@ -12,36 +12,16 @@
 
       <v-list nav dense>
         <v-list-item-group color="primary">
-          <v-list-item link :to="items[0].link" v-if="whatStatus() === 2">
+          <v-list-item v-if="canAccess(i)" v-for="(item, i) in items" :key="i" :to="item.link" link>
             <v-list-item-icon>
-              <v-icon v-text="items[0].icon"></v-icon>
+              <v-icon v-text="item.icon"></v-icon>
             </v-list-item-icon>
 
             <v-list-item-content>
-              <v-list-item-title class="blue--text text--darken-3" v-text="items[0].title"></v-list-item-title>
+              <v-list-item-title class="blue--text text--darken-3" v-text="item.title"></v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-
-          <v-list-item link :to="items[1].link" v-if="whatStatus() === 1">
-            <v-list-item-icon>
-              <v-icon v-text="items[1].icon"></v-icon>
-            </v-list-item-icon>
-
-            <v-list-item-content>
-              <v-list-item-title class="blue--text text--darken-3" v-text="items[1].title"></v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-
-          <v-list-item link :to="items[2].link" v-if="whatStatus() === 1">
-            <v-list-item-icon>
-              <v-icon v-text="items[2].icon"></v-icon>
-            </v-list-item-icon>
-
-            <v-list-item-content>
-              <v-list-item-title class="blue--text text--darken-3" v-text="items[2].title"></v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list-item-group>  
+        </v-list-item-group>
       </v-list>
     </v-navigation-drawer>
 
@@ -74,7 +54,7 @@
     updated() {
       const authentication = JSON.parse(sessionStorage.getItem('authentication'));
 
-     if(authentication) {
+      if(authentication) {
         this.name = authentication.employe.prenom + " " + authentication.employe.nom;
         // this.programme = auth.departement;
       }
@@ -87,14 +67,46 @@
           this.name = "";
         }
       },
-      whatStatus() {
-        let type = JSON.parse(sessionStorage.getItem("authentication")).type_utilisateur.nom;
+      canAccess(link) {
+        let type = JSON.parse(sessionStorage.getItem("authentication"))
+
+        if (type)
+          type = type.type_utilisateur.nom;
         
         if (type == "Administrateur") {
-          return 1;
+          switch (link) {
+            case 0: // student_list
+              return false;
+            case 1: // supervisor_list
+              return true;
+            case 2: // csv_import
+              return true;
+            default:
+              break;
+          }
         } else if (type == "Responsable") {
-          return 2;
-        }  
+          switch (link) {
+            case 0: // student_list
+              return true;
+            case 1: // supervisor_list
+              return false;
+            case 2: // csv_import
+              return true;
+            default:
+              break;
+          }
+        } else if (type == "Dev") {
+          switch (link) {
+            case 0: // student_list
+              return true;
+            case 1: // supervisor_list
+              return true;
+            case 2: // csv_import
+              return true;
+            default:
+              break;
+          }
+        }
       }
     }
   }

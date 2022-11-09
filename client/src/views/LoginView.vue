@@ -101,6 +101,8 @@
                         this.$router.push("/supervisor_list");
                     else if (type == "Responsable")
                         this.$router.push("/student_list");
+                    else if (type == "Dev")
+                        this.$router.push("/student_list");
                 }
             },
             reset() {

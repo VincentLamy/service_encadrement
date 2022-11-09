@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import HomeView from '../views/HomeView'
 import LoginView from '../views/LoginView.vue'
 import CSVImportView from '../views/CSVImportView'
 import StudentListView from '../views/StudentListView'
@@ -47,15 +46,7 @@ const routes = [
     path: '/add_supervisor',
     name: 'add_supervisor',
     component: SupervisorAddView
-  },
-  {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
-  },
+  }
 ]
 
 const router = new VueRouter({
@@ -65,11 +56,10 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  if (to.name !== 'login' && !sessionStorage.getItem("authentication")) {
+  if (to.name !== 'login' && !sessionStorage.getItem("authentication"))
     next({ name: 'login' });
-  } else {
+  else
     next();
-  }
 })
 
 export default router
