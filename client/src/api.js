@@ -179,4 +179,10 @@ export default class API {
       return err;
     }
   }
+
+  // Vérifie si l'utilisateur existe.
+  static async getUser(username, password) {
+    const res = await axios.post(`${url}/get_user`, { "username": username, "password": password });
+    return res.data;
+  }
 }

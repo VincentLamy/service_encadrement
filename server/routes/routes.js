@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Importation = require("../controllers/importation");
 const Student = require("../controllers/student");
+const Login = require("../controllers/login");
 const Course = require("../controllers/course");
 const Comment = require("../controllers/comment");
 const RemarkCode = require("../controllers/remark_code");
@@ -46,5 +47,8 @@ router.post("/sondageMathematiques", Importation.addSondageMathematiques);
 
 // Internationals
 router.post("/etudiantsInternationaux", Importation.addEtudiantsInternationaux);
+
+// Login
+router.post("/get_user", Login.get_user);
 
 module.exports = router;
