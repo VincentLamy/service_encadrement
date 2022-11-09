@@ -4,8 +4,14 @@
 
     <h3 id="filter" @click="filter = !filter">Filtrer</h3>
     <v-container v-if="filter">
-      <v-checkbox v-model="statut_etudiant" label="A un statut etudiant"> </v-checkbox>
-      <v-checkbox v-model="commentaires" label="A des commentaires"> </v-checkbox>
+      <v-row no-gutters>
+        <v-col>
+          <v-checkbox v-model="hasStudentCode" label="A un statut etudiant"> </v-checkbox>
+          <v-checkbox v-model="hasComments" label="A des commentaires"> </v-checkbox>
+        </v-col>
+
+        <v-text-field v-model="nbClassesInDifficulty" type="number" label="Cours en difficulté" min="0"></v-text-field>
+      </v-row>
     </v-container>
 
     <v-text-field v-model="search" append-icon="mdi-magnify" label="Rechercher"></v-text-field>
@@ -33,7 +39,7 @@ export default {
         { text: 'Nom complet', value: 'nom' },
         {
           text: 'Statut étudiant', value: 'TA_EtuStatut[0].statut_etudiant.code', filter: value => {
-            if (this.statut_etudiant) {
+            if (this.hasStudentCode) {
               if (!value) return false;
               return true;
             }
@@ -42,21 +48,27 @@ export default {
         },
         {
           text: 'Quantité de commentaires', value: 'commentary_quantity', filter: value => {
-            if (this.commentaires) {
+            if (this.hasComments) {
               if (!value) return false;
               return true;
             }
             return true;
           },
         },
-        { text: 'Nombre de cours en difficulté', value: 'critical_course_quantity' },
+        {
+          text: 'Nombre de cours en difficulté', value: 'critical_course_quantity', filter: value => {
+            return value >= this.nbClassesInDifficulty;
+          },
+        },
       ],
       students: [],
       model: null,
       search: '',
-      statut_etudiant: '',
-      commentaires: '',
       filter: false,
+      // Filters
+      hasStudentCode: '',
+      hasComments: '',
+      nbClassesInDifficulty: 0,
     };
   },
   async created() {
@@ -64,17 +76,8 @@ export default {
     this.students = response;
 
     for (let index = 0; index < this.students.length; index++) {
-      let critical_course_quantity = 0;
-
       this.students[index].nom = this.students[index].nom + ", " + this.students[index].prenom;
-
-      for (let index2 = 0; index2 < this.students[index].TA_EtudiantGroupe; index2++) {
-        if (this.students[index].TA_EtudiantGroupe[index2].note_ponderee / this.students[index].TA_EtudiantGroupe[index2].pourcentage_note_cumulee < 0.6) {
-          critical_course_quantity++;
-        }
-      }
-
-      this.students[index].critical_course_quantity = critical_course_quantity;
+      this.students[index].critical_course_quantity = this.amountClassesInDifficulty(index);
 
       // if(this.students[index].critical_course_quantity > 0){
       //   document.getElementById("list_student").style.color = "red";
@@ -91,6 +94,16 @@ export default {
     searchClick(item) {
       const no_etudant = item.slice(item.lastIndexOf(' '));
       this.$router.push({ name: 'student_form', params: { id: no_etudant } });
+    },
+    amountClassesInDifficulty(index) {
+      let amount = 0;
+
+      this.students[index].TA_EtudiantGroupe.forEach((note) => {
+        if (note.note_ponderee / note.pourcentage_note_cumulee < 0.6) {
+          amount++;
+        }
+      });
+      return amount;
     },
   },
 }
