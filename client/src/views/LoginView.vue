@@ -26,8 +26,6 @@
  </template>
 
 <script>
-    import { mapWritableState  } from 'pinia'
-    import { useAuthenticationStore } from '@/store/authentication'
     import API from "@/api";
 
     export default {
@@ -48,7 +46,6 @@
                 required: value => !!value || "Champ obligatoire.",
                 min: v => (v && v.length >= 8) || "Vous devez avoir au moins une majuscule, une minuscule et un chiffre, en plus d'avoir au moins 8 caractères."
             },
-            store: null,
         }),
         beforeCreate() {
             if(sessionStorage.getItem('authentication')) {
