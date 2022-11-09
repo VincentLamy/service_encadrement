@@ -155,21 +155,11 @@
         </v-expansion-panel-header>
         <v-expansion-panel-content class="outlined">
           <v-row class="mt-10" no-gutters>
-            <!-- Heure de début -->
-            <v-col class="px-3" sm="6" cols="12">
+            <!-- Heure de début du questionnaire -->
+            <v-col class="px-3">
               <v-text-field
-                label="Heure de début"
+                label="Heure de début du questionnaire"
                 :value="formattedDate(student.FormulaireMath[0].heure_debut)"
-                outlined
-                readonly
-              />
-            </v-col>
-
-            <!-- Heure de fin -->
-            <v-col class="px-3" sm="6" cols="12">
-              <v-text-field
-                label="Heure de fin"
-                :value="formattedDate(student.FormulaireMath[0].heure_fin)"
                 outlined
                 readonly
               />
