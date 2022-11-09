@@ -26,10 +26,9 @@ module.exports = class Supervisor {
 
     // Insert Type employé
     const type_employe = await prisma.typeEmploye.upsert({
-      where: { id: 2 || 0 },
+      where: { nom: "Responsable d\'encadrement" || 0 },
       update: {},
       create: {
-        id: 2,
         nom: 'Responsable d\'encadrement',
         description: 'Cet employé est un responsable d\'encadrement dans le département d\'informatique',
       },
@@ -146,13 +145,28 @@ module.exports = class Supervisor {
     try {
       const id = req.params.id;
 
+      const responsable = await prisma.typeUtilisateur.findMany({
+        where: {
+          nom: 'Responsable'
+        },
+        select: {
+          id: true
+        },
+      });      
+
       let prev = await prisma.Utilisateur.findMany({
         take: 1,
         where: {
-          id: {
-            lt: Number(id),
-          },
-        },
+          AND: [
+            {
+              id: {
+                lt: Number(id),
+              },
+            },
+            {id_type_utilisateur: responsable[0].id },
+
+          ],   
+        },     
         include: {
           employe: true,
         },
@@ -176,16 +190,31 @@ module.exports = class Supervisor {
   }
 
   static async getNextSupervisor(req, res) {
-    try {
+    //try {
       const id = req.params.id;
+
+      const responsable = await prisma.typeUtilisateur.findMany({
+        where: {
+          nom: 'Responsable'
+        },
+        select: {
+          id: true
+        },
+      }); 
 
       let next = await prisma.Utilisateur.findMany({
         take: 1,
         where: {
-          id: {
-            gt: Number(id),
-          },
-        },
+          AND: [
+            {
+              id: {
+                gt: Number(id),
+              },
+            },
+            {id_type_utilisateur: responsable[0].id },
+
+          ],   
+        },     
         include: {
           employe: true,
         },
@@ -203,8 +232,8 @@ module.exports = class Supervisor {
         });
       }
       res.status(200).json(next);
-    } catch (error) {
-      res.status(404).json({ message: error.message });
-    }
+    //} catch (error) {
+    //  res.status(404).json({ message: error.message });
+    //}
   }
 };

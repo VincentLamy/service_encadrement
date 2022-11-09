@@ -30,7 +30,7 @@ model Employe {
 
 model TypeEmploye {
   id          Int       @id @default(autoincrement())
-  nom         String    @db.VarChar(64)
+  nom         String    @db.VarChar(64) @unique
   description String    @db.VarChar(255)
   Employe     Employe[]
 }

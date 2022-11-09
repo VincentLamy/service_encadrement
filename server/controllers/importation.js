@@ -52,10 +52,9 @@ module.exports = class Importation {
 
             // Insert Type employé
             const type_employe = await prisma.typeEmploye.upsert({
-                where: { id: 1 || 0 },
+                where: { nom: "Enseignant" || 0 },
                 update: {},
                 create: {
-                    id: 1,
                     nom: 'Enseignant',
                     description: 'Cet employé est un enseignant dans le département d\'informatique',
                 },

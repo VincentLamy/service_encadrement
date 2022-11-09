@@ -30,6 +30,7 @@ export default {
     };
   },
   async created() {
+    
     const response = await API.getAllStudent();
     this.students = response;
 

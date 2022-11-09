@@ -423,11 +423,13 @@ export default {
       this.loading = true;
 
       const previousStudent = await API.getPreviousStudent(this.student.no_etudiant);
-      await this.getData(previousStudent[0].no_etudiant);
+      
       if (this.student.no_etudiant === previousStudent[0].no_etudiant) {
         this.loading = false;
         return;
       }
+      
+      await this.getData(previousStudent[0].no_etudiant);
 
       await this.$router.push({ name: 'student_form', params: { id: this.student.no_etudiant } });
       this.loading = false;
@@ -437,14 +439,17 @@ export default {
       this.loading = true;
 
       const nextStudent = await API.getNextStudent(this.student.no_etudiant);
-      await this.getData(nextStudent[0].no_etudiant);
+      
       if (this.student.no_etudiant === nextStudent[0].no_etudiant) {
         this.loading = false;
         return;
       }
 
+      await this.getData(nextStudent[0].no_etudiant);
+
       await this.$router.push({ name: 'student_form', params: { id: this.student.no_etudiant } });
       this.loading = false;
+
     },
     formattedDate(string_date) {
       let d = new Date(Date.parse(string_date));
