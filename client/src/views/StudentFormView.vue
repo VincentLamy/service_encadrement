@@ -224,7 +224,7 @@
 
               <!-- Cours de la session -->
               <v-expansion-panels accordion flat>
-                <v-expansion-panel v-for="(student_group, sg_index) in semester.student_groups">
+                <v-expansion-panel v-for="student_group in semester.student_groups" :key="student_group.id">
                   <v-expansion-panel-header class="outlined">
                     <v-container class="pa-0 pe-3">
                       <div class="d-flex flex-md-row flex-column justify-space-between col-12 pa-0">

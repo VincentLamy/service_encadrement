@@ -12,7 +12,7 @@
 
       <v-list nav dense>
         <v-list-item-group color="primary">
-          <v-list-item link v-if="whatStatus() === 2">
+          <v-list-item link :to="items[0].link" v-if="whatStatus() === 2">
             <v-list-item-icon>
               <v-icon v-text="items[0].icon"></v-icon>
             </v-list-item-icon>
@@ -22,7 +22,7 @@
             </v-list-item-content>
           </v-list-item>
 
-          <v-list-item link v-if="whatStatus() === 1">
+          <v-list-item link :to="items[1].link" v-if="whatStatus() === 1">
             <v-list-item-icon>
               <v-icon v-text="items[1].icon"></v-icon>
             </v-list-item-icon>
@@ -32,7 +32,7 @@
             </v-list-item-content>
           </v-list-item>
 
-          <v-list-item link v-if="whatStatus() === 1">
+          <v-list-item link :to="items[2].link" v-if="whatStatus() === 1">
             <v-list-item-icon>
               <v-icon v-text="items[2].icon"></v-icon>
             </v-list-item-icon>
