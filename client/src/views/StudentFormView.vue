@@ -217,8 +217,7 @@
             Cours de mathématiques de l'étudiant
           </h4>
 
-          <!-- TODO - FormulaireMath[0], on modifie la BD ou on laisse ça de même? -->
-          <template v-for="(ta_math, i) in student.FormulaireMath[0].TA_Math">
+          <div v-for="(ta_math, i) in student.FormulaireMath[0].TA_Math" :key="ta_math.id">
             <v-row no-gutters>
               <!-- Nom du cours de math -->
               <v-col class="px-3" md="4" cols="12">
@@ -255,7 +254,7 @@
               :key="i"
               class="mb-7"
             ></v-divider>
-          </template>
+          </div>
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
@@ -284,7 +283,7 @@
         <v-container>
           <!-- Cours & Commentaires des sessions -->
           <v-tabs-items v-model="semester_tab" v-if="semesters.length !== 0">
-            <v-tab-item v-for="(semester, i) in semesters" :key="i">
+            <v-tab-item v-for="(semester, i) in semesters" :key="semester.id">
               <!-- Ajouter un commentaire -->
               <v-btn
                 block
@@ -300,7 +299,7 @@
                 :code-session="semester.code"
                 method="publish"
                 @cancel="show_add_comment = false"
-                @published="getData(no_student)"
+                @published="getData"
               />
 
               <!-- Commentaires de la session -->
@@ -320,7 +319,7 @@
                   :data="semester.comments"
                   :remark-codes="remark_codes"
                   :editable-if="() => true"
-                  @update-data="getData(no_student)"
+                  @update-data="getData"
                 />
               </v-card>
               <!-- Commentaires d'un cours -->
@@ -331,7 +330,8 @@
               <!-- Cours de la session -->
               <v-expansion-panels accordion flat>
                 <v-expansion-panel
-                  v-for="(student_group, sg_index) in semester.student_groups"
+                  v-for="student_group in semester.student_groups"
+                  :key="student_group.id"
                 >
                   <v-expansion-panel-header class="outlined">
                     <v-container class="pa-0 pe-3">
@@ -344,7 +344,7 @@
                               <!-- Modifier le nom du cours -->
                               <v-course-name-input
                                 :data="student_group.groupe.cours"
-                                @updated="getData(no_student)"
+                                @updated="getData"
                               />
                             </span>
                             ({{ student_group.groupe.cours.code }})
@@ -405,7 +405,7 @@
                     <v-comment-list
                       :data="student_group.groupe.Commentaire"
                       :remark-codes="remark_codes"
-                      @update-data="getData(no_student)"
+                      @update-data="getData"
                     />
                   </v-expansion-panel-content>
                 </v-expansion-panel>
@@ -431,25 +431,21 @@ export default {
       student: {},
       remark_codes: [],
       semesters: [],
-      no_etudiant: 0,
       semester_tab: null,
       show_add_comment: false,
       loading: false,
     };
   },
   async created() {
-    // Get student no.
-    this.no_student = this.$route.params.id;
-
     // Get student data
-    await this.getData(this.no_student);
+    await this.getData();
   },
   methods: {
-    async getData(no_student) {
+    async getData(
+      no_student = this.student.no_etudiant || this.$route.params.id
+    ) {
       // Get student info
-      this.student = await API.getStudentFormInfo(
-        no_student || this.no_student
-      );
+      this.student = await API.getStudentFormInfo(no_student);
 
       // Get all remark codes
       this.remark_codes = await API.getRemarkCode();
@@ -481,14 +477,13 @@ export default {
       const previousStudent = await API.getPreviousStudent(
         this.student.no_etudiant
       );
-      this.no_student = previousStudent[0].no_etudiant;
-      await this.getData(previousStudent[0].no_etudiant);
       if (this.student.no_etudiant === previousStudent[0].no_etudiant) {
         this.loading = false;
         return;
       }
-
-      await this.$router.push({
+      
+      await this.getData(previousStudent[0].no_etudiant);
+      this.$router.push({
         name: "student_form",
         params: { id: this.student.no_etudiant },
       });
@@ -499,14 +494,13 @@ export default {
       this.loading = true;
 
       const nextStudent = await API.getNextStudent(this.student.no_etudiant);
-      this.no_student = nextStudent[0].no_etudiant;
-      await this.getData(nextStudent[0].no_etudiant);
       if (this.student.no_etudiant === nextStudent[0].no_etudiant) {
         this.loading = false;
         return;
       }
-
-      await this.$router.push({
+      
+      await this.getData(nextStudent[0].no_etudiant);
+      this.$router.push({
         name: "student_form",
         params: { id: this.student.no_etudiant },
       });
