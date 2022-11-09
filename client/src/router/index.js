@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import HomeView from '../views/HomeView'
+import LoginView from '../views/LoginView.vue'
 import CSVImportView from '../views/CSVImportView'
 import StudentListView from '../views/StudentListView'
 import StudentFormView from '../views/StudentFormView'
@@ -14,8 +15,8 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    name: 'home',
-    component: HomeView
+    name: 'login',
+    component: LoginView
   },
   {
     path: '/csv_import',
@@ -61,6 +62,14 @@ const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  if (to.name !== 'login' && !sessionStorage.getItem("authentication")) {
+    next({ name: 'login' });
+  } else {
+    next();
+  }
 })
 
 export default router
