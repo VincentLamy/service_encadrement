@@ -127,7 +127,7 @@
     </v-card>
 
     <v-expansion-panels
-      v-if="student.TA_EtuStatut || student.FormulaireMath"
+      v-if="(student.TA_EtudiantPaysStatut && student.TA_EtudiantPaysStatut.length) || student.FormulaireMath"
       class="mb-5"
       multiple
       flat
@@ -137,7 +137,7 @@
         Informations de l'étudiant à l'international
         ************************************************ 
       -->
-      <v-expansion-panel v-if="student.TA_EtudiantPaysStatut">
+      <v-expansion-panel v-if="student.TA_EtudiantPaysStatut && student.TA_EtudiantPaysStatut.length">
         <v-expansion-panel-header class="outlined">
           <h3>Informations de l'étudiant à l'international</h3>
         </v-expansion-panel-header>
@@ -217,7 +217,10 @@
             Cours de mathématiques de l'étudiant
           </h4>
 
-          <div v-for="(ta_math, i) in student.FormulaireMath[0].TA_Math" :key="ta_math.id">
+          <div
+            v-for="(ta_math, i) in student.FormulaireMath[0].TA_Math"
+            :key="ta_math.id"
+          >
             <v-row no-gutters>
               <!-- Nom du cours de math -->
               <v-col class="px-3" md="4" cols="12">
@@ -481,7 +484,7 @@ export default {
         this.loading = false;
         return;
       }
-      
+
       await this.getData(previousStudent[0].no_etudiant);
       this.$router.push({
         name: "student_form",
@@ -498,7 +501,7 @@ export default {
         this.loading = false;
         return;
       }
-      
+
       await this.getData(nextStudent[0].no_etudiant);
       this.$router.push({
         name: "student_form",
