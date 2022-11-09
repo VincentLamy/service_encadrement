@@ -1,6 +1,7 @@
 <template>
   <v-card v-if="show" class="mb-5" style="width: 100%" outlined>
     <v-card-text>
+      <!-- Alerte si le commentaire a été modifié / ajouté avec succès -->
       <v-alert v-model="success" dense text type="success" dismissible>
         Le commentaire a été
         <strong>
@@ -8,6 +9,16 @@
         </strong>
         avec succès!
       </v-alert>
+
+      <!-- Alerte s'il y a eu une erreur dans l'ajout / modification du commentaire -->
+      <v-alert v-model="error" dense text type="error" dismissible>
+        Une erreur a eu lieu lors de la
+        <strong>
+          {{ method === "publish" ? "publication" : "modification" }}
+        </strong>
+        du commentaire!
+      </v-alert>
+
       <v-progress-linear
         v-if="loading"
         indeterminate
@@ -112,6 +123,7 @@ export default {
     return {
       loading: false,
       success: false,
+      error: false,
       comment: {
         title: {
           value: this.baseComment.titre,
@@ -138,46 +150,52 @@ export default {
     };
   },
   methods: {
-    async addComment() {
+    async submitComment(action) {
       // Cancel if form isn't valid
       if (!this.$refs.commentForm.validate()) return;
-
       this.loading = true;
-      await API.addComment({
-        no_etudiant: this.noEtudiant,
-        no_employe: 6, // TODO - Mettre le no_employe de l'utilisateur
-        code_session: this.codeSession,
-        id_code_remarque: this.comment.remark_id.value,
-        titre: this.comment.title.value,
-        contenu: this.comment.description.value,
-      });
-      this.$emit("published");
+
+      // Execute action
+      const response = await action();
+
+      // Show response alert
       this.loading = false;
-      this.success = true;
+      this.success = response.code === undefined;
+      this.error = response.code !== undefined;
+    },
+    async addComment() {
+      this.submitComment(async () => {
+        return await API.addComment({
+          no_etudiant: this.noEtudiant,
+          no_employe: 6, // TODO - Mettre le no_employe de l'utilisateur
+          code_session: this.codeSession,
+          id_code_remarque: this.comment.remark_id.value,
+          titre: this.comment.title.value,
+          contenu: this.comment.description.value,
+        }).then(this.$emit("published"));
+      });
     },
     async editComment() {
-      // Cancel if form isn't valid
-      if (!this.$refs.commentForm.validate()) return;
-
-      this.loading = true;
-      await API.editComment({
-        id: this.idEditedComment,
-        titre: this.comment.title.value,
-        contenu: this.comment.description.value,
-        id_code_remarque: this.comment.remark_id.value,
+      this.submitComment(async () => {
+        return await API.editComment({
+          id: this.idEditedComment,
+          titre: this.comment.title.value,
+          contenu: this.comment.description.value,
+          id_code_remarque: this.comment.remark_id.value,
+        }).then(this.$emit("updated"));
       });
-      this.$emit("updated");
-      this.loading = false;
-      this.success = true;
     },
     async cancelComment() {
       this.$emit("cancel");
-      this.comment.title.value =
-        this.method === "publish" ? "" : this.baseComment.titre;
-      this.comment.description.value =
-        this.method === "publish" ? "" : this.baseComment.contenu;
-      this.comment.remark_id.value =
-        this.method === "publish" ? "" : this.baseComment.id_code_remarque;
+      if (this.method === "publish") {
+        this.comment.title.value = "";
+        this.comment.description.value = "";
+        this.comment.remark_id.value = "";
+      } else {
+        this.comment.title.value = this.baseComment.titre;
+        this.comment.description.value = this.baseComment.contenu;
+        this.comment.remark_id.value = this.baseComment.id_code_remarque;
+      }
     },
   },
 };

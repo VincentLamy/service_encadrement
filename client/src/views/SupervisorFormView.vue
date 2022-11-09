@@ -184,6 +184,9 @@ export default {
         return;
       }
 
+      this.supervisor = nextSupervisor[0];
+      this.activation_switch = this.supervisor.actif;
+
       this.date_activation = this.dateToString(this.supervisor.date_activation);
       if (this.supervisor.date_activation !== this.supervisor.date_desactivation) {
         this.date_desactivation = this.dateToString(this.supervisor.date_desactivation);
