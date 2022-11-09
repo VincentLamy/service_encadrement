@@ -1,6 +1,6 @@
 <template>
   <v-list v-if="data.length !== 0">
-    <template v-for="(comment, i) in data">
+    <div v-for="(comment, i) in data" :key="comment.id">
       <v-comment
         :data="comment"
         :remark-codes="remarkCodes"
@@ -8,7 +8,7 @@
         @updated="updateData"
       />
       <v-divider v-if="i < data.length - 1" :key="i"></v-divider>
-    </template>
+    </div>
   </v-list>
 </template>
 

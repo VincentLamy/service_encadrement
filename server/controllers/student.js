@@ -49,7 +49,12 @@ module.exports = class Student {
       where: {
         no_etudiant: Number(no_etudiant),
       },
-      include: {
+      include: { 
+        TA_EtuStatut: {
+          include: {
+            statut_etudiant: true,
+          },
+        },     
         TA_EtudiantGroupe: {
           include: {
             groupe: {

@@ -59,3 +59,28 @@ Tableau Liste étudiante
 .outlined {
     border: 1px solid rgba(0, 0, 0, 0.12);
 }
+
+#loginForm {
+    margin: auto;
+    width: 30%;
+}
+
+#login_alert {
+    position: absolute;
+    visibility: hidden;
+    width: 450px;
+    top: 50px;
+    left: calc(50% - (450px / 2));
+    z-index: 1;
+}
+
+#filter {
+    text-align:left;
+    text-decoration: underline;
+    width:fit-content;
+}
+
+#filter:hover {
+    color: #FC8D33;
+    cursor: pointer;
+}
