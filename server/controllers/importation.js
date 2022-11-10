@@ -9,10 +9,10 @@ const jwtVerification = require('../modules/jwt_verification');
 module.exports = class Importation {
     static async addRapportEncadrement(req, res) {
         try {
-            if (jwtVerification(req.token) === false) {
-        res.status(403).json();
-        return;
-      }
+        if (jwtVerification(req.token) === false) {
+            res.status(403).json();
+            return;
+        }
 
             const file = req.body;
 
@@ -335,9 +335,9 @@ module.exports = class Importation {
     static async addSondageMathematiques(req, res) {
         try {
             if (jwtVerification(req.token) === false) {
-        res.status(403).json();
-        return;
-      }
+                res.status(403).json();
+                return;
+            }
 
             const file = req.body;
 
@@ -433,9 +433,9 @@ module.exports = class Importation {
     static async addEtudiantsInternationaux(req, res) {
         try {
             if (jwtVerification(req.token) === false) {
-        res.status(403).json();
-        return;
-      }
+                res.status(403).json();
+                return;
+            }
 
             const file = req.body;
 
