@@ -1,10 +1,14 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+const jwtVerification = require('../modules/jwt_verification');
 
 module.exports = class Course {
   static async changeCourseName(req, res) {
-    const { code, name } = req.body;
     try {
+      if (jwtVerification(req.token) == false) return;
+
+      const { code, name } = req.body;
+
       await prisma.cours.update({
         where: {
           code: code,

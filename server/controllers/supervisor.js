@@ -1,9 +1,12 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+const jwtVerification = require('../modules/jwt_verification');
 
 module.exports = class Supervisor {
   static async getSupervisorFormInfo(req, res) {
     try {
+      if (jwtVerification(req.token) == false) return;
+
       const id = req.params.id;
       const supervisor = await prisma.utilisateur.findUnique({
         where: {
@@ -21,7 +24,17 @@ module.exports = class Supervisor {
 
   // create a supervisor
   static async addSupervisor(req, res) {
-    //try {
+    try {
+      const verification = jwt.verify(req.token, 'key_se', (err) => {
+        if (err) {
+          res.sendStatus(403);
+          return false;
+        }
+        return true;
+      });
+
+      if (verification === false) return;
+
     const today = new Date();
 
     // Insert Type employé
@@ -76,13 +89,15 @@ module.exports = class Supervisor {
     });
 
     res.status(200).json({ message: 'Le responsable d\'encadrement à été créer' });
-  } //catch (error) {
-  //res.status(404).json({ message: error.message });
-  //}
-
+    } catch (error) {
+      res.status(404).json({ message: error.message });
+    }
+  }
 
   static async updateSupervisorFormInfo(req, res) {
     try {
+      if (jwtVerification(req.token) == false) return;
+
       const id = req.params.id;
       const actif = req.body.actif === 'true' ? 1 : 0;
 
@@ -115,6 +130,8 @@ module.exports = class Supervisor {
 
   static async getAllSupervisor(req, res) {
     try {
+      if (jwtVerification(req.token) == false) return;
+
       const id_responsable = await prisma.typeUtilisateur.findUnique({
         where: {
           nom: "Responsable"
@@ -143,6 +160,8 @@ module.exports = class Supervisor {
 
   static async getPreviousSupervisor(req, res) {
     try {
+      if (jwtVerification(req.token) == false) return;
+
       const id = req.params.id;
 
       const responsable = await prisma.typeUtilisateur.findMany({
@@ -178,6 +197,9 @@ module.exports = class Supervisor {
       if (prev === undefined || prev.length == 0) {
         prev = await prisma.Utilisateur.findMany({
           take: -1,
+          where: {
+            id_type_utilisateur: responsable[0].id
+          },    
           include: {
             employe: true,
           },
@@ -190,7 +212,9 @@ module.exports = class Supervisor {
   }
 
   static async getNextSupervisor(req, res) {
-    //try {
+    try {
+      if (jwtVerification(req.token) == false) return;
+
       const id = req.params.id;
 
       const responsable = await prisma.typeUtilisateur.findMany({
@@ -226,14 +250,17 @@ module.exports = class Supervisor {
       if (next === undefined || next.length == 0) {
         next = await prisma.Utilisateur.findMany({
           take: 1,
+          where: {
+              id_type_utilisateur: responsable[0].id
+          },     
           include: {
             employe: true,
           },
         });
       }
       res.status(200).json(next);
-    //} catch (error) {
-    //  res.status(404).json({ message: error.message });
-    //}
+    } catch (error) {
+      res.status(404).json({ message: error.message });
+    }
   }
 };

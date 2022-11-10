@@ -1,10 +1,11 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+const jwt = require('jsonwebtoken');
 
 module.exports = class Responsable {
-    static async get_user(req, res) {
+    static async login(req, res) {
         try {
-            const user = await prisma.utilisateur.findMany({
+            const user = await prisma.utilisateur.findFirst({
                 where: {
                     courriel: req.body.username,
                     mdp: req.body.password,
@@ -14,7 +15,6 @@ module.exports = class Responsable {
                         select: {
                             prenom: true,
                             nom:    true,
-                            // departement: true,
                         }
                     },
                     type_utilisateur: {
@@ -24,11 +24,17 @@ module.exports = class Responsable {
                     },
                     actif: true 
                 },
-            })
+            });
 
-            res.status(200).json(user);
-        } catch (error) {
-            res.status(404).json({ message: error.message });
+            if (user) {
+                jwt.sign({user: user}, 'key_se', (err, token) => {
+                    res.status(200).json({user, token});
+                });
+            } else {
+                res.status(400).json({message: 'Erreur lors de la connexion' });
+            }
+     } catch (error) {
+            res.status(400).json({ message: 'Erreur lors de la connexion' });
         }
     }
-}
+};

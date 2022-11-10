@@ -4,25 +4,13 @@ const { stat } = require('fs');
 const { Session } = require('inspector');
 
 const prisma = new PrismaClient();
+const jwtVerification = require('../modules/jwt_verification');
 
 module.exports = class Importation {
-    static async addSession(req, res) {
-        const { code } = req.body;
-        const session = await prisma.session.create({
-            data: {
-                code: code,
-            },
-        });
-        res.json(session);
-    };
-
-    static async getSession(req, res) {
-        const sessions = await prisma.session.findMany();
-        res.json(sessions);
-    };
-
     static async addRapportEncadrement(req, res) {
         try {
+            if (jwtVerification(req.token) == false) return;
+
             const file = req.body;
 
             // Traitement code de remarques
@@ -337,13 +325,14 @@ module.exports = class Importation {
             }
             res.status(201).json({ message: 'Le rapport d\'encadrement a été ajouté avec succès' });
         } catch (err) {
-            console.log(err);
             res.status(400).json({ message: 'Le rapport d\'encadrement n\'a pas pu être ajouté' });
         }
     };
 
     static async addSondageMathematiques(req, res) {
         try {
+            if (jwtVerification(req.token) == false) return;
+
             const file = req.body;
 
             for (let i = 0; i < file.length; i++) {
@@ -431,13 +420,14 @@ module.exports = class Importation {
 
             res.status(201).json({ message: 'Le sondage de mathématiques a été ajouté avec succès' });
         } catch (err) {
-            console.log(err);
             res.status(400).json({ message: 'Le sondage de mathématiques n\'a pas pu être ajouté' });
         }
     };
 
     static async addEtudiantsInternationaux(req, res) {
         try {
+            if (jwtVerification(req.token) == false) return;
+
             const file = req.body;
 
             for (let i = 0; i < file.length; i++) {
@@ -480,7 +470,6 @@ module.exports = class Importation {
             res.status(201).json({ message: 'La liste d\'étudiants internationaux a été ajouté avec succès' });
 
         } catch (err) {
-            console.log(err);
             res.status(400).json({ message: 'La liste d\'étudiants internationaux n\'a pas pu être ajouté' });
         }
     };
