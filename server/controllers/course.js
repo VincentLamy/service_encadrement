@@ -5,7 +5,10 @@ const jwtVerification = require('../modules/jwt_verification');
 module.exports = class Course {
   static async changeCourseName(req, res) {
     try {
-      if (jwtVerification(req.token) == false) return;
+      if (jwtVerification(req.token) === false) {
+        res.status(403).json();
+        return;
+      }
 
       const { code, name } = req.body;
 

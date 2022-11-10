@@ -5,7 +5,10 @@ const jwtVerification = require('../modules/jwt_verification');
 module.exports = class Comment {
   static async addComment(req, res) {
     try {
-      if (jwtVerification(req.token) == false) return;
+      if (jwtVerification(req.token) === false) {
+        res.status(403).json();
+        return;
+      }
 
       const {
         no_etudiant,
@@ -53,7 +56,10 @@ module.exports = class Comment {
 
   static async editComment(req, res) {
     try {
-      if (jwtVerification(req.token) == false) return;
+      if (jwtVerification(req.token) === false) {
+        res.status(403).json();
+        return;
+      }
 
       const { id, titre, contenu, id_code_remarque } = req.body;
 

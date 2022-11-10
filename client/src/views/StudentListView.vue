@@ -94,9 +94,7 @@ export default {
     };
   },
   async created() {
-    const response = await API.getAllStudent(
-      JSON.parse(sessionStorage.getItem("authentication")).token
-    );
+    const response = await API.getAllStudent();
     this.students = response;
 
     for (let index = 0; index < this.students.length; index++) {

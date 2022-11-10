@@ -5,7 +5,10 @@ const jwtVerification = require('../modules/jwt_verification');
 module.exports = class RemarkCode {
   static async getRemarkCode(req, res) {
     try {
-      if (jwtVerification(req.token) == false) return;
+      if (jwtVerification(req.token) === false) {
+        res.status(403).json();
+        return;
+      }
 
       const remark_codes = await prisma.codeRemarque.findMany();
       res.status(200).json(remark_codes);

@@ -59,7 +59,7 @@ function verifyToken(req, res, next) {
   // Check if bearer is undefined
   if (typeof bearerHeader === 'undefined') {
       // Forbidden
-      res.sendStatus(403);
+      res.status(403).json();
       return;
   }
 

@@ -5,7 +5,10 @@ const jwtVerification = require('../modules/jwt_verification');
 module.exports = class Supervisor {
   static async getSupervisorFormInfo(req, res) {
     try {
-      if (jwtVerification(req.token) == false) return;
+      if (jwtVerification(req.token) === false) {
+        res.status(403).json();
+        return;
+      }
 
       const id = req.params.id;
       const supervisor = await prisma.utilisateur.findUnique({
@@ -96,7 +99,10 @@ module.exports = class Supervisor {
 
   static async updateSupervisorFormInfo(req, res) {
     try {
-      if (jwtVerification(req.token) == false) return;
+      if (jwtVerification(req.token) === false) {
+        res.status(403).json();
+        return;
+      }
 
       const id = req.params.id;
       const actif = req.body.actif === 'true' ? 1 : 0;
@@ -130,7 +136,10 @@ module.exports = class Supervisor {
 
   static async getAllSupervisor(req, res) {
     try {
-      if (jwtVerification(req.token) == false) return;
+      if (jwtVerification(req.token) === false) {
+        res.status(403).json();
+        return;
+      }
 
       const id_responsable = await prisma.typeUtilisateur.findUnique({
         where: {
@@ -160,7 +169,10 @@ module.exports = class Supervisor {
 
   static async getPreviousSupervisor(req, res) {
     try {
-      if (jwtVerification(req.token) == false) return;
+      if (jwtVerification(req.token) === false) {
+        res.status(403).json();
+        return;
+      }
 
       const id = req.params.id;
 
@@ -213,7 +225,10 @@ module.exports = class Supervisor {
 
   static async getNextSupervisor(req, res) {
     try {
-      if (jwtVerification(req.token) == false) return;
+      if (jwtVerification(req.token) === false) {
+        res.status(403).json();
+        return;
+      }
 
       const id = req.params.id;
 

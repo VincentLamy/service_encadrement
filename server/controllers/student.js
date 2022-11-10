@@ -6,7 +6,10 @@ const jwtVerification = require('../modules/jwt_verification');
 module.exports = class Student {
   static async getAllStudent(req, res) {
     try {
-      if (jwtVerification(req.token) == false) return;
+      if (jwtVerification(req.token) === false) {
+        res.status(403).json();
+        return;
+      }
 
       const students = await prisma.Etudiant.findMany({
         select: {
@@ -47,7 +50,10 @@ module.exports = class Student {
 
     static async getStudentFormInfo(req, res) {
       try {
-      if (jwtVerification(req.token) == false) return;
+      if (jwtVerification(req.token) === false) {
+        res.status(403).json();
+        return;
+      }
 
       const no_etudiant = req.params.no_etudiant;
 
@@ -134,7 +140,10 @@ module.exports = class Student {
 
   static async getPreviousStudent(req, res) {
     try {
-      if (jwtVerification(req.token) == false) return;
+      if (jwtVerification(req.token) === false) {
+        res.status(403).json();
+        return;
+      }
 
       const no_etudiant = req.params.no_etudiant;
 
@@ -221,7 +230,10 @@ module.exports = class Student {
 
   static async getNextStudent(req, res) {
     try {
-      if (jwtVerification(req.token) == false) return;
+      if (jwtVerification(req.token) === false) {
+        res.status(403).json();
+        return;
+      }
 
       const no_etudiant = req.params.no_etudiant;
 
