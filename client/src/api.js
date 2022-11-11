@@ -67,6 +67,17 @@ export default class API {
     }
   }
 
+  // Set student flag state
+  static async flagStudent(no_etudiant, flagged) {
+    try {
+      const res = await axios.patch(`${url}/flagStudent/${no_etudiant}`, {flagged: flagged}, config);
+      return res.data;
+    }
+    catch (err) {
+      return err;
+    }
+  }
+
   // Gets all responsable
   static async getAllSupervisor() {
     const res = await axios.get(`${url}/supervisor_list`, config);

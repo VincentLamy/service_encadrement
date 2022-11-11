@@ -1,9 +1,4 @@
 <template>
-  <!--
-    ************************************************
-    Informations de l'étudiant
-    ************************************************ 
-  -->
   <v-container>
     <div style="display: flex">
       <!-- Previous -->
@@ -32,6 +27,12 @@
         >
       </div>
     </div>
+
+    <!--
+        ************************************************
+        Informations de l'étudiant
+        ************************************************ 
+      -->
     <v-card class="py-2 px-3 mb-5" outlined>
       <v-card-text>
         <h3 class="d-flex justify-center mb-4">Informations de l'étudiant</h3>
@@ -125,7 +126,15 @@
         </v-row>
 
         <!-- Switch pour déterminer si l'étudiant est à surveiller -->
-        <v-switch color="error" hide-details label="À surveiller" />
+        <v-switch
+          v-model="student.a_surveiller"
+          color="red"
+          hide-details
+          label="À surveiller"
+          :disabled="student.a_surveiller === undefined"
+          :loading="flag_loading"
+          @change="setFlag"
+        />
       </v-card-text>
     </v-card>
 
@@ -448,6 +457,7 @@ export default {
       semester_tab: null,
       show_add_comment: false,
       loading: false,
+      flag_loading: false,
     };
   },
   async created() {
@@ -524,6 +534,11 @@ export default {
         params: { id: this.student.no_etudiant },
       });
       this.loading = false;
+    },
+    async setFlag() {
+      this.flag_loading = true;
+      console.log(await API.flagStudent(this.student.no_etudiant, this.student.a_surveiller));
+      this.flag_loading = false;
     },
     formattedDate(string_date) {
       let d = new Date(Date.parse(string_date));

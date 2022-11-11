@@ -16,6 +16,7 @@ router.get("/student_list", verifyToken, Student.getAllStudent);
 router.get("/student_form/:no_etudiant", verifyToken, Student.getStudentFormInfo);
 router.get("/previous_student_form/:no_etudiant", verifyToken, Student.getPreviousStudent);
 router.get("/next_student_form/:no_etudiant", verifyToken, Student.getNextStudent);
+router.patch("/flagStudent/:no_etudiant", verifyToken, Student.flagStudent);
 
 // Supervisor
 router.get("/supervisor_list", verifyToken, Supervisor.getAllSupervisor);
