@@ -138,6 +138,7 @@ model Etudiant {
   programme             Programme               @relation(fields: [code_programme], references: [code])
   code_programme        String                  @db.VarChar(10)
   session_actuelle      Int
+  a_surveiller          Boolean                 @default(false)
   TA_EtudiantGroupe     TA_EtudiantGroupe[]
   TA_EtuStatut          TA_EtuStatut[]
   FormulaireMath        FormulaireMath[]

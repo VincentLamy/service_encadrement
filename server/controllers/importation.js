@@ -118,6 +118,7 @@ module.exports = class Importation {
                         prenom: nomEtudiant[1],
                         session_actuelle: Number(file[i]['Session du programme d\'études']),
                         code_programme: programme.code,
+                        a_surveiller: false,
                     },
                     create: {
                         no_etudiant: Number(file[i]['Numéro de dossier']),
@@ -126,6 +127,7 @@ module.exports = class Importation {
                         prenom: nomEtudiant[1],
                         session_actuelle: Number(file[i]['Session du programme d\'études']),
                         code_programme: programme.code,
+                        a_surveiller: false,
                     },
                 });
 
