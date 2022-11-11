@@ -1,55 +1,92 @@
 <template>
   <v-container>
-    <v-alert id="csv_alert" close-text="Close Alert" :color="alertColor" :type="alertType" text dark v-if="alert">
+    <v-alert
+      id="csv_alert"
+      close-text="Close Alert"
+      :color="alertColor"
+      :type="alertType"
+      text
+      dark
+      v-if="alert"
+    >
       {{ alertContent }}
     </v-alert>
 
-    <h2 style="color: #FC8D33" class="mb-5">Exportation des données</h2>
+    <h2 style="color: #fc8d33" class="mb-5">Exportation des données</h2>
     <v-card>
       <v-col class="text-center">
-        <p style="color: black" class="body-1 mt-7">Seulement les fichiers Excel ou CSV sont acceptés.</p>
+        <p style="color: black" class="body-1 mt-7">
+          Seulement les fichiers Excel ou CSV sont acceptés.
+        </p>
       </v-col>
 
       <v-col class="text-center">
         <!-- Button for Rapport d'encadrement -->
-        <v-btn color="primary" dark :loading="isSelecting" @click="handleFileImport('rapport_encadrement')"
-          v-if="!loading">
+        <v-btn
+          color="primary"
+          dark
+          :loading="isSelecting"
+          @click="handleFileImport('rapport_encadrement')"
+          v-if="!loading"
+        >
           Importer Rapport d'encadrement
         </v-btn>
       </v-col>
 
       <v-col class="text-center">
         <!-- Button for Sondage mathématiques -->
-        <v-btn color="primary" dark id :loading="isSelecting" @click="handleFileImport('sondage_mathematiques')"
-          v-if="!loading">
+        <v-btn
+          color="primary"
+          dark
+          id
+          :loading="isSelecting"
+          @click="handleFileImport('sondage_mathematiques')"
+          v-if="!loading"
+        >
           Importer Sondage mathématiques
         </v-btn>
       </v-col>
 
-      <v-col class="text-center" style="padding-bottom: 5%;">
+      <v-col class="text-center" style="padding-bottom: 5%">
         <!-- Button for Etudiants Internationaux -->
-        <v-btn color="primary" dark id :loading="isSelecting" @click="handleFileImport('etudiants_internationaux')"
-          v-if="!loading">
+        <v-btn
+          color="primary"
+          dark
+          id
+          :loading="isSelecting"
+          @click="handleFileImport('etudiants_internationaux')"
+          v-if="!loading"
+        >
           Importer Liste étudiants internationaux
         </v-btn>
       </v-col>
 
       <!-- File input for all buttons -->
-      <input ref="uploader" class="d-none" type="file"
+      <input
+        ref="uploader"
+        class="d-none"
+        type="file"
         accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-        @change="onFileChanged">
+        @change="onFileChanged"
+      />
 
-      <v-progress-linear :active="loading" :indeterminate="loading" absolute bottom color="deep-purple accent-4">
+      <v-progress-linear
+        :active="loading"
+        :indeterminate="loading"
+        absolute
+        bottom
+        color="deep-purple accent-4"
+      >
       </v-progress-linear>
     </v-card>
   </v-container>
 </template>
 
 <script>
-import API from '../api';
+import API from "../api";
 
 export default {
-  name: 'CSVImport',
+  name: "CSVImport",
   data() {
     return {
       isSelecting: false,
@@ -59,11 +96,14 @@ export default {
       alertContent: "",
       alertColor: "green",
       alertType: "success",
-    }
+    };
   },
   mounted() {
-    let script = document.createElement('script');
-    script.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.2/xlsx.js');
+    let script = document.createElement("script");
+    script.setAttribute(
+      "src",
+      "https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.2/xlsx.js"
+    );
     document.head.appendChild(script);
   },
   methods: {
@@ -71,9 +111,13 @@ export default {
       this.isSelecting = true;
 
       // After obtaining the focus when closing the FilePicker, return the button state to normal
-      window.addEventListener('focus', () => {
-        this.isSelecting = false
-      }, { once: true });
+      window.addEventListener(
+        "focus",
+        () => {
+          this.isSelecting = false;
+        },
+        { once: true }
+      );
 
       // Trigger click on the FileInput
       this.$refs.uploader.click();
@@ -94,12 +138,15 @@ export default {
         return function (e) {
           let data = e.target.result;
           let workbook = XLSX.read(data, {
-            type: 'binary'
+            type: "binary",
           });
 
           workbook.SheetNames.forEach(async function (sheetName) {
             // File to object
-            let XL_row_object = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { defval: '' });
+            let XL_row_object = XLSX.utils.sheet_to_json(
+              workbook.Sheets[sheetName],
+              { defval: "" }
+            );
 
             let response;
 
@@ -117,7 +164,7 @@ export default {
             }
 
             // If error
-            if (response.code === 'ERR_BAD_REQUEST') {
+            if (response.code === "ERR_BAD_REQUEST") {
               file.alertContent = response.response.data.message;
               file.alertColor = "red";
               file.alertType = "error";
@@ -131,12 +178,12 @@ export default {
 
             file.alert = true;
             file.loading = false;
-          })
+          });
         };
       })(e.target.id, this.$router, this);
 
       reader.readAsBinaryString(this.selectedFile);
     },
   },
-}
+};
 </script>
