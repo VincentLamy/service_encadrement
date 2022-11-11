@@ -30,7 +30,7 @@ model Employe {
 
 model TypeEmploye {
   id          Int       @id @default(autoincrement())
-  nom         String    @db.VarChar(64) @unique
+  nom         String    @unique @db.VarChar(64)
   description String    @db.VarChar(255)
   Employe     Employe[]
 }
@@ -41,7 +41,7 @@ model Groupe {
   employe           Employe?            @relation(fields: [no_employe], references: [no_employe])
   no_employe        Int?
   cours             Cours?              @relation(fields: [code_cours], references: [code])
-  code_cours        String?             @db.VarChar(10)
+  code_cours        String?             @db.VarChar(18)
   session           Session             @relation(fields: [code_session], references: [code])
   code_session      String              @db.VarChar(5)
   Commentaire       Commentaire[]
@@ -59,14 +59,13 @@ model Utilisateur {
   courriel            String          @db.VarChar(255)
   mdp                 String          @db.VarChar(255)
   date_activation     DateTime
-  date_desactivation  DateTime        
+  date_desactivation  DateTime
   actif               Boolean
-
 }
 
 model TypeUtilisateur {
   id          Int           @id @default(autoincrement())
-  nom         String        @db.VarChar(64) @unique
+  nom         String        @unique @db.VarChar(64)
   description String        @db.VarChar(255)
   Utilisateur Utilisateur[]
 }
@@ -81,11 +80,11 @@ model Commentaire {
   id_groupe        Int
   code_remarque    CodeRemarque @relation(fields: [id_code_remarque], references: [code])
   id_code_remarque String
-  titre            String       @db.VarChar(64)
-  contenu          String       @db.VarChar(255)
+  titre            String       @db.VarChar(255)
+  contenu          String       @db.LongText
   date_creation    DateTime     @default(now())
 
-  @@unique([no_etudiant, id_code_remarque, titre, contenu, date_creation])
+  @@unique([no_etudiant, id_code_remarque, titre, date_creation])
 }
 
 model CodeRemarque {
@@ -96,7 +95,7 @@ model CodeRemarque {
 }
 
 model Cours {
-  code      String   @id @db.VarChar(10)
+  code      String   @id @db.VarChar(18)
   nom       String   @db.VarChar(64)
   campus    Campus   @relation(fields: [id_campus], references: [id])
   id_campus Int

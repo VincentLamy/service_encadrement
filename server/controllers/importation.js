@@ -8,7 +8,7 @@ const jwtVerification = require('../modules/jwt_verification');
 
 module.exports = class Importation {
     static async addRapportEncadrement(req, res) {
-        try {
+    //try {
         if (jwtVerification(req.token) === false) {
             res.status(403).json();
             return;
@@ -28,7 +28,6 @@ module.exports = class Importation {
                     "N'a pas terminé l'évaluation", "Autre (maximum de 3000 caractères):", "Progression", "Chances de réussite "]
 
             const size_array = array_code.length;
-
             for (let i = 0; i < size_array; i++) {
                 // Insert Code remarque
                 const code_remarque = await prisma.codeRemarque.upsert({
@@ -141,6 +140,10 @@ module.exports = class Importation {
                     },
                 });
 
+                if (!file[i]['Nom de l\'enseignant']) {
+                    file[i]['Nom de l\'enseignant'] = file[i - 1]['Nom de l\'enseignant'];
+                }
+
                 // Split Enseignant name
                 const nomEnseignant = file[i]['Nom de l\'enseignant'].split(',');
 
@@ -226,55 +229,62 @@ module.exports = class Importation {
                         titre = "Autre";
                         contenu = file[i]['Description de la remarque'];
                     }
-                    else if (file[i]['Type de remarque'] === "4") {
+                    else if (file[i]['Type de remarque'] == "4") {
+                        console.log("4");
+                        
                         titre = "Progression";
 
-                        if (file[i]['Description de la remarque'] === "0") {
+                        if (file[i]['Description de la remarque'] == "0") {
                             contenu = "Non applicable";
                         }
-                        else if (file[i]['Description de la remarque'] === "1") {
+                        else if (file[i]['Description de la remarque'] == "1") {
                             contenu = "Faibles";
                         }
-                        else if (file[i]['Description de la remarque'] === "2") {
+                        else if (file[i]['Description de la remarque'] == "2") {
                             contenu = "Moyennes";
                         }
-                        else if (file[i]['Description de la remarque'] === "3") {
+                        else if (file[i]['Description de la remarque'] == "3") {
                             contenu = "Bonnes";
                         }
-                        else if (file[i]['Description de la remarque'] === "4") {
+                        else if (file[i]['Description de la remarque'] == "4") {
                             contenu = "Très bonnes";
                         }
                     }
-                    else if (file[i]['Type de remarque'] === "5") {
+                    else if (file[i]['Type de remarque'] == "5") {
+                        console.log("5");
                         titre = "Chances de réussite";
 
-                        if (file[i]['Description de la remarque'] === "0") {
+                        if (file[i]['Description de la remarque'] == "0") {
                             contenu = "Non applicable";
                         }
-                        else if (file[i]['Description de la remarque'] === "1") {
+                        else if (file[i]['Description de la remarque'] == "1") {
                             contenu = "Faibles";
                         }
-                        else if (file[i]['Description de la remarque'] === "2") {
+                        else if (file[i]['Description de la remarque'] == "2") {
                             contenu = "Moyennes";
                         }
-                        else if (file[i]['Description de la remarque'] === "3") {
+                        else if (file[i]['Description de la remarque'] == "3") {
                             contenu = "Bonnes";
                         }
-                        else if (file[i]['Description de la remarque'] === "4") {
+                        else if (file[i]['Description de la remarque'] == "4") {
                             contenu = "Très bonnes";
                         }
                     }
+                
+                    if (file[i]['Commentaire'] && (file[i]['Type de remarque'] == "4" || file[i]['Type de remarque'] == "5")) {
+                        contenu += " - " + file[i]['Commentaire'];
+                    }
 
-                    if (file[i]['Commentaire'] && (file[i]['Type de remarque'] === "4" || file[i]['Type de remarque'] === "5")) contenu += " - " + file[i]['Commentaire'];
+                    console.log("Contenu du " + i + " :" + contenu);
+                    console.log("Titre du " + i + " :" + titre);
 
                     // Insert Commentaire
                     const commentaire = await prisma.commentaire.upsert({
                         where: {
-                            no_etudiant_id_code_remarque_titre_contenu_date_creation: {
+                            no_etudiant_id_code_remarque_titre_date_creation: {
                                 no_etudiant: etudiant.no_etudiant || 0,
                                 id_code_remarque: String(file[i]['Code de la remarque']) || "",
                                 titre: titre,
-                                contenu: contenu,
                                 date_creation: excelDateToJSDate(file[i]['Date de saisie de la remarque']) || 0,
                             }
                         },
@@ -327,9 +337,9 @@ module.exports = class Importation {
                 }
             }
             res.status(201).json({ message: 'Le rapport d\'encadrement a été ajouté avec succès' });
-        } catch (err) {
-            res.status(400).json({ message: 'Le rapport d\'encadrement n\'a pas pu être ajouté' });
-        }
+      //  } catch (err) {
+       //     res.status(400).json({ message: 'Le rapport d\'encadrement n\'a pas pu être ajouté' });
+       // }
     };
 
     static async addSondageMathematiques(req, res) {

@@ -12,7 +12,7 @@
       {{ alertContent }}
     </v-alert>
 
-    <h2 style="color: #fc8d33" class="mb-5">Exportation des données</h2>
+    <h2 style="color: #fc8d33" class="mb-5">Importation des données</h2>
     <v-card>
       <v-col class="text-center">
         <p style="color: black" class="body-1 mt-7">

@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 
 module.exports = class Responsable {
     static async login(req, res) {
-        try {
+     //   try {
             const user = await prisma.utilisateur.findFirst({
                 where: {
                     courriel: req.body.username,
@@ -33,8 +33,8 @@ module.exports = class Responsable {
             } else {
                 res.status(400).json({message: 'Erreur lors de la connexion' });
             }
-     } catch (error) {
-            res.status(400).json({ message: 'Erreur lors de la connexion' });
-        }
+  //   } catch (error) {
+   //         res.status(400).json({ message: 'Erreur lors de la connexion' });
+   //     }
     }
 };
