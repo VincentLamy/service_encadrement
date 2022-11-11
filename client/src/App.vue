@@ -69,42 +69,81 @@
       },
       canAccess(link) {
         let type = JSON.parse(sessionStorage.getItem("authentication"))
-
+        
         if (type)
           type = type.type_utilisateur.nom;
-        
-        if (type == "Administrateur") {
-          switch (link) {
-            case 0: // student_list
-              return false;
-            case 1: // supervisor_list
-              return true;
-            case 2: // csv_import
-              return true;
-            default:
-              break;
+
+        if(!link) {
+          link = this.$router.name
+
+          if (type == "Administrateur") {
+            switch (link) {
+              case 'student_list': // student_list
+                return false;
+              case 'supervisor_list': // supervisor_list
+                return true;
+              case 'csv_import': // csv_import
+                return true;
+              default:
+                break;
+            }
+          } else if (type == "Responsable") {
+            switch (link) {
+              case 'student_list': // student_list
+                return true;
+              case 'supervisor_list': // supervisor_list
+                return false;
+              case 'csv_import': // csv_import
+                return true;
+              default:
+                break;
+            }
+          } else if (type == "Dev") {
+            switch (link) {
+              case 'student_list':    // student_list
+                return true;
+              case 'supervisor_list': // supervisor_list
+                return true;
+              case 'csv_import':      // csv_import
+                return true;
+              default:
+                break;
+            }
           }
-        } else if (type == "Responsable") {
-          switch (link) {
-            case 0: // student_list
-              return true;
-            case 1: // supervisor_list
-              return false;
-            case 2: // csv_import
-              return true;
-            default:
-              break;
-          }
-        } else if (type == "Dev") {
-          switch (link) {
-            case 0: // student_list
-              return true;
-            case 1: // supervisor_list
-              return true;
-            case 2: // csv_import
-              return true;
-            default:
-              break;
+        } else {
+          if (type == "Administrateur") {
+            switch (link) {
+              case 0: // student_list
+                return false;
+              case 1: // supervisor_list
+                return true;
+              case 2: // csv_import
+                return true;
+              default:
+                break;
+            }
+          } else if (type == "Responsable") {
+            switch (link) {
+              case 0: // student_list
+                return true;
+              case 1: // supervisor_list
+                return false;
+              case 2: // csv_import
+                return true;
+              default:
+                break;
+            }
+          } else if (type == "Dev") {
+            switch (link) {
+              case 0: // student_list
+                return true;
+              case 1: // supervisor_list
+                return true;
+              case 2: // csv_import
+                return true;
+              default:
+                break;
+            }
           }
         }
       }
