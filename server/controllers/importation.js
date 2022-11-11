@@ -232,8 +232,6 @@ module.exports = class Importation {
                         contenu = file[i]['Description de la remarque'];
                     }
                     else if (file[i]['Type de remarque'] == "4") {
-                        console.log("4");
-                        
                         titre = "Progression";
 
                         if (file[i]['Description de la remarque'] == "0") {
@@ -253,7 +251,6 @@ module.exports = class Importation {
                         }
                     }
                     else if (file[i]['Type de remarque'] == "5") {
-                        console.log("5");
                         titre = "Chances de réussite";
 
                         if (file[i]['Description de la remarque'] == "0") {
@@ -276,9 +273,6 @@ module.exports = class Importation {
                     if (file[i]['Commentaire'] && (file[i]['Type de remarque'] == "4" || file[i]['Type de remarque'] == "5")) {
                         contenu += " - " + file[i]['Commentaire'];
                     }
-
-                    console.log("Contenu du " + i + " :" + contenu);
-                    console.log("Titre du " + i + " :" + titre);
 
                     // Insert Commentaire
                     const commentaire = await prisma.commentaire.upsert({

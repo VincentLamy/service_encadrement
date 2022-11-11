@@ -136,6 +136,7 @@ CREATE TABLE `Etudiant` (
     `nom` VARCHAR(64) NOT NULL,
     `code_programme` VARCHAR(10) NOT NULL,
     `session_actuelle` INTEGER NOT NULL,
+    `a_surveiller` BOOLEAN NOT NULL DEFAULT false,
 
     PRIMARY KEY (`no_etudiant`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

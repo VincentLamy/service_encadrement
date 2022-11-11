@@ -4,7 +4,12 @@
       Liste des cours
     </h2>
 
-    <v-data-table :headers="headers" :items="courses">
+    <v-text-field
+      v-model="search"
+      append-icon="mdi-magnify"
+      label="Rechercher"
+    ></v-text-field>
+    <v-data-table :headers="headers" :items="courses" :search="search">
       <template v-slot:item.nom="{ item }">
         <v-course-name-input :data="item" @updated="getData" />
       </template>
@@ -27,6 +32,7 @@ export default {
         { text: "Durée (h)", value: "duree" },
       ],
       courses: [],
+      search: "",
     };
   },
   async created() {
