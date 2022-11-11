@@ -41,7 +41,6 @@ export default {
   methods: {
     async getData() {
       this.courses = await API.getAllCourse();
-      console.log(this.courses);
     },
   },
   components: {
