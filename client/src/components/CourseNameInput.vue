@@ -11,6 +11,7 @@
         outlined
         color="blue darken-3"
         class="mb-1"
+        :loading="loading"
         v-bind="attrs"
         v-on="on"
       >
@@ -18,7 +19,7 @@
       </v-btn>
     </template>
     <template>
-      <v-card>
+      <v-card :loading="loading">
         <v-card-title> Modifier le nom du cours </v-card-title>
         <v-card-text>
           <v-form
@@ -65,17 +66,21 @@ export default {
             "Le nom du cours doit contenir moins de 64 caractères",
         ],
       },
+      loading: false,
     };
   },
   methods: {
     async updateCourseName() {
       if (!this.$refs.courseNameForm.validate()) return;
 
+      this.loading = true;
+
       await API.changeCourseName({
         code: this.data.code,
         name: this.course_input.value,
       });
 
+      this.loading = false;
       this.show_form = false;
       this.$emit("updated");
     },

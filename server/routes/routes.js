@@ -27,6 +27,7 @@ router.get("/previous_supervisor_form/:id", upload, verifyToken, Supervisor.getP
 router.get("/next_supervisor_form/:id", upload, verifyToken, Supervisor.getNextSupervisor);
 
 // Courses
+router.get("/course_list", verifyToken, Course.getAllCourse);
 router.patch("/changeCourseName", verifyToken, Course.changeCourseName);
 
 // Comments
