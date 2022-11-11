@@ -1,7 +1,7 @@
 const { PrismaClient } = require("@prisma/client");
 const { JsonWebTokenError } = require("jsonwebtoken");
 const prisma = new PrismaClient();
-const jwtVerification = require('../modules/jwt_verification');
+const jwtVerification = require("../modules/jwt_verification");
 
 module.exports = class Student {
   static async getAllStudent(req, res) {
@@ -37,19 +37,19 @@ module.exports = class Student {
           },
           where: {
             no_etudiant: students[index].no_etudiant,
-          }
+          },
         });
 
         students[index].commentary_quantity = commentaire.length;
       }
       res.status(200).json(students);
     } catch (error) {
-      res.status(404).json({ message: error.message });
+      res.status(400).json({ message: error.message });
     }
   }
 
-    static async getStudentFormInfo(req, res) {
-      try {
+  static async getStudentFormInfo(req, res) {
+    try {
       if (jwtVerification(req.token) === false) {
         res.status(403).json();
         return;
@@ -62,12 +62,12 @@ module.exports = class Student {
         where: {
           no_etudiant: Number(no_etudiant),
         },
-        include: { 
+        include: {
           TA_EtuStatut: {
             include: {
               statut_etudiant: true,
             },
-          },     
+          },
           TA_EtudiantGroupe: {
             include: {
               groupe: {
@@ -128,13 +128,13 @@ module.exports = class Student {
           groupe: true,
           employe: true,
           code_remarque: true,
-        }
+        },
       });
       student.semester_comments = semester_comments;
 
-      res.json(student); 
+      res.json(student);
     } catch (error) {
-      res.status(404).json({ message: error.message });
+      res.status(400).json({ message: error.message });
     }
   }
 
@@ -224,7 +224,7 @@ module.exports = class Student {
       }
       res.status(200).json(prev);
     } catch (error) {
-      res.status(404).json({ message: error.message });
+      res.status(400).json({ message: error.message });
     }
   }
 
@@ -314,7 +314,31 @@ module.exports = class Student {
       }
       res.status(200).json(next);
     } catch (error) {
-      res.status(404).json({ message: error.message });
+      res.status(400).json({ message: error.message });
+    }
+  }
+
+  static async flagStudent(req, res) {
+    try {
+      const no_etudiant = req.params.no_etudiant;
+      const { flagged } = req.body;
+
+      await prisma.Etudiant.update({
+        where: {
+          no_etudiant: Number(no_etudiant),
+        },
+        data: {
+          a_surveiller: flagged,
+        },
+      });
+
+      res.status(200).json({
+        message: `État de surveillance de l'étudiant mis à jour avec succès! (${
+          flagged ? "Activé" : "Désactivé"
+        })`,
+      });
+    } catch (error) {
+      res.status(400).json({ message: error.message });
     }
   }
 };

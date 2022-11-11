@@ -67,6 +67,17 @@ export default class API {
     }
   }
 
+  // Set student flag state
+  static async flagStudent(no_etudiant, flagged) {
+    try {
+      const res = await axios.patch(`${url}/flagStudent/${no_etudiant}`, {flagged: flagged}, config);
+      return res.data;
+    }
+    catch (err) {
+      return err;
+    }
+  }
+
   // Gets all responsable
   static async getAllSupervisor() {
     const res = await axios.get(`${url}/supervisor_list`, config);
@@ -184,7 +195,7 @@ export default class API {
     }
   }
 
-  // Vérifie si l'utilisateur existe.
+  // Checks if user exists
   static async login(username, password) {
     try {
       const res = await axios.post(`${url}/login`, { "username": username, "password": password });
@@ -192,5 +203,11 @@ export default class API {
     } catch (err) {
       return err;
     }
+  }
+
+  // Gets all courses
+  static async getAllCourse() {
+    const res = await axios.get(`${url}/course_list`, config);
+    return res.data;
   }
 }

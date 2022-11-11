@@ -84,6 +84,11 @@ export default {
         link: "/supervisor_list",
       },
       {
+        title: "Liste des cours",
+        icon: "mdi-school",
+        link: "/course_list",
+      },
+      {
         title: "Importer un fichier CSV",
         icon: "mdi-attachment",
         link: "/csv_import",
@@ -122,7 +127,9 @@ export default {
             return false;
           case 1: // supervisor_list
             return true;
-          case 2: // csv_import
+          case 2: // course_list
+            return true;
+          case 3: // csv_import
             return true;
           default:
             break;
@@ -133,7 +140,9 @@ export default {
             return true;
           case 1: // supervisor_list
             return false;
-          case 2: // csv_import
+          case 2: // course_list
+            return false;
+          case 3: // csv_import
             return true;
           default:
             break;
@@ -144,7 +153,9 @@ export default {
             return true;
           case 1: // supervisor_list
             return true;
-          case 2: // csv_import
+          case 2: // course_list
+            return true;
+          case 3: // csv_import
             return true;
           default:
             break;
