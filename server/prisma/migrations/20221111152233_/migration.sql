@@ -22,6 +22,7 @@ CREATE TABLE `TypeEmploye` (
     `nom` VARCHAR(64) NOT NULL,
     `description` VARCHAR(255) NOT NULL,
 
+    UNIQUE INDEX `TypeEmploye_nom_key`(`nom`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -30,7 +31,7 @@ CREATE TABLE `Groupe` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `no_groupe` INTEGER NULL DEFAULT 0,
     `no_employe` INTEGER NULL,
-    `code_cours` VARCHAR(10) NULL,
+    `code_cours` VARCHAR(18) NULL,
     `code_session` VARCHAR(5) NOT NULL,
 
     UNIQUE INDEX `Groupe_no_groupe_code_cours_code_session_key`(`no_groupe`, `code_cours`, `code_session`),
@@ -69,11 +70,11 @@ CREATE TABLE `Commentaire` (
     `no_employe` INTEGER NOT NULL,
     `id_groupe` INTEGER NOT NULL,
     `id_code_remarque` VARCHAR(191) NOT NULL,
-    `titre` VARCHAR(64) NOT NULL,
-    `contenu` VARCHAR(255) NOT NULL,
+    `titre` VARCHAR(255) NOT NULL,
+    `contenu` LONGTEXT NOT NULL,
     `date_creation` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
-    UNIQUE INDEX `Commentaire_no_etudiant_id_code_remarque_titre_contenu_date__key`(`no_etudiant`, `id_code_remarque`, `titre`, `contenu`, `date_creation`),
+    UNIQUE INDEX `Commentaire_no_etudiant_id_code_remarque_titre_date_creation_key`(`no_etudiant`, `id_code_remarque`, `titre`, `date_creation`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -89,7 +90,7 @@ CREATE TABLE `CodeRemarque` (
 
 -- CreateTable
 CREATE TABLE `Cours` (
-    `code` VARCHAR(10) NOT NULL,
+    `code` VARCHAR(18) NOT NULL,
     `nom` VARCHAR(64) NOT NULL,
     `id_campus` INTEGER NOT NULL,
     `duree` INTEGER NOT NULL,
@@ -135,6 +136,7 @@ CREATE TABLE `Etudiant` (
     `nom` VARCHAR(64) NOT NULL,
     `code_programme` VARCHAR(10) NOT NULL,
     `session_actuelle` INTEGER NOT NULL,
+    `a_surveiller` BOOLEAN NOT NULL DEFAULT false,
 
     PRIMARY KEY (`no_etudiant`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

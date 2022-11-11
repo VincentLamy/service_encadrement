@@ -1,35 +1,41 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+const jwtVerification = require('../modules/jwt_verification');
 
 module.exports = class Comment {
   static async addComment(req, res) {
-    const {
-      no_etudiant,
-      no_employe,
-      code_session,
-      id_code_remarque,
-      titre,
-      contenu,
-    } = req.body;
-
-    // Sélectionner le groupe représentant une session s'il existe, sinon le créer.
-    const groupe =
-      (await prisma.groupe.findFirst({
-        where: {
-          no_groupe: 0,
-          code_session: code_session,
-        },
-      })) ||
-      (await prisma.groupe.create({
-        data: {
-          session: {
-            connect: { code: code_session },
-          },
-        },
-      }));
-
-    // Créer le commentaire associé à une session
     try {
+      if (jwtVerification(req.token) === false) {
+        res.status(403).json();
+        return;
+      }
+
+      const {
+        no_etudiant,
+        no_employe,
+        code_session,
+        id_code_remarque,
+        titre,
+        contenu,
+      } = req.body;
+
+      // Sélectionner le groupe représentant une session s'il existe, sinon le créer.
+      const groupe =
+        (await prisma.groupe.findFirst({
+          where: {
+            no_groupe: 0,
+            code_session: code_session,
+          },
+        })) ||
+        (await prisma.groupe.create({
+          data: {
+            session: {
+              connect: { code: code_session },
+            },
+          },
+        }));
+
+      // Créer le commentaire associé à une session
       await prisma.commentaire.create({
         data: {
           no_etudiant: Number(no_etudiant),
@@ -49,9 +55,14 @@ module.exports = class Comment {
   }
 
   static async editComment(req, res) {
-    const { id, titre, contenu, id_code_remarque } = req.body;
-
     try {
+      if (jwtVerification(req.token) === false) {
+        res.status(403).json();
+        return;
+      }
+
+      const { id, titre, contenu, id_code_remarque } = req.body;
+
       await prisma.commentaire.update({
         where: {
           id: Number(id),
