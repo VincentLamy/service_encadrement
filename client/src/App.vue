@@ -98,14 +98,17 @@ export default {
     programme: "Programmation",
   }),
   updated() {
-    const authentication = JSON.parse(sessionStorage.getItem("authentication")).user;
+    let authentication;
+    if (sessionStorage.getItem("authentication")) {
+      authentication = JSON.parse(
+        sessionStorage.getItem("authentication")
+      ).user;
+    }
 
     if (authentication) {
       this.name =
-        authentication.employe.prenom +
-        " " +
-        authentication.employe.nom;
-        
+        authentication.employe.prenom + " " + authentication.employe.nom;
+
       // this.programme = auth.departement;
     }
   },
