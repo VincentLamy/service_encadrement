@@ -3,7 +3,7 @@
 
     <h2>Liste des responsables</h2>
 
-    <v-data-table id="list_student" :headers="headers" :items="supervisor" :sort-desc="[false, true]"
+    <v-data-table id="list_supervisor" :headers="headers" :items="supervisor" :sort-desc="[false, true]"
       class="elevation-1" @click:row="rowClick">
       <!-- <template v-slot:header.student_critical_state>
             <v-icon color="red">mdi-alert-circle</v-icon>

@@ -145,5 +145,5 @@ export default {
 </script>
 
 <style>
-  .text-start:first-child { text-align: center !important;}
+  #list_student td.text-start:first-child { text-align: center !important;}
 </style>
