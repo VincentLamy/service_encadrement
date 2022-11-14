@@ -26,6 +26,7 @@
       append-icon="mdi-magnify"
       label="Rechercher"
     ></v-text-field>
+
     <v-data-table
       id="list_student"
       :headers="headers"
@@ -39,6 +40,7 @@
           <v-icon color="red">mdi-alert-circle</v-icon>
         </template> -->
     </v-data-table>
+
   </v-container>
 </template>
 
@@ -50,7 +52,7 @@ export default {
   data() {
     return {
       headers: [
-        // { text: '',                               value: 'critical_state(student_critical_state)'},
+        { text: 'À rencontrer',    value: 'a_surveiller', id: 'center'},
         { text: "Numéro étudiant", value: "no_etudiant" },
         { text: "Nom complet", value: "nom" },
         {
@@ -101,7 +103,13 @@ export default {
       this.students[index].nom =
         this.students[index].nom + ", " + this.students[index].prenom;
       this.students[index].critical_course_quantity =
-        this.amountClassesInDifficulty(index);
+        this.amountClassesInDifficulty(index)
+
+        if (this.students[index].a_surveiller == false) {
+          this.students[index].a_surveiller = "";
+        } else {
+          this.students[index].a_surveiller = "✔";
+        }
 
       // if(this.students[index].critical_course_quantity > 0){
       //   document.getElementById("list_student").style.color = "red";
@@ -135,3 +143,7 @@ export default {
   },
 };
 </script>
+
+<style>
+  .text-start:first-child { text-align: center !important;}
+</style>
