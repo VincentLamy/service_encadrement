@@ -1,6 +1,8 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const jwtVerification = require('../modules/jwt_verification');
+const jwt = require('jsonwebtoken');
+const SHA256 = require("crypto-js/sha256");
 
 module.exports = class Supervisor {
   static async getSupervisorFormInfo(req, res) {
@@ -83,7 +85,7 @@ module.exports = class Supervisor {
         no_employe: Number(employe.no_employe),
         id_type_utilisateur: id_responsable.id,
         courriel: req.body.courriel,
-        mdp: "ceciestunmotdepassepardefault",
+        mdp: SHA256("ceciestunmotdepassepardefault").toString(),
         date_activation: today,
         date_desactivation: today,
         actif: Boolean(0),
