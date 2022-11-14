@@ -10,6 +10,10 @@
           </v-checkbox>
           <v-checkbox v-model="hasComments" label="A des commentaires">
           </v-checkbox>
+          <v-checkbox v-model="hasToBeChecked" label="À recontrer">
+          </v-checkbox>
+
+
         </v-col>
 
         <v-text-field
@@ -18,8 +22,10 @@
           label="Cours en difficulté"
           min="0"
         ></v-text-field>
+
       </v-row>
     </v-container>
+
 
     <v-text-field
       v-model="search"
@@ -52,7 +58,16 @@ export default {
   data() {
     return {
       headers: [
-        { text: 'À rencontrer',    value: 'a_surveiller', id: 'center'},
+        { text: 'À rencontrer',    
+          value: 'a_surveiller',
+          filter: (value) => {
+            if (this.hasToBeChecked) {
+              if (!value) return false;
+              return true;
+            }
+            return true;
+          }
+        },
         { text: "Numéro étudiant", value: "no_etudiant" },
         { text: "Nom complet", value: "nom" },
         {
@@ -92,12 +107,15 @@ export default {
       // Filters
       hasStudentCode: "",
       hasComments: "",
+      hasToBeChecked: false,
       nbClassesInDifficulty: 0,
     };
   },
   async created() {
     const response = await API.getAllStudent();
     this.students = response;
+
+    console.log(this.students);
 
     for (let index = 0; index < this.students.length; index++) {
       this.students[index].nom =
