@@ -24,8 +24,12 @@ h1, h2 {
     color: #FC8D33;
 }
 
-.v-app-bar__nav-icon {
+.v-app-bar__nav-icon, #disconnect_button {
     position: absolute;
+}
+
+#disconnect_button {
+    right: 5px;
 }
 
 .v-application--is-ltr .v-toolbar__content > .v-btn.v-btn--icon:first-child + .v-toolbar__title, .v-application--is-ltr .v-toolbar__extension > .v-btn.v-btn--icon:first-child + .v-toolbar__title {

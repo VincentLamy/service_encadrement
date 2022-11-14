@@ -1,20 +1,24 @@
 import axios from "axios";
 const url = "/api";
 
-let config;
-if (sessionStorage.getItem("authentication")) {
-  config = {
-    headers: {
-      Authorization: 'Bearer ' + JSON.parse(sessionStorage.getItem("authentication")).token,
-    },
-  };
+// Returns authentification token config()()
+function config() {
+  if (sessionStorage.getItem("authentication")) {
+    return {
+      headers: {
+        Authorization:
+          "Bearer " + JSON.parse(sessionStorage.getItem("authentication")).token,
+      },
+    };
+  }
+  return null;
 }
 
 export default class API {
   // To insert a rapport d'encadrement
   static async addRapportEncadrement(rapportEncadrement) {
     try {
-      const res = await axios.post(`${url}/rapportEncadrement`, rapportEncadrement, config);
+      const res = await axios.post(`${url}/rapportEncadrement`, rapportEncadrement, config());
       return res.data;
     } catch (err) {
       return err;
@@ -23,7 +27,7 @@ export default class API {
 
   static async getAllStudent() {
     try {
-    const res = await axios.get(`${url}/student_list`, config);
+    const res = await axios.get(`${url}/student_list`, config());
     return res.data;
     } catch (err) {
       return err;
@@ -33,7 +37,7 @@ export default class API {
   // To insert a sondage mathematiques
   static async addSondageMathematiques(sondageMathematiques) {
     try {
-      const res = await axios.post(`${url}/sondageMathematiques`,sondageMathematiques, config);
+      const res = await axios.post(`${url}/sondageMathematiques`,sondageMathematiques, config());
       return res.data;
     } catch (err) {
       return err;
@@ -43,7 +47,7 @@ export default class API {
   // To insert a étudiants internationaux list
   static async addEtudiantsInternationaux(etudiantsInternationaux) {
     try {
-      const res = await axios.post(`${url}/etudiantsInternationaux`,etudiantsInternationaux, config);
+      const res = await axios.post(`${url}/etudiantsInternationaux`,etudiantsInternationaux, config());
       return res.data;
     } catch (err) {
       return err;
@@ -52,14 +56,14 @@ export default class API {
 
   // Gets all students
   static async getAllStudent() {
-    const res = await axios.get(`${url}/student_list`, config);
+    const res = await axios.get(`${url}/student_list`, config());
     return res.data;
   }
 
   // Gets student form info by ID
   static async getStudentFormInfo(no_etudiant) {
     try {
-      const res = await axios.get(`${url}/student_form/${no_etudiant}`, config)
+      const res = await axios.get(`${url}/student_form/${no_etudiant}`, config())
       return res.data;
     }
     catch (err) {
@@ -70,7 +74,7 @@ export default class API {
   // Set student flag state
   static async flagStudent(no_etudiant, flagged) {
     try {
-      const res = await axios.patch(`${url}/flagStudent/${no_etudiant}`, {flagged: flagged}, config);
+      const res = await axios.patch(`${url}/flagStudent/${no_etudiant}`, {flagged: flagged}, config());
       return res.data;
     }
     catch (err) {
@@ -80,14 +84,14 @@ export default class API {
 
   // Gets all responsable
   static async getAllSupervisor() {
-    const res = await axios.get(`${url}/supervisor_list`, config);
+    const res = await axios.get(`${url}/supervisor_list`, config());
     return res.data;
   }
 
   // Gets supervisor form info by ID
   static async getSupervisorFormInfo(id) {
     try {
-      const res = await axios.get(`${url}/supervisor_form/${id}`, config)
+      const res = await axios.get(`${url}/supervisor_form/${id}`, config())
       return res.data;
     }
     catch (err) {
@@ -97,14 +101,14 @@ export default class API {
 
   // to insert Supervisor into database
   static async addSupervisor(data) {
-    const res = await axios.post(`${url}/add_supervisor/`, data, config);
+    const res = await axios.post(`${url}/add_supervisor/`, data, config());
     return res.data;
   }
 
   // Updates supervisor form info by ID
   static async updateSupervisorFormInfo(id, post) {
     try {
-      const res = await axios.patch(`${url}/supervisor_form/${id}`, post, config)
+      const res = await axios.patch(`${url}/supervisor_form/${id}`, post, config())
       return res.data;
     }
     catch (err) {
@@ -115,7 +119,7 @@ export default class API {
   // Gets previous supervisor by ID
   static async getPreviousSupervisor(id) {
     try {
-      const res = await axios.get(`${url}/previous_supervisor_form/${id}`, config)
+      const res = await axios.get(`${url}/previous_supervisor_form/${id}`, config())
       return res.data;
     }
     catch (err) {
@@ -126,7 +130,7 @@ export default class API {
   // Gets next supervisor by ID
   static async getNextSupervisor(id) {
     try {
-      const res = await axios.get(`${url}/next_supervisor_form/${id}`, config)
+      const res = await axios.get(`${url}/next_supervisor_form/${id}`, config())
       return res.data;
     }
     catch (err) {
@@ -137,7 +141,7 @@ export default class API {
   // Update course name
   static async changeCourseName(course) {
     try {
-      const res = await axios.patch(`${url}/changeCourseName`, course, config);
+      const res = await axios.patch(`${url}/changeCourseName`, course, config());
       return res.data;
     } catch (err) {
       return err;
@@ -147,7 +151,7 @@ export default class API {
   // Add comment
   static async addComment(comment) {
     try {
-      const res = await axios.post(`${url}/addComment`, comment, config);
+      const res = await axios.post(`${url}/addComment`, comment, config());
       return res.data;
     } catch (err) {
       return err;
@@ -157,7 +161,7 @@ export default class API {
   // Edit comment
   static async editComment(comment) {
     try {
-      const res = await axios.patch(`${url}/editComment`, comment, config);
+      const res = await axios.patch(`${url}/editComment`, comment, config());
       return res.data;
     } catch (err) {
       return err;
@@ -167,7 +171,7 @@ export default class API {
   // Get all remark codes
   static async getRemarkCode() {
     try {
-      const res = await axios.get(`${url}/getRemarkCodes`, config);
+      const res = await axios.get(`${url}/getRemarkCodes`, config());
       return res.data;
     } catch (err) {
       return err;
@@ -177,7 +181,7 @@ export default class API {
   // Gets previous supervisor by numero etudiant
   static async getPreviousStudent(numero_etudiant) {
     try {
-      const res = await axios.get(`${url}/previous_student_form/${numero_etudiant}`, config);
+      const res = await axios.get(`${url}/previous_student_form/${numero_etudiant}`, config());
       return res.data;
     } catch (err) {
       return err;
@@ -188,7 +192,7 @@ export default class API {
   // Gets next supervisor by numero etudiant
   static async getNextStudent(numero_etudiant) {
     try {
-      const res = await axios.get(`${url}/next_student_form/${numero_etudiant}`, config);
+      const res = await axios.get(`${url}/next_student_form/${numero_etudiant}`, config());
       return res.data;
     } catch (err) {
       return err;
@@ -207,7 +211,7 @@ export default class API {
 
   // Gets all courses
   static async getAllCourse() {
-    const res = await axios.get(`${url}/course_list`, config);
+    const res = await axios.get(`${url}/course_list`, config());
     return res.data;
   }
 }

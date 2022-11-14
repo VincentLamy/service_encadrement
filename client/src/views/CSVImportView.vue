@@ -163,17 +163,19 @@ export default {
               response = await API.addEtudiantsInternationaux(XL_row_object);
             }
 
-            // If error
-            if (response.code === "ERR_BAD_REQUEST") {
-              file.alertContent = response.response.data.message;
-              file.alertColor = "red";
-              file.alertType = "error";
-            }
+            console.log(response);
+
             // If it works
-            else {
+            if (response.message && !response.code) {
               file.alertContent = response.message;
               file.alertColor = "green";
               file.alertType = "success";
+            }
+            // If error
+            else {
+              file.alertContent = "L'importation n'a pas fonctionné";
+              file.alertColor = "red";
+              file.alertType = "error";
             }
 
             file.alert = true;

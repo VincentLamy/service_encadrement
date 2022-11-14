@@ -24,8 +24,6 @@ module.exports = class Course {
         return;
       }
 
-      console.log(req.body);
-
       const { code, name } = req.body;
 
       await prisma.cours.update({

@@ -35,7 +35,10 @@
                 @click:append="show1 = !show1"
               ></v-text-field>
             </v-col>
-            <v-col class="d-flex" cols="12" sm="6" xsm="12"> </v-col>
+            <!-- TODO bouton mot de passe oublié
+            <v-col class="d-flex" cols="12" sm="6" xsm="12"> 
+              <v-btn @click="password_forgot">Mot de passe oublié</v-btn>
+            </v-col> -->
             <v-col class="d-flex" cols="12" sm="6" xsm="12" align-end>
               <v-btn
                 x-large
@@ -43,9 +46,7 @@
                 :disabled="!valid"
                 color="success"
                 @click="validate"
-              >
-                Login
-              </v-btn>
+              >Login</v-btn>
             </v-col>
           </v-row>
         </v-form>
@@ -87,8 +88,6 @@ export default {
   },
   methods: {
     async validate() {
-      let is_connected = false;
-
       if (this.$refs.loginForm.validate()) {
         const response = await API.login(this.loginEmail, this.loginPassword);
 
@@ -127,12 +126,11 @@ export default {
       }
 
       if (sessionStorage.getItem("authentication")) {
-        let type = JSON.parse(sessionStorage.getItem("authentication")).user
-          .type_utilisateur.nom;
-
-        if (type == "Administrateur") this.$router.push("/supervisor_list");
-        else if (type == "Responsable") this.$router.push("/student_list");
-        else if (type == "Dev") this.$router.push("/student_list");
+        let type = JSON.parse(sessionStorage.getItem("authentication")).user.type_utilisateur.nom;
+      
+        if      (type == "Administrateur")  this.$router.push("/supervisor_list");
+        else if (type == "Responsable")     this.$router.push("/student_list");
+        else if (type == "Dev")             this.$router.push("/student_list");
       }
     },
     reset() {

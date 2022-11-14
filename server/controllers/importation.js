@@ -8,7 +8,7 @@ const jwtVerification = require('../modules/jwt_verification');
 
 module.exports = class Importation {
     static async addRapportEncadrement(req, res) {
-    //try {
+    try {
         if (jwtVerification(req.token) === false) {
             res.status(403).json();
             return;
@@ -333,9 +333,9 @@ module.exports = class Importation {
                 }
             }
             res.status(201).json({ message: 'Le rapport d\'encadrement a été ajouté avec succès' });
-      //  } catch (err) {
-       //     res.status(400).json({ message: 'Le rapport d\'encadrement n\'a pas pu être ajouté' });
-       // }
+        } catch (err) {
+            res.status(400).json({ message: 'Le rapport d\'encadrement n\'a pas pu être ajouté' });
+        }
     };
 
     static async addSondageMathematiques(req, res) {

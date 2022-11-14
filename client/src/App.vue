@@ -20,9 +20,9 @@
       <v-list nav dense>
         <v-list-item-group color="primary">
           <v-list-item
-            v-if="canAccess(i)"
             v-for="(item, i) in items"
             :key="i"
+            v-if="canAccess(i)"
             :to="item.link"
             link
           >
@@ -98,13 +98,17 @@ export default {
     programme: "Programmation",
   }),
   updated() {
-    const authentication = JSON.parse(sessionStorage.getItem("authentication"));
+    let authentication;
+    if (sessionStorage.getItem("authentication")) {
+      authentication = JSON.parse(
+        sessionStorage.getItem("authentication")
+      ).user;
+    }
 
     if (authentication) {
       this.name =
-        authentication.user.employe.prenom +
-        " " +
-        authentication.user.employe.nom;
+        authentication.employe.prenom + " " + authentication.employe.nom;
+
       // this.programme = auth.departement;
     }
   },
