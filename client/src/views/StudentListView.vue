@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <h2>Liste des étudiants</h2>
+    <h2>Liste des étudiants</h2> 
 
     <h3 id="filter" @click="filter = !filter">Filtrer</h3>
     <v-container v-if="filter">
@@ -12,8 +12,6 @@
           </v-checkbox>
           <v-checkbox v-model="hasToBeChecked" label="À recontrer">
           </v-checkbox>
-
-
         </v-col>
 
         <v-text-field
@@ -25,7 +23,6 @@
 
       </v-row>
     </v-container>
-
 
     <v-text-field
       v-model="search"
@@ -72,7 +69,7 @@ export default {
         { text: "Nom complet", value: "nom" },
         {
           text: "Statut étudiant",
-          value: "TA_EtuStatut[0].statut_etudiant.code",
+          value: "TA_EtuStatut.statut_etudiant",
           filter: (value) => {
             if (this.hasStudentCode) {
               if (!value) return false;
@@ -115,8 +112,6 @@ export default {
     const response = await API.getAllStudent();
     this.students = response;
 
-    console.log(this.students);
-
     for (let index = 0; index < this.students.length; index++) {
       this.students[index].nom =
         this.students[index].nom + ", " + this.students[index].prenom;
@@ -128,6 +123,9 @@ export default {
         } else {
           this.students[index].a_surveiller = "✔";
         }
+
+        this.students[index].TA_EtuStatut.statut_etudiant= this.allStatutEtu(index);
+        //console.log(this.allStatutEtu(index));
 
       // if(this.students[index].critical_course_quantity > 0){
       //   document.getElementById("list_student").style.color = "red";
@@ -157,6 +155,20 @@ export default {
         }
       });
       return amount;
+    },
+    allStatutEtu(index){
+      let statut = "";
+
+      //console.log(this.students[index].TA_EtuStatut);
+
+      this.students[index].TA_EtuStatut.forEach((etudiant) => {
+        console.log(etudiant.statut_etudiant.code)
+        if (statut !== ""){
+          statut += ", "
+        }
+        statut += etudiant.statut_etudiant.code
+      });
+      return statut;
     },
   },
 };

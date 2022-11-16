@@ -118,7 +118,7 @@
           >
             <v-text-field
               label="Statut"
-              :value="student.TA_EtuStatut[0].statut_etudiant.code"
+              :value="allStatutEtu"
               outlined
               readonly
             />
@@ -303,6 +303,7 @@
           </v-tab>
         </v-tabs>
 
+
         <v-container>
           <!-- Cours & Commentaires des sessions -->
           <v-tabs-items v-model="semester_tab" v-if="semesters.length !== 0">
@@ -470,6 +471,7 @@ export default {
     ) {
       // Get student info
       this.student = await API.getStudentFormInfo(no_student);
+      console.log(this.student);
 
       // Get all remark codes
       this.remark_codes = await API.getRemarkCode();
@@ -477,10 +479,12 @@ export default {
       // Get all semesters the student is in
       let duplicate_semesters = this.student.TA_EtudiantGroupe.map(
         (x) => x.groupe.session
-      );
+      );  
+
       this.semesters = Array.from(
         new Set(duplicate_semesters.map((s) => s.id))
       ).map((id) => {
+
         const code = duplicate_semesters.find((s) => s.id === id).code;
         return {
           id: id,
@@ -493,6 +497,8 @@ export default {
           ),
         };
       });
+
+      
     },
     async gotoPreviousStudent() {
       // Get previous student info
@@ -561,6 +567,16 @@ export default {
               g.note_ponderee / g.pourcentage_note_cumulee < 0.6
           ).length
         : 0;
+    },
+    allStatutEtu(){
+      let statut = ""
+      this.student.TA_EtuStatut.forEach((etudiant) => {
+        if (statut !== ""){
+          statut += ", "
+        }
+        statut += etudiant.statut_etudiant.code
+      });
+      return statut;
     },
   },
   components: {
