@@ -1,6 +1,7 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const jwt = require('jsonwebtoken');
+const SHA256 = require("crypto-js/sha256");
 
 module.exports = class Responsable {
     static async login(req, res) {
@@ -8,7 +9,7 @@ module.exports = class Responsable {
             const user = await prisma.utilisateur.findFirst({
                 where: {
                     courriel: req.body.username,
-                    mdp: req.body.password,
+                    mdp: SHA256(req.body.password).toString(),
                 },
                 select: {
                     employe: {
