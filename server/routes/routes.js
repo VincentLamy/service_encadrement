@@ -39,15 +39,12 @@ router.patch("/editComment", verifyToken, Comment.editComment);
 router.get("/getRemarkCodes", verifyToken, RemarkCode.getRemarkCode);
 
 // Reports
-router.post("/rapportEncadrement", verifyToken, Importation.addRapportEncadrement);
 router.post("/oneRapportEncadrement", verifyToken, Importation.addOneRapportEncadrement);
 
 // Math form
-router.post("/sondageMathematiques", verifyToken, Importation.addSondageMathematiques);
 router.post("/oneSondageMathematiques", verifyToken, Importation.addOneSondageMathematiques);
 
 // Internationals
-router.post("/etudiantsInternationaux", verifyToken, Importation.addEtudiantsInternationaux);
 router.post("/oneEtudiantsInternationaux", verifyToken, Importation.addOneEtudiantsInternationaux);
 
 // Login

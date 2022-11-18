@@ -154,14 +154,14 @@ export default {
 
             let ok = true;
             let i = 0;
+            let bypassed = [];
 
             // Rapport encadrement
             if (button_id === "rapport_encadrement") {
               do {
                 response = await API.addOneRapportEncadrement(XL_row_object[i]);
-
                 // If it works
-                if (response.message && !response.code) {
+                if (response.ok === "true") {
                   file.loadingValue = (i / XL_row_object.length) * 100;
 
                   file.alertContent =
@@ -173,6 +173,10 @@ export default {
                   file.alertColor = "green";
                   file.alertType = "success";
                   file.alert = true;
+
+                  if (response.bypassed === "true") {
+                    bypassed.push(i + 1);
+                  }
                 }
                 // If error
                 else {
@@ -189,7 +193,7 @@ export default {
                 );
 
                 // If it works
-                if (response.message && !response.code) {
+                if (response.ok === "true") {
                   file.loadingValue = (i / XL_row_object.length) * 100;
 
                   file.alertContent =
@@ -217,7 +221,7 @@ export default {
                 );
 
                 // If it works
-                if (response.message && !response.code) {
+                if (response.ok === "true") {
                   file.loadingValue = (i / XL_row_object.length) * 100;
 
                   file.alertContent =
@@ -238,13 +242,24 @@ export default {
               } while (i < XL_row_object.length && ok === true);
             }
 
-            // If it works
-            if (response.message && !response.code) {
-              file.alertContent = response.message;
+            // If it works (end)
+            if (response.ok === "true") {
+              file.alertContent = "Le fichier a bien été importé. ";
               file.alertColor = "green";
               file.alertType = "success";
+
+              // If lines were bypassed
+              if (bypassed.length > 0) {
+                file.alertContent += "Les lignes ";
+                bypassed.forEach((value) => {
+                  file.alertContent += value + ", ";
+                });
+                file.alertContent = file.alertContent.slice(0, -2);
+                file.alertContent +=
+                  " n'ont pas été ajouté parce qu'elles contenaient des erreurs.";
+              }
             }
-            // If error
+            // If error (end)
             else {
               if (i > 1) {
                 file.alertContent =
