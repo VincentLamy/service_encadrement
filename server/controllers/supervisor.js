@@ -3,6 +3,7 @@ const prisma = new PrismaClient();
 const jwtVerification = require("../modules/jwt_verification");
 const jwt = require("jsonwebtoken");
 const SHA256 = require("crypto-js/sha256");
+require('dotenv').config();
 
 module.exports = class Supervisor {
   static async getSupervisorFormInfo(req, res) {
@@ -30,7 +31,7 @@ module.exports = class Supervisor {
   // create a supervisor
   static async addSupervisor(req, res) {
     try {
-      const verification = jwt.verify(req.token, "key_se", (err) => {
+      const verification = jwt.verify(req.token, process.env.JWT_KEY, (err) => {
         if (err) {
           res.sendStatus(403);
           return false;

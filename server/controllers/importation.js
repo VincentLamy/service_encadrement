@@ -333,6 +333,22 @@ module.exports = class Importation {
       
             const file_line = req.body;
       
+            // Verifications
+            if (
+                file_line['Numéro de dossier'] === "" ||
+                file_line['Code permanent'] === "" ||
+                file_line['Nom de l\'étudiant'] === "" ||
+                file_line['Session du programme d\'études'] === "" ||
+                file_line['Numéro du cours'] === "" ||
+                file_line['Numéro du groupe'] === "" ||
+                file_line['Nb heures d\'abscenses'] === "" ||
+                file_line['Nom de l\'enseignant'] === "" ||
+                file_line['Nb heures du cours'] === "" ||
+                file_line['Campus'] === "") {
+                    res.status(201).json({ ok: "true", bypassed: "true", message: 'La ligne du sondage de mathématiques n\'a pas été ajoutée' });
+                    return;
+                }
+
             // Insert Cours Math 4
             const coursMath4 = await prisma.coursMath.upsert({
                 where: {
