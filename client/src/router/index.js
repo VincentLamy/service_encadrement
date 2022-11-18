@@ -18,6 +18,7 @@ import CourseListView from "../views/CourseListView";                           
 import SupervisorFormView from "../views/SupervisorFormView";
 import SupervisorListView from "../views/SupervisorListView";
 import SupervisorAddView from "../views/SupervisorAddView";
+import SupervisorEmail from "../views/SupervisorEmailView";
 
 
 Vue.use(VueRouter);
@@ -59,6 +60,11 @@ const routes = [
     component: SupervisorAddView,
   },
   {
+    path: "/supervisor_email",
+    name: "supervisor_email",
+    component: SupervisorEmail
+  },
+  {
     path: "/course_list",
     name: "course_list",
     component: CourseListView,
@@ -75,13 +81,63 @@ const router = new VueRouter({
   routes,
 });
 
+function isAuthenticated() {
+  return sessionStorage.getItem("authentication");
+}
+
+function hasPermissionsNeeded(to) {
+  if (to.name === "login") {
+    return true;
+  }
+
+  let type;
+  if  (sessionStorage.getItem("authentication") !== null) {
+    type = JSON.parse(sessionStorage.getItem("authentication")).user.type_utilisateur.nom;
+  } else {
+    return false;
+  }
+
+  switch(to.name) {
+    case "csv-import":
+      return true;
+    case "student_list":
+    case "student_form":
+      switch(type) {
+        case "Administrateur":
+          return false;
+        case "Responsable":
+          return true;
+        case "Dev":
+          return true;
+      }
+    case "supervisor_list":
+    case "supervisor_form":
+    case "supervisor_email":
+    case "add_supervisor":
+    case "course_list":
+      switch(type) {
+        case "Administrateur":
+          return true;
+        case "Responsable":
+          return false;
+        case "Dev":
+          return true;
+      }
+  }
+}
+
 router.beforeEach((to, from, next) => {
-  if (to.name == "recover") {
+  if (to.name == "recover")
     next();
-  } else if (to.name !== "login" && !sessionStorage.getItem("authentication"))
+  else if (!isAuthenticated() && to.name !== "login")
     next({ name: "login" });
-  else 
+  else {
+    if (!hasPermissionsNeeded(to)) {
+      next(false);
+    } else {
     next();
+    }
+  }
 });
 
 export default router;

@@ -70,9 +70,10 @@
         @change="onFileChanged"
       />
 
+      <!-- Progress bar -->
       <v-progress-linear
         :active="loading"
-        :indeterminate="loading"
+        :value="loadingValue"
         absolute
         bottom
         color="deep-purple accent-4"
@@ -92,6 +93,7 @@ export default {
       isSelecting: false,
       selectedFile: null,
       loading: false,
+      loadingValue: 0,
       alert: false,
       alertContent: "",
       alertColor: "green",
@@ -150,34 +152,135 @@ export default {
 
             let response;
 
+            let ok = true;
+            let i = 0;
+            let bypassed = [];
+
             // Rapport encadrement
             if (button_id === "rapport_encadrement") {
-              response = await API.addRapportEncadrement(XL_row_object);
+              do {
+                response = await API.addOneRapportEncadrement(XL_row_object[i]);
+                // If it works
+                if (response.ok === "true") {
+                  file.loadingValue = (i / XL_row_object.length) * 100;
+
+                  file.alertContent =
+                    i +
+                    1 +
+                    " lignes entrées sur " +
+                    XL_row_object.length +
+                    ". Veuillez rester sur cette page.";
+                  file.alertColor = "green";
+                  file.alertType = "success";
+                  file.alert = true;
+
+                  if (response.bypassed === "true") {
+                    bypassed.push(i + 2);
+                  }
+                }
+                // If error
+                else {
+                  ok = false;
+                }
+                i++;
+              } while (i < XL_row_object.length && ok === true);
             }
             // Sondage mathématiques
             else if (button_id === "sondage_mathematiques") {
-              response = await API.addSondageMathematiques(XL_row_object);
+              do {
+                response = await API.addOneSondageMathematiques(
+                  XL_row_object[i]
+                );
+
+                // If it works
+                if (response.ok === "true") {
+                  file.loadingValue = (i / XL_row_object.length) * 100;
+
+                  file.alertContent =
+                    i +
+                    1 +
+                    " lignes entrées sur " +
+                    XL_row_object.length +
+                    ". Veuillez rester sur cette page.";
+                  file.alertColor = "green";
+                  file.alertType = "success";
+                  file.alert = true;
+
+                  if (response.bypassed === "true") {
+                    bypassed.push(i + 1);
+                  }
+                }
+                // If error
+                else {
+                  ok = false;
+                }
+                i++;
+              } while (i < XL_row_object.length && ok === true);
             }
             // Etudiants internationaux
             else if (button_id === "etudiants_internationaux") {
-              response = await API.addEtudiantsInternationaux(XL_row_object);
+              do {
+                response = await API.addOneEtudiantsInternationaux(
+                  XL_row_object[i]
+                );
+
+                // If it works
+                if (response.ok === "true") {
+                  file.loadingValue = (i / XL_row_object.length) * 100;
+
+                  file.alertContent =
+                    i +
+                    1 +
+                    " lignes entrées sur " +
+                    XL_row_object.length +
+                    ". Veuillez rester sur cette page.";
+                  file.alertColor = "green";
+                  file.alertType = "success";
+                  file.alert = true;
+
+                  if (response.bypassed === "true") {
+                    bypassed.push(i + 2);
+                  }
+                }
+                // If error
+                else {
+                  ok = false;
+                }
+                i++;
+              } while (i < XL_row_object.length && ok === true);
             }
 
-            console.log(response);
-
-            // If it works
-            if (response.message && !response.code) {
-              file.alertContent = response.message;
+            // If it works (end)
+            if (response.ok === "true") {
+              file.alertContent = "Le fichier a bien été importé. ";
               file.alertColor = "green";
               file.alertType = "success";
+
+              // If lines were bypassed
+              if (bypassed.length > 0) {
+                file.alertContent += "Les lignes ";
+                bypassed.forEach((value) => {
+                  file.alertContent += value + ", ";
+                });
+                file.alertContent = file.alertContent.slice(0, -2);
+                file.alertContent +=
+                  " n'ont pas été ajouté parce qu'elles contenaient des erreurs.";
+              }
             }
-            // If error
+            // If error (end)
             else {
-              file.alertContent = "L'importation n'a pas fonctionné";
+              if (i > 1) {
+                file.alertContent =
+                  "Un problème est survenu à la ligne " + (i + 1);
+              } else {
+                file.alertContent =
+                  "Un problème est survenu dès la première ligne ";
+              }
               file.alertColor = "red";
               file.alertType = "error";
             }
 
+            file.value = 0;
             file.alert = true;
             file.loading = false;
           });

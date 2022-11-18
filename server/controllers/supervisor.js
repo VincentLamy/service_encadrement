@@ -1,6 +1,9 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
-const jwtVerification = require('../modules/jwt_verification');
+const jwtVerification = require("../modules/jwt_verification");
+const jwt = require("jsonwebtoken");
+const SHA256 = require("crypto-js/sha256");
+require('dotenv').config();
 
 module.exports = class Supervisor {
   static async getSupervisorFormInfo(req, res) {
@@ -28,7 +31,7 @@ module.exports = class Supervisor {
   // create a supervisor
   static async addSupervisor(req, res) {
     try {
-      const verification = jwt.verify(req.token, 'key_se', (err) => {
+      const verification = jwt.verify(req.token, process.env.JWT_KEY, (err) => {
         if (err) {
           res.sendStatus(403);
           return false;
@@ -38,62 +41,64 @@ module.exports = class Supervisor {
 
       if (verification === false) return;
 
-    const today = new Date();
+      const today = new Date();
 
-    // Insert Type employé
-    const type_employe = await prisma.typeEmploye.upsert({
-      where: { nom: "Responsable d\'encadrement" || 0 },
-      update: {},
-      create: {
-        nom: 'Responsable d\'encadrement',
-        description: 'Cet employé est un responsable d\'encadrement dans le département d\'informatique',
-      },
-    });
+      // Insert Type employé
+      const type_employe = await prisma.typeEmploye.upsert({
+        where: { nom: "Responsable d'encadrement" || 0 },
+        update: {},
+        create: {
+          nom: "Responsable d'encadrement",
+          description:
+            "Cet employé est un responsable d'encadrement dans le département d'informatique",
+        },
+      });
 
-    const id_responsable = await prisma.typeUtilisateur.findUnique({
-      where: {
-        nom: "Responsable"
-      },
-      select: {
-        id: true
-      },
-    });
+      const id_responsable = await prisma.typeUtilisateur.findUnique({
+        where: {
+          nom: "Responsable",
+        },
+        select: {
+          id: true,
+        },
+      });
 
-    const employe = await prisma.employe.upsert({
-      where: {
-        prenom_nom: {
-          nom: req.body.nom || '',
-          prenom: req.body.prenom || '',
-        }
-      },
-      update: {},
-      create: {
-        id_type_employe: type_employe.id,
-        nom: req.body.nom,
-        prenom: req.body.prenom,
-      },
-    });
+      const employe = await prisma.employe.upsert({
+        where: {
+          prenom_nom: {
+            nom: req.body.nom || "",
+            prenom: req.body.prenom || "",
+          },
+        },
+        update: {},
+        create: {
+          id_type_employe: type_employe.id,
+          nom: req.body.nom,
+          prenom: req.body.prenom,
+        },
+      });
 
-    const utilisateur = await prisma.utilisateur.upsert({
-      where: {
-        no_employe: employe.no_employe,
-      },
-      update: {},
-      create: {
-        no_employe: Number(employe.no_employe),
-        id_type_utilisateur: id_responsable.id,
-        courriel: req.body.courriel,
-        mdp: "ceciestunmotdepassepardefault", //TODO Créé aléatoirement + Hash + Envoie dans le courriel
-        date_activation: today,
-        date_desactivation: today,
-        actif: Boolean(0),
-      },
-    });
+      const utilisateur = await prisma.utilisateur.upsert({
+        where: {
+          no_employe: employe.no_employe,
+        },
+        update: {},
+        create: {
+          no_employe: Number(employe.no_employe),
+          id_type_utilisateur: id_responsable.id,
+          courriel: req.body.courriel,
+          mdp: SHA256("ceciestunmotdepassepardefault").toString(),
+          date_activation: today,
+          date_desactivation: today,
+          actif: Boolean(0),
+        },
+      });
 
-    // TODO envoie courriel lors de la création
-    
+      // TODO envoie courriel lors de la création
 
-    res.status(200).json({ message: 'Le responsable d\'encadrement à été créer' });
+      res
+        .status(200)
+        .json({ message: "Le responsable d'encadrement à été créer" });
     } catch (error) {
       res.status(404).json({ message: error.message });
     }
@@ -107,7 +112,7 @@ module.exports = class Supervisor {
       }
 
       const id = req.params.id;
-      const actif = req.body.actif === 'true' ? 1 : 0;
+      const actif = req.body.actif === "true" ? 1 : 0;
 
       const supervisor = await prisma.utilisateur.update({
         where: {
@@ -130,7 +135,9 @@ module.exports = class Supervisor {
         },
       });
 
-      res.status(200).json({ message: 'Le superviseur a été modifié avec succès' });
+      res
+        .status(200)
+        .json({ message: "Le superviseur a été modifié avec succès" });
     } catch (error) {
       res.status(404).json({ message: error.message });
     }
@@ -145,25 +152,22 @@ module.exports = class Supervisor {
 
       const id_responsable = await prisma.typeUtilisateur.findUnique({
         where: {
-          nom: "Responsable"
+          nom: "Responsable",
         },
         select: {
-          id: true
+          id: true,
         },
-
       });
 
       const supervisor = await prisma.Utilisateur.findMany({
         where: {
-          id_type_utilisateur: Number(id_responsable.id)
+          id_type_utilisateur: Number(id_responsable.id),
         },
         include: {
           employe: true,
-
         },
       });
       res.status(200).json(supervisor);
-
     } catch (error) {
       res.status(404).json({ message: error.message });
     }
@@ -180,12 +184,12 @@ module.exports = class Supervisor {
 
       const responsable = await prisma.typeUtilisateur.findMany({
         where: {
-          nom: 'Responsable'
+          nom: "Responsable",
         },
         select: {
-          id: true
+          id: true,
         },
-      });      
+      });
 
       let prev = await prisma.Utilisateur.findMany({
         take: 1,
@@ -196,10 +200,9 @@ module.exports = class Supervisor {
                 lt: Number(id),
               },
             },
-            {id_type_utilisateur: responsable[0].id },
-
-          ],   
-        },     
+            { id_type_utilisateur: responsable[0].id },
+          ],
+        },
         include: {
           employe: true,
         },
@@ -212,8 +215,8 @@ module.exports = class Supervisor {
         prev = await prisma.Utilisateur.findMany({
           take: -1,
           where: {
-            id_type_utilisateur: responsable[0].id
-          },    
+            id_type_utilisateur: responsable[0].id,
+          },
           include: {
             employe: true,
           },
@@ -236,12 +239,12 @@ module.exports = class Supervisor {
 
       const responsable = await prisma.typeUtilisateur.findMany({
         where: {
-          nom: 'Responsable'
+          nom: "Responsable",
         },
         select: {
-          id: true
+          id: true,
         },
-      }); 
+      });
 
       let next = await prisma.Utilisateur.findMany({
         take: 1,
@@ -252,10 +255,9 @@ module.exports = class Supervisor {
                 gt: Number(id),
               },
             },
-            {id_type_utilisateur: responsable[0].id },
-
-          ],   
-        },     
+            { id_type_utilisateur: responsable[0].id },
+          ],
+        },
         include: {
           employe: true,
         },
@@ -268,8 +270,8 @@ module.exports = class Supervisor {
         next = await prisma.Utilisateur.findMany({
           take: 1,
           where: {
-              id_type_utilisateur: responsable[0].id
-          },     
+            id_type_utilisateur: responsable[0].id,
+          },
           include: {
             employe: true,
           },
@@ -278,6 +280,33 @@ module.exports = class Supervisor {
       res.status(200).json(next);
     } catch (error) {
       res.status(404).json({ message: error.message });
+    }
+  }
+
+  static async updateSupervisorEmailAddress(req, res) {
+    try {
+      if (jwtVerification(req.token) === false) {
+        res.status(403).json();
+        return;
+      }
+      
+      const { id } = req.params;
+      const { courriel } = req.body;
+
+      await prisma.utilisateur.update({
+        where: {
+          id: Number(id),
+        },
+        data: {
+          courriel: courriel,
+        },
+      });
+
+      res.status(200).json({
+        message: "Le courriel du superviseur à été mis à jour avec succès",
+      });
+    } catch (error) {
+      res.status(400).json({ message: error.message });
     }
   }
 };

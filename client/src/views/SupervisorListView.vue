@@ -3,7 +3,7 @@
 
     <h2>Liste des responsables</h2>
 
-    <v-data-table id="list_student" :headers="headers" :items="supervisor" :sort-desc="[false, true]"
+    <v-data-table id="list_supervisor" :headers="headers" :items="supervisor" :sort-desc="[false, true]"
       class="elevation-1" @click:row="rowClick">
       <!-- <template v-slot:header.student_critical_state>
             <v-icon color="red">mdi-alert-circle</v-icon>
@@ -32,6 +32,7 @@ export default {
       supervisor: []
     };
   },
+  
   async created() {
     const response = await API.getAllSupervisor();
     this.supervisor = response;
@@ -42,22 +43,20 @@ export default {
     for (let index = 0; index < this.supervisor.length; index++) {
 
       if (this.supervisor[index].date_activation !== this.supervisor[index].date_desactivation) {
-        this.supervisor[index].date_activation = new Date(this.supervisor[index].date_activation);
-        this.supervisor[index].date_activation.setDate(this.supervisor[index].date_activation.getDate());
-        this.supervisor[index].date_activation = this.supervisor[index].date_activation.toLocaleDateString("fr-CA", options);
 
-        this.supervisor[index].date_desactivation = new Date(this.supervisor[index].date_desactivation);
-        this.supervisor[index].date_desactivation.setDate(this.supervisor[index].date_desactivation.getDate());
-        this.supervisor[index].date_desactivation = this.supervisor[index].date_desactivation.toLocaleDateString("fr-CA", options);
+        this.supervisor[index].date_activation = this.dateToString(this.supervisor[index].date_activation);
+      
+        this.supervisor[index].date_desactivation = this.dateToString(this.supervisor[index].date_desactivation);
+    
       }
       else {
 
         if (this.supervisor[index].date_activation === this.supervisor[index].date_desactivation && this.supervisor[index].actif === false) {
           this.supervisor[index].date_activation = "Non applicable";
         } else {
-          this.supervisor[index].date_activation = new Date(this.supervisor[index].date_activation);
-          this.supervisor[index].date_activation.setDate(this.supervisor[index].date_activation.getDate());
-          this.supervisor[index].date_activation = this.supervisor[index].date_activation.toLocaleDateString("fr-CA", options);
+
+          this.supervisor[index].date_activation = this.dateToString(this.supervisor[index].date_activation);
+          
         }
 
         this.supervisor[index].date_desactivation = "Non applicable";
@@ -79,6 +78,15 @@ export default {
     },
     addSupervisor() {
       this.$router.push({ name: 'add_supervisor' });
+    },
+    dateToString(date) {
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+
+      let dateToDate = new Date(date);
+      dateToDate.setDate(dateToDate.getDate());
+      dateToDate = dateToDate.toLocaleString("fr-CA", options);
+
+      return dateToDate;
     },
   },
 }

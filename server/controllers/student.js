@@ -27,6 +27,7 @@ module.exports = class Student {
               pourcentage_note_cumulee: true,
             },
           },
+          a_surveiller: true,
         },
       });
 

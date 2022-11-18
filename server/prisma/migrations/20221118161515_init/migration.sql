@@ -48,8 +48,11 @@ CREATE TABLE `Utilisateur` (
     `date_activation` DATETIME(3) NOT NULL,
     `date_desactivation` DATETIME(3) NOT NULL,
     `actif` BOOLEAN NOT NULL,
+    `token` VARCHAR(191) NOT NULL,
+    `token_end_date` DATETIME(3) NOT NULL,
 
     UNIQUE INDEX `Utilisateur_no_employe_key`(`no_employe`),
+    UNIQUE INDEX `Utilisateur_token_key`(`token`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 

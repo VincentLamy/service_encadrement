@@ -6,18 +6,22 @@
     <v-container v-if="filter">
       <v-row no-gutters>
         <v-col>
-          <v-checkbox v-model="hasStudentCode" label="A un statut etudiant">
+          <v-checkbox v-model="hasToBeChecked" label="À recontrer">
           </v-checkbox>
-          <v-checkbox v-model="hasComments" label="A des commentaires">
+          <v-checkbox v-model="hasStudentCode" label="A un statut etudiant">
           </v-checkbox>
         </v-col>
 
-        <v-text-field
-          v-model="nbClassesInDifficulty"
-          type="number"
-          label="Cours en difficulté"
-          min="0"
-        ></v-text-field>
+        <v-col>
+          <v-checkbox v-model="hasComments" label="A des commentaires">
+          </v-checkbox>
+          <v-text-field
+            v-model="nbClassesInDifficulty"
+            type="number"
+            label="Cours en difficulté"
+            min="0"
+          ></v-text-field>
+        </v-col>
       </v-row>
     </v-container>
 
@@ -26,6 +30,7 @@
       append-icon="mdi-magnify"
       label="Rechercher"
     ></v-text-field>
+
     <v-data-table
       id="list_student"
       :headers="headers"
@@ -35,9 +40,6 @@
       @click:row="rowClick"
       :search="search"
     >
-      <!-- <template v-slot:header.student_critical_state>
-          <v-icon color="red">mdi-alert-circle</v-icon>
-        </template> -->
     </v-data-table>
   </v-container>
 </template>
@@ -50,12 +52,22 @@ export default {
   data() {
     return {
       headers: [
-        // { text: '',                               value: 'critical_state(student_critical_state)'},
+        {
+          text: "À rencontrer",
+          value: "a_surveiller",
+          filter: (value) => {
+            if (this.hasToBeChecked) {
+              if (!value) return false;
+              return true;
+            }
+            return true;
+          },
+        },
         { text: "Numéro étudiant", value: "no_etudiant" },
         { text: "Nom complet", value: "nom" },
         {
           text: "Statut étudiant",
-          value: "TA_EtuStatut[0].statut_etudiant.code",
+          value: "TA_EtuStatut.statut_etudiant",
           filter: (value) => {
             if (this.hasStudentCode) {
               if (!value) return false;
@@ -90,6 +102,7 @@ export default {
       // Filters
       hasStudentCode: "",
       hasComments: "",
+      hasToBeChecked: false,
       nbClassesInDifficulty: 0,
     };
   },
@@ -103,12 +116,14 @@ export default {
       this.students[index].critical_course_quantity =
         this.amountClassesInDifficulty(index);
 
-      // if(this.students[index].critical_course_quantity > 0){
-      //   document.getElementById("list_student").style.color = "red";
-      // }
-      // else {
-      //   this.students[index].student_critical_state = false;
-      // }
+      if (this.students[index].a_surveiller == false) {
+        this.students[index].a_surveiller = "";
+      } else {
+        this.students[index].a_surveiller = "✔";
+      }
+
+      this.students[index].TA_EtuStatut.statut_etudiant =
+        this.allStatutEtu(index);
     }
   },
   methods: {
@@ -132,6 +147,23 @@ export default {
       });
       return amount;
     },
+    allStatutEtu(index) {
+      let statut = "";
+
+      this.students[index].TA_EtuStatut.forEach((etudiant) => {
+        if (statut !== "") {
+          statut += ", ";
+        }
+        statut += etudiant.statut_etudiant.code;
+      });
+      return statut;
+    },
   },
 };
 </script>
+
+<style>
+#list_student td.text-start:first-child {
+  text-align: center !important;
+}
+</style>
