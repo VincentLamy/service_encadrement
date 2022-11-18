@@ -159,10 +159,7 @@ export default {
     allStatutEtu(index){
       let statut = "";
 
-      //console.log(this.students[index].TA_EtuStatut);
-
       this.students[index].TA_EtuStatut.forEach((etudiant) => {
-        console.log(etudiant.statut_etudiant.code)
         if (statut !== ""){
           statut += ", "
         }
