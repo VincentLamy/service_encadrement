@@ -341,7 +341,7 @@
                 <v-comment-list
                   :data="semester.comments"
                   :remark-codes="remark_codes"
-                  :editable-if="() => true"
+                  :editable-if="(c) => c.employe.no_employe === no_employe"
                   @update-data="getData"
                 />
               </v-card>
@@ -384,8 +384,13 @@ export default {
     };
   },
   async created() {
-    // Get student data
+    // Get student data from BD
     await this.getData();
+
+    // Get user employe id
+    this.no_employe = JSON.parse(
+      sessionStorage.getItem("authentication")
+    ).user.employe.no_employe;
   },
   methods: {
     async getData(
@@ -457,11 +462,9 @@ export default {
     },
     async setFlag() {
       this.flag_loading = true;
-      console.log(
-        await API.flagStudent(
-          this.student.no_etudiant,
-          this.student.a_surveiller
-        )
+      await API.flagStudent(
+        this.student.no_etudiant,
+        this.student.a_surveiller
       );
       this.flag_loading = false;
     },

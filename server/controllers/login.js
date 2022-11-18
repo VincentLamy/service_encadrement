@@ -2,11 +2,11 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const jwt = require("jsonwebtoken");
 const SHA256 = require("crypto-js/sha256");
-require('dotenv').config();
+require("dotenv").config();
 
 module.exports = class Responsable {
   static async login(req, res) {
-     try {
+    try {
       const user = await prisma.utilisateur.findFirst({
         where: {
           courriel: req.body.username,
@@ -16,6 +16,7 @@ module.exports = class Responsable {
           id: true,
           employe: {
             select: {
+              no_employe: true,
               prenom: true,
               nom: true,
             },
@@ -37,7 +38,7 @@ module.exports = class Responsable {
         res.status(400).json({ message: "Erreur lors de la connexion" });
       }
     } catch (error) {
-      res.status(400).json({message: 'Erreur lors de la connexion' });
+      res.status(400).json({ message: "Erreur lors de la connexion" });
     }
   }
 };
