@@ -175,7 +175,7 @@ export default {
                   file.alert = true;
 
                   if (response.bypassed === "true") {
-                    bypassed.push(i + 1);
+                    bypassed.push(i + 2);
                   }
                 }
                 // If error
