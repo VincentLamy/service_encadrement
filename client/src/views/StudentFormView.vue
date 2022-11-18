@@ -307,7 +307,7 @@
         <v-container>
           <!-- Cours & Commentaires des sessions -->
           <v-tabs-items v-model="semester_tab" v-if="semesters.length !== 0">
-            <v-tab-item v-for="(semester, i) in semesters" :key="semester.id">
+            <v-tab-item v-for="semester in semesters" :key="semester.code">
               <!-- Ajouter un commentaire -->
               <v-btn
                 block
@@ -482,15 +482,12 @@ export default {
       );  
 
       this.semesters = Array.from(
-        new Set(duplicate_semesters.map((s) => s.id))
-      ).map((id) => {
-
-        const code = duplicate_semesters.find((s) => s.id === id).code;
+        new Set(duplicate_semesters.map((s) => s.code))
+      ).map((code) => {
         return {
-          id: id,
           code: code,
           student_groups: this.student.TA_EtudiantGroupe.filter(
-            (g) => g.groupe.session.id === id
+            (g) => g.groupe.session.code === code
           ),
           comments: this.student.semester_comments.filter(
             (s) => s.groupe.code_session === code
