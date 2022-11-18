@@ -1,15 +1,24 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import LoginView from "../views/LoginView.vue";
-import CSVImportView from "../views/CSVImportView";
-import StudentListView from "../views/StudentListView";
-import StudentFormView from "../views/StudentFormView";
 
+
+// Authentification
+import LoginView from "../views/LoginView.vue";                                   // Formulaire de connexion
+import RecoverPasswordAccessView from "../views/RecoverPasswordAccessView.vue";   // Entrée du courriel pour 
+
+// Importation des données
+import CSVImportView from "../views/CSVImportView";                               // Importation et exportation des fichiers CSV et XLSX
+
+// Étudiants
+import StudentListView from "../views/StudentListView";                           // Liste des étudiants
+import StudentFormView from "../views/StudentFormView";                           // Fiche des étudiants
+import CourseListView from "../views/CourseListView";                             // Liste des cours
+
+// Responsables
 import SupervisorFormView from "../views/SupervisorFormView";
 import SupervisorListView from "../views/SupervisorListView";
 import SupervisorAddView from "../views/SupervisorAddView";
 
-import CourseListView from "../views/CourseListView";
 
 Vue.use(VueRouter);
 
@@ -54,6 +63,10 @@ const routes = [
     name: "course_list",
     component: CourseListView,
   },
+  { path: "/recover",
+    name: "recover",
+    component: RecoverPasswordAccessView
+  }
 ];
 
 const router = new VueRouter({
@@ -63,9 +76,12 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  if (to.name !== "login" && !sessionStorage.getItem("authentication"))
+  if (to.name == "recover") {
+    next();
+  } else if (to.name !== "login" && !sessionStorage.getItem("authentication"))
     next({ name: "login" });
-  else next();
+  else 
+    next();
 });
 
 export default router;

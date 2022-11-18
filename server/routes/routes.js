@@ -48,7 +48,7 @@ router.post("/etudiantsInternationaux", verifyToken, Importation.addEtudiantsInt
 
 // Login
 router.post("/login", Login.login);
-
+router.post("/recover_password", Login.recover_password);
 
 
 // FORMAT OF TOKEN

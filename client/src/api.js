@@ -209,6 +209,20 @@ export default class API {
     }
   }
 
+  static async recover_password(email, token) {
+    try {
+      const res = await axios.post(`${url}/recover_password`, { "email": email }); //  , "token": token 
+      return res.data;
+      // console.log("res.data : " + res);
+      // if (res) 
+      //   return true;
+      
+      // return false;
+    } catch (err) {
+      return err;
+    }
+  }
+
   // Gets all courses
   static async getAllCourse() {
     const res = await axios.get(`${url}/course_list`, config());

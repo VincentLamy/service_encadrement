@@ -17,8 +17,8 @@
             <v-col cols="12">
               <v-text-field
                 v-model="loginEmail"
-                :rules="loginEmailRules"
-                label="E-mail"
+                :rules="[rules.required, rules.email]"
+                label="Courriel"
                 required
               ></v-text-field>
             </v-col>
@@ -26,19 +26,18 @@
               <v-text-field
                 v-model="loginPassword"
                 :append-icon="show1 ? 'eye' : 'eye-off'"
-                :rules="[rules.required, rules.min]"
+                :rules="[rules.required, rules.password]"
                 :type="show1 ? 'text' : 'password'"
                 name="input-10-1"
-                label="Password"
-                hint="At least 8 characters"
+                label="Mot de passe"
+                hint="Le mot de passe doit contenir au moins 8 caractères dont 1 majuscule, 1 minuscule, un nombre et un caractère spécial."
                 counter
                 @click:append="show1 = !show1"
               ></v-text-field>
             </v-col>
-            <!-- TODO bouton mot de passe oublié
             <v-col class="d-flex" cols="12" sm="6" xsm="12"> 
               <v-btn @click="password_forgot">Mot de passe oublié</v-btn>
-            </v-col> -->
+            </v-col>
             <v-col class="d-flex" cols="12" sm="6" xsm="12" align-end>
               <v-btn
                 x-large
@@ -64,19 +63,14 @@ export default {
     dialog: true,
     valid: true,
 
-    loginPassword: "",
     loginEmail: "",
-
-    loginEmailRules: [
-      (v) => !!v || "Champ obligatoire",
-      (v) => /.+@.+\..+/.test(v) || "L'adresse courriel doit être valide.",
-    ],
+    loginPassword: "",
+    
     show1: false,
     rules: {
-      required: (value) => !!value || "Champ obligatoire.",
-      min: (v) =>
-        (v && v.length >= 8) ||
-        "Vous devez avoir au moins une majuscule, une minuscule et un chiffre, en plus d'avoir au moins 8 caractères.",
+      required: (v) => !!v                  || "Champ obligatoire.",
+      email:    (v) => /.+@.+\..+/.test(v)  || "L'adresse courriel doit être valide.",
+      password: (v) => /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(v) || (v && v.length >= 8) || "Le mot de passe doit contenir au moins 8 caractères dont 1 majuscule, 1 minuscule, un nombre et un caractère spécial.",
     },
   }),
   beforeCreate() {
@@ -139,6 +133,9 @@ export default {
     resetValidation() {
       this.$refs.form.resetValidation();
     },
+    password_forgot() {
+      this.$router.push('/recover');
+    }
   },
 };
 </script>

@@ -83,13 +83,15 @@ module.exports = class Supervisor {
         no_employe: Number(employe.no_employe),
         id_type_utilisateur: id_responsable.id,
         courriel: req.body.courriel,
-        mdp: "ceciestunmotdepassepardefault",
+        mdp: "ceciestunmotdepassepardefault", //TODO Créé aléatoirement + Hash + Envoie dans le courriel
         date_activation: today,
         date_desactivation: today,
         actif: Boolean(0),
-
       },
     });
+
+    // TODO envoie courriel lors de la création
+    
 
     res.status(200).json({ message: 'Le responsable d\'encadrement à été créer' });
     } catch (error) {

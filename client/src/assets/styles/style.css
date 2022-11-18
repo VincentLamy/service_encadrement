@@ -64,12 +64,21 @@ Tableau Liste étudiante
     border: 1px solid rgba(0, 0, 0, 0.12);
 }
 
-#loginForm {
+#loginForm, #recoverForm {
     margin: auto;
     width: 30%;
 }
 
-#login_alert {
+#recoverForm div{   
+    display: flex;
+    justify-content: space-around;
+}
+
+#recoverForm div button {
+    margin: 5px;
+}
+
+#login_alert, #recover_alert {
     position: absolute;
     visibility: hidden;
     width: 450px;
