@@ -165,9 +165,14 @@ export default {
     },
     async addComment() {
       this.submitComment(async () => {
+        // Retrieve comment poster id
+        const no_employe = JSON.parse(
+          sessionStorage.getItem("authentication")
+        ).user.employe.no_employe;
+
         return await API.addComment({
           no_etudiant: this.noEtudiant,
-          no_employe: 6, // TODO - Mettre le no_employe de l'utilisateur
+          no_employe: no_employe,
           code_session: this.codeSession,
           id_code_remarque: this.comment.remark_id.value,
           titre: this.comment.title.value,
