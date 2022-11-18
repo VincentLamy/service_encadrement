@@ -93,6 +93,11 @@ export default {
         icon: "mdi-attachment",
         link: "/csv_import",
       },
+      {
+        title: "Changer l'adresse courriel",
+        icon: "mdi-email",
+        link: "/supervisor_email",
+      },
     ],
     name: "",
     programme: "Programmation",
@@ -135,6 +140,8 @@ export default {
             return true;
           case 3: // csv_import
             return true;
+          case 4: // supervisor_email
+            return true;
           default:
             break;
         }
@@ -148,6 +155,8 @@ export default {
             return false;
           case 3: // csv_import
             return true;
+          case 4: // supervisor_email
+            return false;
           default:
             break;
         }
@@ -160,6 +169,8 @@ export default {
           case 2: // course_list
             return true;
           case 3: // csv_import
+            return true;
+          case 4: // supervisor_email
             return true;
           default:
             break;

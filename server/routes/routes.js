@@ -25,6 +25,7 @@ router.patch("/supervisor_form/:id", upload, verifyToken, Supervisor.updateSuper
 router.post("/add_supervisor", upload, verifyToken, Supervisor.addSupervisor);
 router.get("/previous_supervisor_form/:id", upload, verifyToken, Supervisor.getPreviousSupervisor);
 router.get("/next_supervisor_form/:id", upload, verifyToken, Supervisor.getNextSupervisor);
+router.patch("/supervisor_email/:id", upload, verifyToken, Supervisor.updateSupervisorEmailAddress);
 
 // Courses
 router.get("/course_list", verifyToken, Course.getAllCourse);

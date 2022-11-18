@@ -8,6 +8,7 @@ import StudentFormView from "../views/StudentFormView";
 import SupervisorFormView from "../views/SupervisorFormView";
 import SupervisorListView from "../views/SupervisorListView";
 import SupervisorAddView from "../views/SupervisorAddView";
+import SupervisorEmail from "../views/SupervisorEmailView";
 
 import CourseListView from "../views/CourseListView";
 
@@ -48,6 +49,11 @@ const routes = [
     path: "/add_supervisor",
     name: "add_supervisor",
     component: SupervisorAddView,
+  },
+  {
+    path: "/supervisor_email",
+    name: "supervisor_email",
+    component: SupervisorEmail
   },
   {
     path: "/course_list",
