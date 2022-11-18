@@ -1,26 +1,27 @@
 <template>
   <v-container>
-    <h2>Liste des étudiants</h2> 
+    <h2>Liste des étudiants</h2>
 
     <h3 id="filter" @click="filter = !filter">Filtrer</h3>
     <v-container v-if="filter">
       <v-row no-gutters>
         <v-col>
-          <v-checkbox v-model="hasStudentCode" label="A un statut etudiant">
-          </v-checkbox>
-          <v-checkbox v-model="hasComments" label="A des commentaires">
-          </v-checkbox>
           <v-checkbox v-model="hasToBeChecked" label="À recontrer">
+          </v-checkbox>
+          <v-checkbox v-model="hasStudentCode" label="A un statut etudiant">
           </v-checkbox>
         </v-col>
 
-        <v-text-field
-          v-model="nbClassesInDifficulty"
-          type="number"
-          label="Cours en difficulté"
-          min="0"
-        ></v-text-field>
-
+        <v-col>
+          <v-checkbox v-model="hasComments" label="A des commentaires">
+          </v-checkbox>
+          <v-text-field
+            v-model="nbClassesInDifficulty"
+            type="number"
+            label="Cours en difficulté"
+            min="0"
+          ></v-text-field>
+        </v-col>
       </v-row>
     </v-container>
 
@@ -39,11 +40,7 @@
       @click:row="rowClick"
       :search="search"
     >
-      <!-- <template v-slot:header.student_critical_state>
-          <v-icon color="red">mdi-alert-circle</v-icon>
-        </template> -->
     </v-data-table>
-
   </v-container>
 </template>
 
@@ -55,15 +52,16 @@ export default {
   data() {
     return {
       headers: [
-        { text: 'À rencontrer',    
-          value: 'a_surveiller',
+        {
+          text: "À rencontrer",
+          value: "a_surveiller",
           filter: (value) => {
             if (this.hasToBeChecked) {
               if (!value) return false;
               return true;
             }
             return true;
-          }
+          },
         },
         { text: "Numéro étudiant", value: "no_etudiant" },
         { text: "Nom complet", value: "nom" },
@@ -116,23 +114,16 @@ export default {
       this.students[index].nom =
         this.students[index].nom + ", " + this.students[index].prenom;
       this.students[index].critical_course_quantity =
-        this.amountClassesInDifficulty(index)
+        this.amountClassesInDifficulty(index);
 
-        if (this.students[index].a_surveiller == false) {
-          this.students[index].a_surveiller = "";
-        } else {
-          this.students[index].a_surveiller = "✔";
-        }
+      if (this.students[index].a_surveiller == false) {
+        this.students[index].a_surveiller = "";
+      } else {
+        this.students[index].a_surveiller = "✔";
+      }
 
-        this.students[index].TA_EtuStatut.statut_etudiant= this.allStatutEtu(index);
-        //console.log(this.allStatutEtu(index));
-
-      // if(this.students[index].critical_course_quantity > 0){
-      //   document.getElementById("list_student").style.color = "red";
-      // }
-      // else {
-      //   this.students[index].student_critical_state = false;
-      // }
+      this.students[index].TA_EtuStatut.statut_etudiant =
+        this.allStatutEtu(index);
     }
   },
   methods: {
@@ -156,14 +147,14 @@ export default {
       });
       return amount;
     },
-    allStatutEtu(index){
+    allStatutEtu(index) {
       let statut = "";
 
       this.students[index].TA_EtuStatut.forEach((etudiant) => {
-        if (statut !== ""){
-          statut += ", "
+        if (statut !== "") {
+          statut += ", ";
         }
-        statut += etudiant.statut_etudiant.code
+        statut += etudiant.statut_etudiant.code;
       });
       return statut;
     },
@@ -172,5 +163,7 @@ export default {
 </script>
 
 <style>
-  #list_student td.text-start:first-child { text-align: center !important;}
+#list_student td.text-start:first-child {
+  text-align: center !important;
+}
 </style>
