@@ -303,7 +303,6 @@
           </v-tab>
         </v-tabs>
 
-
         <v-container>
           <!-- Cours & Commentaires des sessions -->
           <v-tabs-items v-model="semester_tab" v-if="semesters.length !== 0">
@@ -352,88 +351,11 @@
               </h4>
 
               <!-- Cours de la session -->
-              <v-expansion-panels accordion flat>
-                <v-expansion-panel
-                  v-for="student_group in semester.student_groups"
-                  :key="student_group.id"
-                >
-                  <v-expansion-panel-header class="outlined">
-                    <v-container class="pa-0 pe-3">
-                      <div
-                        class="d-flex flex-md-row flex-column justify-space-between col-12 pa-0"
-                      >
-                        <div class="d-flex flex-column col-md">
-                          <div class="font-weight-bold">
-                            <span>
-                              <!-- Modifier le nom du cours -->
-                              <v-course-name-input
-                                :data="student_group.groupe.cours"
-                                @updated="getData"
-                              />
-                            </span>
-                            ({{ student_group.groupe.cours.code }})
-                          </div>
-                          <div>
-                            Groupe : {{ student_group.groupe.no_groupe }}
-                          </div>
-                        </div>
-                        <div class="d-flex flex-column col-md">
-                          <div>
-                            Durée : {{ student_group.groupe.cours.duree }}
-                          </div>
-                          <div>
-                            Durée absence : {{ student_group.duree_absence }}
-                          </div>
-                        </div>
-                        <div class="d-flex flex-column col-md">
-                          <div>
-                            Campus :
-                            {{ student_group.groupe.cours.campus.ville }}
-                          </div>
-                        </div>
-                      </div>
-                      <v-divider></v-divider>
-                      <div
-                        class="d-flex flex-md-row flex-column justify-space-between col-12 pa-0"
-                      >
-                        <div class="d-flex flex-column col-md">
-                          <div>
-                            Note pondérée : {{ student_group.note_ponderee }}
-                          </div>
-                        </div>
-                        <div class="d-flex flex-column col-md">
-                          <div>
-                            Pourcentage note cumulée :
-                            {{ student_group.pourcentage_note_cumulee }}
-                          </div>
-                        </div>
-                        <div class="d-flex flex-column col-md">
-                          <div>
-                            Remarque note finale :
-                            {{ student_group.code_remarque_note_finale.nom }}
-                          </div>
-                        </div>
-                      </div>
-                    </v-container>
-                  </v-expansion-panel-header>
-                  <v-expansion-panel-content class="outlined">
-                    <!-- Message si aucun commentaire n'est associé au cours -->
-                    <h4
-                      v-if="student_group.groupe.Commentaire.length === 0"
-                      class="mt-5 grey--text"
-                    >
-                      L'étudiant n'a aucun commentaire sur ce cours!
-                    </h4>
-
-                    <!-- Commentaires du cours -->
-                    <v-comment-list
-                      :data="student_group.groupe.Commentaire"
-                      :remark-codes="remark_codes"
-                      @update-data="getData"
-                    />
-                  </v-expansion-panel-content>
-                </v-expansion-panel>
-              </v-expansion-panels>
+              <v-course-list
+                :data="semester.student_groups"
+                :remark-codes="remark_codes"
+                @update-data="getData"
+              />
             </v-tab-item>
           </v-tabs-items>
         </v-container>
@@ -444,9 +366,9 @@
 
 <script>
 import API from "@/api";
-import CommentList from "@/components/CommentList";
+import CourseList from "@/components/CourseList";
 import CommentInput from "@/components/CommentInput";
-import CourseNameInput from "@/components/CourseNameInput";
+import CommentList from "@/components/CommentList";
 
 export default {
   name: "FicheEtudiante",
@@ -471,7 +393,6 @@ export default {
     ) {
       // Get student info
       this.student = await API.getStudentFormInfo(no_student);
-      console.log(this.student);
 
       // Get all remark codes
       this.remark_codes = await API.getRemarkCode();
@@ -479,7 +400,7 @@ export default {
       // Get all semesters the student is in
       let duplicate_semesters = this.student.TA_EtudiantGroupe.map(
         (x) => x.groupe.session
-      );  
+      );
 
       this.semesters = Array.from(
         new Set(duplicate_semesters.map((s) => s.code))
@@ -494,8 +415,6 @@ export default {
           ),
         };
       });
-
-      
     },
     async gotoPreviousStudent() {
       // Get previous student info
@@ -538,7 +457,12 @@ export default {
     },
     async setFlag() {
       this.flag_loading = true;
-      console.log(await API.flagStudent(this.student.no_etudiant, this.student.a_surveiller));
+      console.log(
+        await API.flagStudent(
+          this.student.no_etudiant,
+          this.student.a_surveiller
+        )
+      );
       this.flag_loading = false;
     },
     formattedDate(string_date) {
@@ -563,21 +487,21 @@ export default {
           ).length
         : 0;
     },
-    allStatutEtu(){
-      let statut = ""
+    allStatutEtu() {
+      let statut = "";
       this.student.TA_EtuStatut.forEach((etudiant) => {
-        if (statut !== ""){
-          statut += ", "
+        if (statut !== "") {
+          statut += ", ";
         }
-        statut += etudiant.statut_etudiant.code
+        statut += etudiant.statut_etudiant.code;
       });
       return statut;
     },
   },
   components: {
+    "v-course-list": CourseList,
     "v-comment-list": CommentList,
     "v-comment-input": CommentInput,
-    "v-course-name-input": CourseNameInput,
   },
 };
 </script>
