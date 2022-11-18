@@ -33,6 +33,7 @@ module.exports = class Importation {
                 return;
             }
 
+            /*
             // Insert Type employé
             const type_employe = await prisma.typeEmploye.upsert({
                 where: { nom: "Enseignant" || 0 },
@@ -42,6 +43,7 @@ module.exports = class Importation {
                     description: 'Cet employé est un enseignant dans le département d\'informatique',
                 },
             });
+            */
 
             // Traitement session
             let codeSession = "";
@@ -136,6 +138,15 @@ module.exports = class Importation {
 
             // Split Enseignant name
             const nomEnseignant = file_line['Nom de l\'enseignant'].split(',');
+
+            const id_type_employe = await prisma.typeEmploye.findUnique({
+                where: {
+                  nom: "Enseignant",
+                },
+                select: {
+                  id: true,
+                },
+              });
   
             // Insert Enseignant
             const employe = await prisma.employe.upsert({
@@ -147,7 +158,7 @@ module.exports = class Importation {
                 },
                 update: {},
                 create: {
-                    id_type_employe: type_employe.id,
+                    id_type_employe: id_type_employe.id,
                     nom: nomEnseignant[0],
                     prenom: nomEnseignant[1],
                 },
