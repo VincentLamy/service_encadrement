@@ -205,6 +205,10 @@ export default {
                   file.alertColor = "green";
                   file.alertType = "success";
                   file.alert = true;
+
+                  if (response.bypassed === "true") {
+                    bypassed.push(i + 1);
+                  }
                 }
                 // If error
                 else {
@@ -233,6 +237,10 @@ export default {
                   file.alertColor = "green";
                   file.alertType = "success";
                   file.alert = true;
+
+                  if (response.bypassed === "true") {
+                    bypassed.push(i + 2);
+                  }
                 }
                 // If error
                 else {

@@ -330,9 +330,25 @@ module.exports = class Importation {
                 res.status(403).json();
                 return;
             }
-      
+
             const file_line = req.body;
-      
+
+            const noEtudiant = file_line['Adresse de messagerie'].split('@');
+
+            const etudiant_exist = await prisma.etudiant.findUnique({
+                where: {
+                  no_etudiant: Number(noEtudiant[0]),
+                },
+                select: {
+                  no_etudiant: true,
+                },
+              });
+
+            if(!etudiant_exist) {
+                res.status(201).json({ ok: "true", bypassed: "true", message: 'La ligne sondage mathématique n\'a pas été ajoutée' });
+                return;
+            }
+
             // Insert Cours Math 4
             const coursMath4 = await prisma.coursMath.upsert({
                 where: {
@@ -366,7 +382,7 @@ module.exports = class Importation {
             });
     
             // Insert Formulaire Math
-            const noEtudiant = file_line['Adresse de messagerie'].split('@');
+            
     
             let experienceInformatique = file_line['Indiquer votre expérience en informatique avant le Cégep (pas juste effleuré la chose) ?'];
     
@@ -421,14 +437,29 @@ module.exports = class Importation {
       };
       
       static async addOneEtudiantsInternationaux(req, res) {
-        try {
+        //try {
             if (jwtVerification(req.token) === false) {
                 res.status(403).json();
                 return;
             }
 
             const file_line = req.body;
-      
+
+
+            const etudiant_exist = await prisma.etudiant.findUnique({
+                where: {
+                  no_etudiant: Number(file_line['Numero d\'étudiant']),
+                },
+                select: {
+                  no_etudiant: true,
+                },
+              });
+
+            if(!etudiant_exist) {
+                res.status(201).json({ ok: "true", bypassed: "true", message: 'La ligne d\'étudiant international n\'a pas été ajoutée' });
+                return;
+            }
+                
             // Insert Pays
             const pays = await prisma.pays.upsert({
                 where: { nom: file_line['Pays d\'origine'] || '' },
@@ -464,10 +495,10 @@ module.exports = class Importation {
                     no_etudiant: Number(file_line['Numero d\'étudiant']),
                 },
             });
-            res.status(201).json({ ok: "true", message: 'La liste d\'étudiants internationaux a été ajouté avec succès' });
-        } catch (err) {
-            res.status(400).json({ ok: "false", message: 'La liste d\'étudiants internationaux n\'a pas pu être ajouté' });
-        }
+            res.status(201).json({ ok: "true", bypassed: "false", message: 'La liste d\'étudiants internationaux a été ajouté avec succès' });
+        //} catch (err) {
+        //    res.status(400).json({ ok: "false", message: 'La liste d\'étudiants internationaux n\'a pas pu être ajouté' });
+        //}
       };
   };
 
