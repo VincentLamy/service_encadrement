@@ -2,6 +2,7 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const jwt = require("jsonwebtoken");
 const SHA256 = require("crypto-js/sha256");
+require('dotenv').config();
 
 module.exports = class Responsable {
   static async login(req, res) {
@@ -29,7 +30,7 @@ module.exports = class Responsable {
       });
 
       if (user) {
-        jwt.sign({ user: user }, "key_se", (err, token) => {
+        jwt.sign({ user: user }, process.env.JWT_KEY, (err, token) => {
           res.status(200).json({ user, token });
         });
       } else {
