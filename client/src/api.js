@@ -25,19 +25,10 @@ export default class API {
     }
   }
 
-  static async getAllStudent() {
-    try {
-    const res = await axios.get(`${url}/student_list`, config());
-    return res.data;
-    } catch (err) {
-      return err;
-    }
-  }
-
   // To insert a sondage mathematiques
   static async addSondageMathematiques(sondageMathematiques) {
     try {
-      const res = await axios.post(`${url}/sondageMathematiques`,sondageMathematiques, config());
+      const res = await axios.post(`${url}/sondageMathematiques`, sondageMathematiques, config());
       return res.data;
     } catch (err) {
       return err;
@@ -47,7 +38,37 @@ export default class API {
   // To insert a étudiants internationaux list
   static async addEtudiantsInternationaux(etudiantsInternationaux) {
     try {
-      const res = await axios.post(`${url}/etudiantsInternationaux`,etudiantsInternationaux, config());
+      const res = await axios.post(`${url}/etudiantsInternationaux`, etudiantsInternationaux, config());
+      return res.data;
+    } catch (err) {
+      return err;
+    }
+  }
+
+  // To insert a single rapport d'encadrement
+  static async addOneRapportEncadrement(rapportEncadrement) {
+    try {
+      const res = await axios.post(`${url}/oneRapportEncadrement`, rapportEncadrement, config());
+      return res.data;
+    } catch (err) {
+      return err;
+    }
+  }
+
+  // To insert a single sondage mathematiques
+  static async addOneSondageMathematiques(sondageMathematiques) {
+    try {
+      const res = await axios.post(`${url}/oneSondageMathematiques`, sondageMathematiques, config());
+      return res.data;
+    } catch (err) {
+      return err;
+    }
+  }
+
+  // To insert a single étudiants internationaux list
+  static async addOneEtudiantsInternationaux(etudiantsInternationaux) {
+    try {
+      const res = await axios.post(`${url}/oneEtudiantsInternationaux`, etudiantsInternationaux, config());
       return res.data;
     } catch (err) {
       return err;

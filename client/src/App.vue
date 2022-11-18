@@ -126,9 +126,11 @@ export default {
       }
     },
     canAccess(link) {
-      let type = JSON.parse(sessionStorage.getItem("authentication")).user;
-
-      if (type) type = type.type_utilisateur.nom;
+      let type;
+      if (sessionStorage.getItem("authentication") !== null) {
+        type = JSON.parse(sessionStorage.getItem("authentication")).user
+          .type_utilisateur.nom;
+      }
 
       if (type == "Administrateur") {
         switch (link) {

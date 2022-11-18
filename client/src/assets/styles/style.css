@@ -51,7 +51,7 @@ Tableau Liste étudiante
     background-color: #dddddd;
 }
 
-#list_student tr:hover:not(thead tr) {
+#list_student tr:hover:not(thead tr), #list_supervisor tr:hover:not(thead tr) {
     cursor: pointer;
     background-color: #fc8d3369;
 }
