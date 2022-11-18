@@ -99,6 +99,7 @@ function hasPermissionsNeeded(to) {
       }
     case "supervisor_list":
     case "supervisor_form":
+    case "supervisor_email":
     case "add_supervisor":
     case "course_list":
       switch(type) {
