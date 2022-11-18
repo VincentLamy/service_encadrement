@@ -511,8 +511,6 @@ export default {
       }
 
       await this.getData(previousStudent[0].no_etudiant);
-
-      await this.getData(previousStudent[0].no_etudiant);
       this.$router.push({
         name: "student_form",
         params: { id: this.student.no_etudiant },
