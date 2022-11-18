@@ -33,18 +33,6 @@ module.exports = class Importation {
                 return;
             }
 
-            /*
-            // Insert Type employé
-            const type_employe = await prisma.typeEmploye.upsert({
-                where: { nom: "Enseignant" || 0 },
-                update: {},
-                create: {
-                    nom: 'Enseignant',
-                    description: 'Cet employé est un enseignant dans le département d\'informatique',
-                },
-            });
-            */
-
             // Traitement session
             let codeSession = "";
 
