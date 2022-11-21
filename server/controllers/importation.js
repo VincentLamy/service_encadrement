@@ -318,9 +318,9 @@ module.exports = class Importation {
                     });
                 }
             }
-            res.status(201).json({ ok: "true", bypassed: "false", message: 'Le rapport d\'encadrement a été ajouté avec succès' });
+            res.status(201).json({ ok: "true", bypassed: "false", message: 'La ligne du rapport d\'encadrement a été ajouté avec succès' });
         } catch (err) {
-            res.status(400).json({ ok: "false", message: 'Le rapport d\'encadrement n\'a pas pu être ajouté' });
+            res.status(400).json({ ok: "false", message: 'Un problème est survenu lors de l\'importation du rapport d\'encadrement' });
         }
     };
 
@@ -430,14 +430,14 @@ module.exports = class Importation {
                 },
             });
       
-            res.status(201).json({ ok: "true", message: 'Le sondage de mathématiques a été ajouté avec succès' });
+            res.status(201).json({ ok: "true", message: 'La ligne du sondage de mathématiques a été ajouté avec succès' });
         } catch (err) {
-            res.status(400).json({ ok: "false", message: 'Le sondage de mathématiques n\'a pas pu être ajouté' });
+            res.status(400).json({ ok: "false", message: 'Un problème est survenu lors de l\'importation du sondage de mathématiques' });
         }
       };
       
       static async addOneEtudiantsInternationaux(req, res) {
-        //try {
+        try {
             if (jwtVerification(req.token) === false) {
                 res.status(403).json();
                 return;
@@ -495,10 +495,10 @@ module.exports = class Importation {
                     no_etudiant: Number(file_line['Numero d\'étudiant']),
                 },
             });
-            res.status(201).json({ ok: "true", bypassed: "false", message: 'La liste d\'étudiants internationaux a été ajouté avec succès' });
-        //} catch (err) {
-        //    res.status(400).json({ ok: "false", message: 'La liste d\'étudiants internationaux n\'a pas pu être ajouté' });
-        //}
+            res.status(201).json({ ok: "true", bypassed: "false", message: 'La ligne de la liste d\'étudiants internationaux a été ajouté avec succès' });
+        } catch (err) {
+            res.status(400).json({ ok: "false", message: 'Un problème est survenu lors de l\'importation de la liste d\'étudiants internationaux' });
+        }
       };
   };
 
