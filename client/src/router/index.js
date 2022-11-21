@@ -5,6 +5,7 @@ import VueRouter from "vue-router";
 // Authentification
 import LoginView from "../views/LoginView.vue";                                   // Formulaire de connexion
 import RecoverPasswordAccessView from "../views/RecoverPasswordAccessView.vue";   // Entrée du courriel pour 
+import ResetPasswordView from "../views/ResetPasswordView.vue";                   // Entrée du courriel pour 
 
 // Importation des données
 import CSVImportView from "../views/CSVImportView";                               // Importation et exportation des fichiers CSV et XLSX
@@ -72,6 +73,11 @@ const routes = [
   { path: "/recover",
     name: "recover",
     component: RecoverPasswordAccessView
+  },
+  {
+    path: "/reset_password/:token",
+    name: "reset_password",
+    component: ResetPasswordView
   }
 ];
 
@@ -127,7 +133,7 @@ function hasPermissionsNeeded(to) {
 }
 
 router.beforeEach((to, from, next) => {
-  if (to.name == "recover")
+  if (to.name == "recover" || to.name == "reset_password")
     next();
   else if (!isAuthenticated() && to.name !== "login")
     next({ name: "login" });

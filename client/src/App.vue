@@ -134,6 +134,8 @@
                         return false;
                     case 'recover':
                         return false;
+                    case 'reset_password':
+                        return false;
                     default:
                         return true;
                 }

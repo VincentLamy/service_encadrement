@@ -240,15 +240,19 @@ export default class API {
     }
   }
 
-  static async recover_password(email, token) {
+  static async recover_password(email) {
     try {
-      const res = await axios.post(`${url}/recover_password`, { "email": email }); //  , "token": token 
+      const res = await axios.post(`${url}/recover_password`, { "email": email });  
       return res.data;
-      // console.log("res.data : " + res);
-      // if (res) 
-      //   return true;
-      
-      // return false;
+    } catch (err) {
+      return err;
+    }
+  }
+
+  static async reset_password(token, password) {
+    try {
+      const res = await axios.patch(`${url}/reset_password/${token}`, { "password": password });  
+      return res.data;
     } catch (err) {
       return err;
     }

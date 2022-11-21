@@ -67,7 +67,8 @@ export default {
     },
     async validate() {
       if (this.$refs.recoverForm.validate()) {
-        const email_send = await API.recover_password(this.email /* , this.token */); //TODO add token
+
+        const email_send = await API.recover_password(this.email, this.token);
         let alert        = document.getElementById("recover_alert");
 
         if (!email_send) {

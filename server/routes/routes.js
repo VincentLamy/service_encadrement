@@ -50,6 +50,7 @@ router.post("/oneEtudiantsInternationaux", verifyToken, Importation.addOneEtudia
 // Login
 router.post("/login", Login.login);
 router.post("/recover_password", Login.recover_password);
+router.patch("/reset_password/:token", Login.reset_password);
 
 
 // FORMAT OF TOKEN
