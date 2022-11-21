@@ -70,13 +70,13 @@ const routes = [
     name: "course_list",
     component: CourseListView,
   },
-  { path: "/recover",
+  { path: "/recover_password",
     name: "recover",
     component: RecoverPasswordAccessView
   },
   {
-    path: "/reset_password/:token",
-    name: "reset_password",
+    path: "/password_modif/:type/:token",
+    name: "password_modif",
     component: ResetPasswordView
   }
 ];
@@ -133,7 +133,7 @@ function hasPermissionsNeeded(to) {
 }
 
 router.beforeEach((to, from, next) => {
-  if (to.name == "recover" || to.name == "reset_password")
+  if (to.name == "recover" || to.name == "password_modif")
     next();
   else if (!isAuthenticated() && to.name !== "login")
     next({ name: "login" });

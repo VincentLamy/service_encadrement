@@ -25,7 +25,7 @@ model Employe {
   Utilisateur     Utilisateur[]
   Commentaire     Commentaire[]
 
-  @@unique([prenom, nom])
+  @@unique([prenom, nom]) //TODO modifier les primary car impossible de créer un new user si prenom + nom déjà existant.
 }
 
 model TypeEmploye {
@@ -61,8 +61,8 @@ model Utilisateur {
   date_activation     DateTime
   date_desactivation  DateTime
   actif               Boolean
-  token               String          @unique   // TODO Pas encore utiliser
-  token_end_date      DateTime                  // TODO Pas encore utiliser
+  token               String          @unique
+  token_end_date      DateTime                  
 }
 
 model TypeUtilisateur {

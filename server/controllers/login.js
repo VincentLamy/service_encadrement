@@ -101,42 +101,33 @@ module.exports = class Responsable {
                 }
             });
 
-            let recover_link = "http://localhost:8080/reset_password/" + token
+            let recover_link = "http://localhost:8080/password_modif/reset/" + token;
             let text = "Vous avez récemment fait une demande pour réinitialiser votre mot de passe. Si ce n'est pas vous, veuillez ignorer ce message ou contacter votre administrateur. Sinon, veuillez cliquer sur le lien suivant pour procéder à la réinitialisation de votre mot de passe.\n\nLien : " + recover_link;
           
+            console.log(req.body.courriel);
+
             // Création du courriel
             var mailOptions = {
                 from: process.env.EMAIL_ID,    
-                to: "202045777@cegepsherbrooke.qc.ca", // to: req.body.courriel,
+                to: req.body.courriel,
                 subject: 'Demande de réinitialisation de mot de passe',
                 text: text
             };
           
               // Envoie du courriel
-              transporter.sendMail(mailOptions, function(error, info){ //TODO vérifier si on doit enlever les console.log()
+
+
+              transporter.sendMail(mailOptions, function(error, info){
                   if (error) {
-                      console.log(error);       
+                    res.status(400).json({ message: "Erreur lors de l\'envoie du courriel" });   
                   } else {
-                      console.log('Email sent: ' + info.response);
+                    res.status(200).json({ message: "Courriel envoyé" });
                   }
               });
-
-              // jwt.sign({user: user}, 'key_se', (err, token) => {
-              res.status(200).json({ link });
-              // });
-          } else {
-              res.status(400).json({message: 'Erreur lors de la connexion' });
+            }
           }
 
-          return false;
-      // } catch (error) {
-      //     res.status(400).json({message: 'Erreur lors de la connexion' });
-      // }
-  }
-
-  static async reset_password(req, res) {
-    console.log(req.params.token);
-    
+  static async password_modif(req, res) {
     const user = await prisma.utilisateur.findFirst({
       where: {
         token: req.params.token,
@@ -149,19 +140,41 @@ module.exports = class Responsable {
         }
       },
     });
-    
+
     if (user) {
-      await prisma.utilisateur.update({
-        where: {
-          token: req.params.token
-        },
-        data: {
-          mdp:  SHA256(req.body.password).toString(),
-          // token: "",
-          // token_end_date: "",
+      try {
+        console.log(req.params.type)
+        if (req.params.type == "reset") {
+          await prisma.utilisateur.update({
+            where: {
+              token: req.params.token
+            },
+            data: {
+              mdp:  SHA256(req.body.password).toString(),
+              token: undefined,
+              token_end_date: undefined,
+            }
+          });
+
+          res.status(200).json({ message: 1, type: "reset" });
+        } else if (req.params.type == "activate") {
+          await prisma.utilisateur.update({
+            where: {
+              token: req.params.token,
+            },
+            data: {
+              mdp:  SHA256(req.body.password).toString(),
+              actif: Boolean(1),
+              token: undefined,
+              token_end_date: undefined,
+            }
+          });
+
+          res.status(200).json({ message: 1, type: "activate" });
         }
-      });
-    }
-    
+      } catch (error) {
+        res.status(400).json({ message: 0 });
+      }
+    }  
   }
 };

@@ -242,16 +242,16 @@ export default class API {
 
   static async recover_password(email) {
     try {
-      const res = await axios.post(`${url}/recover_password`, { "email": email });  
+      const res = await axios.post(`${url}/recover_password`, { "courriel": email });  
       return res.data;
     } catch (err) {
       return err;
     }
   }
 
-  static async reset_password(token, password) {
+  static async password_modif(type, token, password) {
     try {
-      const res = await axios.patch(`${url}/reset_password/${token}`, { "password": password });  
+      const res = await axios.patch(`${url}/password/${type}/${token}`, { "password": password });  
       return res.data;
     } catch (err) {
       return err;

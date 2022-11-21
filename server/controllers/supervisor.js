@@ -1,8 +1,14 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+
 const jwtVerification = require("../modules/jwt_verification");
 const jwt = require("jsonwebtoken");
+
+const crypto = require("crypto-js");
 const SHA256 = require("crypto-js/sha256");
+
+const nodemailer = require('nodemailer');
+
 require('dotenv').config();
 
 module.exports = class Supervisor {
@@ -78,6 +84,13 @@ module.exports = class Supervisor {
         },
       });
 
+      // Création du token.
+      const token = SHA256(crypto.lib.WordArray.random(64)).toString();
+
+      // Définit la date d'expiration du token
+      let date_expiration = new Date();
+      date_expiration.setDate(date_expiration.getDate() + 1);
+
       const utilisateur = await prisma.utilisateur.upsert({
         where: {
           no_employe: employe.no_employe,
@@ -91,10 +104,44 @@ module.exports = class Supervisor {
           date_activation: today,
           date_desactivation: today,
           actif: Boolean(0),
+          token: token,
+          token_end_date: date_expiration,
         },
       });
 
-      // TODO envoie courriel lors de la création
+      // Création des options de connexion
+      var transporter = nodemailer.createTransport({
+        host: 'smtp.office365.com',
+        port: 587,
+        secureConnection: false,
+        tls: { 
+          ciphers: 'SSLv3'
+        },
+        auth: {
+            user: process.env.EMAIL_ID,
+            pass: process.env.EMAIL_PASSWORD
+        }
+    });
+
+    let link = "http://localhost:8080/password_modif/activate/" + token;
+    let text = "Bienvenu(e) dans l\'équipe du Service d'encadrement. Votre compte a récemment été créé. Pour accéder aux services, veuillez activez votre compte en cliquant sur le lien suivant.\n\nLien : " + link;
+  
+    // Création du courriel
+    var mailOptions = {
+      from: process.env.EMAIL_ID,    
+      to: "202045777@cegepsherbrooke.qc.ca", // to: req.body.courriel,
+      subject: 'Activation de votre compte',
+      text: text
+    };
+  
+    // Envoie du courriel
+    transporter.sendMail(mailOptions, function(error, info){ //TODO vérifier si on doit enlever les console.log()
+      if (error) {
+          console.log(error);       
+      } else {
+          console.log('Email sent: ' + info.response);
+      }
+    });
 
       res
         .status(200)

@@ -3,8 +3,7 @@
         <v-alert
         id="recover_alert"
         close-text="Close Alert"
-        color="red accent-4 red--text"
-        type="error"
+        :color="colorAlert"
         text
         dark
         >
@@ -54,7 +53,7 @@ export default {
     valid: true,
     
     email: "",
-    token: "",
+    colorAlert: "",
 
     rules: {
       required: (value) => !!value || "Champ obligatoire.",
@@ -68,12 +67,14 @@ export default {
     async validate() {
       if (this.$refs.recoverForm.validate()) {
 
-        const email_send = await API.recover_password(this.email, this.token);
+        const email_send = await API.recover_password(this.email);
         let alert        = document.getElementById("recover_alert");
 
         if (!email_send) {
+          this.colorAlert = "red accent-4 red--text";
           alert.innerHTML = "Le courriel est invalide!";
         } else {
+          this.colorAlert = "green accent-4 green--text";
           alert.innerHTML = "Un courriel a été envoyé à l'adresse précisée précédemment!"
         }
 

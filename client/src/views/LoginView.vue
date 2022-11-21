@@ -134,7 +134,7 @@ export default {
       this.$refs.form.resetValidation();
     },
     password_forgot() {
-      this.$router.push('/recover');
+      this.$router.push('/recover_password');
     }
   },
 };

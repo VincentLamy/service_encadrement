@@ -134,7 +134,7 @@
                         return false;
                     case 'recover':
                         return false;
-                    case 'reset_password':
+                    case 'password_modif':
                         return false;
                     default:
                         return true;
