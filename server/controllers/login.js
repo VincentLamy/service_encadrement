@@ -93,7 +93,8 @@ module.exports = class Responsable {
                 port: 587,
                 secureConnection: false,
                 tls: { 
-                  ciphers: 'SSLv3'
+                  ciphers: 'SSLv3',
+                  rejectUnauthorized: false
                 },
                 auth: {
                     user: process.env.EMAIL_ID,

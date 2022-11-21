@@ -115,7 +115,8 @@ module.exports = class Supervisor {
         port: 587,
         secureConnection: false,
         tls: { 
-          ciphers: 'SSLv3'
+          ciphers: 'SSLv3',
+          rejectUnauthorized: false
         },
         auth: {
             user: process.env.EMAIL_ID,
@@ -129,7 +130,7 @@ module.exports = class Supervisor {
     // Création du courriel
     var mailOptions = {
       from: process.env.EMAIL_ID,    
-      to: "202045777@cegepsherbrooke.qc.ca", // to: req.body.courriel,
+      to: req.body.courriel,
       subject: 'Activation de votre compte',
       text: text
     };

@@ -36,11 +36,11 @@
           <v-row no-gutters>
             <!-- Courriel -->
             <v-col class="px-3" lg="6" sm="6" cols="12">
-              <v-text-field id="courriel_input" label="Courriel" :value="supervisor.courriel" :rules="rules" outlined />
+              <v-text-field id="courriel_input" label="Courriel" :value="supervisor.courriel" :rules="[rules.required, rules.email]" outlined />
             </v-col>
             <!-- Prénom -->
             <v-col class="px-3" lg="6" sm="6" cols="12">
-              <v-text-field id="prenom_input" label="Prénom" :value="supervisor.employe.prenom" :rules="rules"
+              <v-text-field id="prenom_input" label="Prénom" :value="supervisor.employe.prenom" :rules="[rules.required]"
                 outlined />
             </v-col>
           </v-row>
@@ -49,7 +49,7 @@
           <v-row no-gutters>
             <!-- Nom -->
             <v-col class="px-3" lg="6" sm="6" cols="12">
-              <v-text-field id="nom_input" label="Nom" :value="supervisor.employe.nom" :rules="rules" outlined />
+              <v-text-field id="nom_input" label="Nom" :value="supervisor.employe.nom" :rules="[rules.required]" outlined />
             </v-col>
             <!-- Date d'activation -->
             <v-col class="px-3" lg="6" sm="6" cols="12">
@@ -96,7 +96,11 @@ export default {
       date_activation: null,
       date_desactivation: null,
       show: false,
-      rules: [(value) => !!value || "Ce champs ne peut pas être vide."],
+      rules: {
+                  required: (v) => !!v               || "Champ obligatoire.",
+                  email:    (v) => /.+@cegepsherbrooke\.qc\.ca$/.test(v)       || "L'adresse courriel doit être valide.",
+                },
+      //rules: [(value) => !!value || "Ce champs ne peut pas être vide."],
       activation_switch: true,
       success: false,
       loading: false,
