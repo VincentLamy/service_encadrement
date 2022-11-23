@@ -102,7 +102,7 @@ module.exports = class Responsable {
             }
         });
 
-        let recover_link = "http://localhost:8080/password_modif/reset/" + token;
+        let recover_link = "http://" + process.env.URL + ":" + process.env.PORT + "/password_modif/reset/" + token;
         let text = "Vous avez récemment fait une demande pour réinitialiser votre mot de passe. Si ce n'est pas vous, veuillez ignorer ce message ou contacter votre administrateur. Sinon, veuillez cliquer sur le lien suivant pour procéder à la réinitialisation de votre mot de passe.\n\nLien : " + recover_link;
 
         // Création du courriel
