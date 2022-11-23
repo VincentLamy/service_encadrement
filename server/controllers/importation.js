@@ -115,7 +115,9 @@ module.exports = class Importation {
             // Insert Cours
             const cours = await prisma.cours.upsert({
                 where: { code: file_line['Numéro du cours'] || 0 },
-                update: {},
+                update: {
+                    duree: Number(file_line['Nb heures du cours']),
+                },
                 create: {
                     code: file_line['Numéro du cours'],
                     nom: '',
