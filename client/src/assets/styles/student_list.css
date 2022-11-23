@@ -1,0 +1,37 @@
+/********************************/
+/* Liste étudiante              */
+/********************************/
+
+    #list_student thead span            /* Texte qui se trouve dans l'entête du tableau */
+    { font-size: large; }               /* Largeur du texte */
+
+    #list_student tr:nth-of-type(odd)   /* Lignes impairs du tableau */
+    { background-color: #FFFFFF; }    /* Couleur de la ligne */
+
+    #list_student tr:nth-of-type(even)  /* Lignes pairs du tableau */
+    { background-color: #dddddd; }    /* Couleur de la ligne */
+
+    #list_student tr:hover:not(thead tr),       /* Survol des lignes de la liste des étudiants */
+    #list_supervisor tr:hover:not(thead tr)     /* Survol des lignes de la liste des responsables */
+    {
+        cursor: pointer;                /* Forme du curseur */  
+        background-color: #fc8d3369;  /* Couleur de la ligne */
+    }
+
+
+    
+/********************************/
+/* Filtres                      */
+/********************************/
+    #filter                             /* Bouton filtre qui ouvre le menu des filtres */
+    {
+        text-align: left;               /* Aligne le texte à gauche */
+        text-decoration: underline;     /* Souligne le texte */
+        width:fit-content;              /* Largeur du filtreur */ 
+    }
+
+    #filter:hover                       /* Survol du bouton : Filtre */
+    {
+        color: #FC8D33;               /* Couleur du bouton */   
+        cursor: pointer;                /* Forme du curseur */
+    }
