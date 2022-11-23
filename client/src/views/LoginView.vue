@@ -120,9 +120,8 @@ export default {
       if (sessionStorage.getItem("authentication")) {
         let type = JSON.parse(sessionStorage.getItem("authentication")).user.type_utilisateur.nom;
       
-        if      (type == "Administrateur")  this.$router.push("/supervisor_list");
+        if      (type == "Administrateur")  this.$router.push("/student_list");
         else if (type == "Responsable")     this.$router.push("/student_list");
-        else if (type == "Dev")             this.$router.push("/student_list");
       }
     },
     reset() {
