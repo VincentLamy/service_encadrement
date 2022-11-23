@@ -25,5 +25,13 @@
     @import './login.css';              /* Styles pour le login, la réinitialisation du mot de passe */
 
 
-    .outlined 
-    { border: 1px solid rgba(0, 0, 0, 0.12); }
+
+/********************************/
+/* Classes générales            */
+/********************************/  
+    .outlined                           /* Classe utilisé pour sous-ligné du texte */
+    { 
+        border: 
+            1px                         /* Largeur */
+            solid rgba(0,0,0,0.12);   /* Couleur */           
+    }

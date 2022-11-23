@@ -1,84 +1,45 @@
-import Vue from "vue";
-import VueRouter from "vue-router";
+/********************************/
+/* Importation                  */
+/********************************/
 
+// Vue3
+import Vue                        from "vue";
+import VueRouter                  from "vue-router";
 
 // Authentification
-import LoginView from "../views/LoginView.vue";                                   // Formulaire de connexion
-import RecoverPasswordAccessView from "../views/RecoverPasswordAccessView.vue";   // Entrée du courriel pour 
-import ResetPasswordView from "../views/ResetPasswordView.vue";                   // Entrée du courriel pour 
+import LoginView                  from "../views/LoginView.vue";                    // Formulaire de connexion
+import RecoverPasswordAccessView  from "../views/RecoverPasswordAccessView.vue";    // Entrée du courriel pour 
+import ResetPasswordView          from "../views/ResetPasswordView.vue";            // Entrée du courriel pour 
 
 // Importation des données
-import CSVImportView from "../views/CSVImportView";                               // Importation et exportation des fichiers CSV et XLSX
+import CSVImportView              from "../views/CSVImportView";                    // Importation et exportation des fichiers CSV et XLSX
 
 // Étudiants
-import StudentListView from "../views/StudentListView";                           // Liste des étudiants
-import StudentFormView from "../views/StudentFormView";                           // Fiche des étudiants
-import CourseListView from "../views/CourseListView";                             // Liste des cours
+import StudentListView            from "../views/StudentListView";                  // Liste des étudiants
+import StudentFormView            from "../views/StudentFormView";                  // Fiche des étudiants
+import CourseListView             from "../views/CourseListView";                   // Liste des cours
 
 // Responsables
-import SupervisorFormView from "../views/SupervisorFormView";
-import SupervisorListView from "../views/SupervisorListView";
-import SupervisorAddView from "../views/SupervisorAddView";
-import SupervisorEmail from "../views/SupervisorEmailView";
+import SupervisorListView         from "../views/SupervisorListView";               // Liste des responsables
+import SupervisorFormView         from "../views/SupervisorFormView";               // Fiche des responsables
+import SupervisorAddView          from "../views/SupervisorAddView";                // Formulaire d'ajout d'un responsable
+import SupervisorEmail            from "../views/SupervisorEmailView";              // 
 
 
 Vue.use(VueRouter);
 
 const routes = [
-  {
-    path: "/",
-    name: "login",
-    component: LoginView,
-  },
-  {
-    path: "/csv_import",
-    name: "csv-import",
-    component: CSVImportView,
-  },
-  {
-    path: "/student_list",
-    name: "student_list",
-    component: StudentListView,
-  },
-  {
-    path: "/student_form/:id",
-    name: "student_form",
-    component: StudentFormView,
-  },
-  {
-    path: "/supervisor_list",
-    name: "supervisor_list",
-    component: SupervisorListView,
-  },
-  {
-    path: "/supervisor_form/:id",
-    name: "supervisor_form",
-    component: SupervisorFormView,
-  },
-  {
-    path: "/add_supervisor",
-    name: "add_supervisor",
-    component: SupervisorAddView,
-  },
-  {
-    path: "/supervisor_email",
-    name: "supervisor_email",
-    component: SupervisorEmail
-  },
-  {
-    path: "/course_list",
-    name: "course_list",
-    component: CourseListView,
-  },
-  { path: "/recover_password",
-    name: "recover",
-    component: RecoverPasswordAccessView
-  },
-  {
-    path: "/password_modif/:type/:token",
-    name: "password_modif",
-    component: ResetPasswordView
-  }
+  { path: "/",                            name: "login",            component: LoginView,                 },
+  { path: "/csv_import",                  name: "csv-import",       component: CSVImportView,             },
+  { path: "/student_list",                name: "student_list",     component: StudentListView,           },
+  { path: "/student_form/:id",            name: "student_form",     component: StudentFormView,           },
+  { path: "/supervisor_list",             name: "supervisor_list",  component: SupervisorListView,        },
+  { path: "/supervisor_form/:id",         name: "supervisor_form",  component: SupervisorFormView,        },
+  { path: "/add_supervisor",              name: "add_supervisor",   component: SupervisorAddView,         },
+  { path: "/supervisor_email",            name: "supervisor_email", component: SupervisorEmail            },
+  { path: "/course_list",                 name: "course_list",      component: CourseListView,            },
+  { path: "/recover_password",            name: "recover",          component: RecoverPasswordAccessView  },
+  { path: "/password_modif/:type/:token", name: "password_modif",   component: ResetPasswordView          }
 ];
 
 const router = new VueRouter({

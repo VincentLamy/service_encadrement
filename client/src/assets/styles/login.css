@@ -19,8 +19,8 @@
         justify-content: space-around;      /* Uniformité de la disposition du formulaire */
     }
 
-    #recoverForm div button 
-    { margin: 5px; }
+    #recoverForm div button                 /* Boutons du formulaire */
+    { margin: 5px; }                        /* Marges extérieurs */
 
 
 /********************************/
