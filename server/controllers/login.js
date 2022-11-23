@@ -159,11 +159,14 @@ module.exports = class Responsable {
 
           res.status(200).json({ message: 1, type: "reset" });
         } else if (req.params.type == "activate") {
+          const today = new Date();
           await prisma.utilisateur.update({
             where: {
               token: req.params.token,
             },
             data: {
+              date_activation: today,
+              date_desactivation: today,
               mdp:  SHA256(req.body.password).toString(),
               actif: Boolean(1),
               token: undefined,

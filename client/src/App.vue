@@ -166,6 +166,8 @@
                     return true;
                 case 3: // csv_import
                     return true;
+                case 4: //
+                    return true;
                 default:
                     break;
                 }
@@ -179,6 +181,8 @@
                     return false;
                 case 3: // csv_import
                     return true;
+                case 4:
+                    return false;
                 default:
                     break;
                 }
@@ -191,6 +195,8 @@
                 case 2: // course_list
                     return true;
                 case 3: // csv_import
+                    return true;
+                case 4:
                     return true;
                 default:
                     break;
