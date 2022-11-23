@@ -130,7 +130,7 @@
           v-model="student.a_surveiller"
           color="red"
           hide-details
-          label="À surveiller"
+          label="À rencontrer"
           :disabled="student.a_surveiller === undefined"
           :loading="flag_loading"
           @change="setFlag"
