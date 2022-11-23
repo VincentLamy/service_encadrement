@@ -25,7 +25,6 @@
                 <v-btn
                     large
                     block
-                    :disabled="!valid"
                     @click="main_menu()"
                 >Retour</v-btn>
                 

@@ -157,10 +157,10 @@
                     return true;
                 case "Responsable":
                     const accessRights = {
-                        "/student_list" : true,
-                        "/supervisor_list" : false,
-                        "/course_list" : false,
-                        "/csv_import" : true,
+                        "/student_list"     : true,
+                        "/supervisor_list"  : false,
+                        "/course_list"      : false,
+                        "/csv_import"       : true,
                         "/supervisor_email" : false,
                     };
                     return accessRights[link];

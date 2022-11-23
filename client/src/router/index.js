@@ -48,7 +48,7 @@ const routes = [
 
 // Création d'un routeur
 const router = new VueRouter({
-    mode: "history",            // 
+    mode: "history",            // Permet de naviguer entre les pages sans devoir recharger le navigateur
     base: process.env.BASE_URL, // URL du site 
     routes,                     // Routes qui seront utilisés
 });
