@@ -12,7 +12,6 @@ const port = process.env.PORT || 5000;
 // routes prefix
 app.use('/api', require('./routes/routes'));
 
-
 if (process.env.NODE_ENV === 'production') {
     app.use(express.static(__dirname + '/dist'));
     app.get('*', (req, res) => {
