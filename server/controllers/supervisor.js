@@ -124,7 +124,7 @@ module.exports = class Supervisor {
         }
     });
 
-    let link = "http://localhost:8080/password_modif/activate/" + token;
+    let link = "http://" + process.env.URL + ":" + process.env.PORT + "/password_modif/activate/" + token;
     let text = "Bienvenu(e) dans l\'équipe du Service d'encadrement. Votre compte a récemment été créé. Pour accéder aux services, veuillez activez votre compte en cliquant sur le lien suivant.\n\nLien : " + link;
   
     // Création du courriel

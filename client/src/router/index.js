@@ -12,7 +12,7 @@ import RecoverPasswordAccessView  from "../views/RecoverPasswordAccessView.vue";
 import ResetPasswordView          from "../views/ResetPasswordView.vue";            // Entrée du courriel pour 
 
 // Importation des données
-import CSVImportView              from "../views/CSVImportView";                    // Importation et exportation des fichiers CSV et XLSX
+import ImportView              from "../views/ImportView";                          // Importation et exportation des fichiers CSV et XLSX
 
 // Étudiants
 import StudentListView            from "../views/StudentListView";                  // Liste des étudiants
@@ -35,7 +35,7 @@ Vue.use(VueRouter);
 const routes = [
       // Chemin d'accès                     // Nom de la route          // Page qui sera affiché
     { path: "/",                            name: "login",              component: LoginView,                 },    // Connexion
-    { path: "/csv_import",                  name: "csv-import",         component: CSVImportView,             },    // Importation des données
+    { path: "/import",                      name: "import",             component: ImportView,                },    // Importation des données
     { path: "/student_list",                name: "student_list",       component: StudentListView,           },    // Liste des étudiants
     { path: "/student_form/:id",            name: "student_form",       component: StudentFormView,           },    // Fiche des étudiants
     { path: "/supervisor_list",             name: "supervisor_list",    component: SupervisorListView,        },    // Liste des responsables

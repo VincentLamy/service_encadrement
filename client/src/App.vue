@@ -1,41 +1,41 @@
 <template>
-    <v-app id="inspire">
-        <v-navigation-drawer
-        v-if="what_page(this.$route.name)"
-        v-model="drawer"
-        app
-        >
-        <v-list-item>
+  <v-app id="inspire">
+    <v-navigation-drawer
+      v-if="what_page(this.$route.name)"
+      v-model="drawer"
+      app
+    >
+      <v-list-item>
+        <v-list-item-content>
+          <v-list-item-title
+            class="text-h6 blue--text text--darken-3"
+            v-text="name"
+          ></v-list-item-title>
+          <v-list-item-subtitle v-text="programme"></v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
+
+      <v-divider></v-divider>
+
+      <v-list nav dense>
+        <v-list-item-group color="primary">
+          <v-list-item
+            v-for="(item, i) in items"
+            :key="i"
+            v-if="canAccess(item.link)"
+            :to="item.link"
+            link
+          >
+            <v-list-item-icon>
+              <v-icon v-text="item.icon"></v-icon>
+            </v-list-item-icon>
+
             <v-list-item-content>
-            <v-list-item-title
-                class="text-h6 blue--text text--darken-3"
-                v-text="name"
-            ></v-list-item-title>
-            <v-list-item-subtitle v-text="programme"></v-list-item-subtitle>
+              <v-list-item-title
+                class="blue--text text--darken-3"
+                v-text="item.title"
+              ></v-list-item-title>
             </v-list-item-content>
-        </v-list-item>
-    
-        <v-divider></v-divider>
-    
-        <v-list nav dense>
-            <v-list-item-group color="primary">
-            <v-list-item
-                v-for="(item, i) in items"
-                :key="i"
-                v-if="canAccess(item.link)"
-                :to="item.link"
-                link
-            >
-                <v-list-item-icon>
-                <v-icon v-text="item.icon"></v-icon>
-                </v-list-item-icon>
-    
-                <v-list-item-content>
-                <v-list-item-title
-                    class="blue--text text--darken-3"
-                    v-text="item.title"
-                ></v-list-item-title>
-                </v-list-item-content>
             </v-list-item>
             </v-list-item-group>
         </v-list>
