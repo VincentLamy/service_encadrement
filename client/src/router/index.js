@@ -19,7 +19,6 @@ import CourseListView from "../views/CourseListView";                           
 import SupervisorFormView from "../views/SupervisorFormView";
 import SupervisorListView from "../views/SupervisorListView";
 import SupervisorAddView from "../views/SupervisorAddView";
-import SupervisorEmail from "../views/SupervisorEmailView";
 
 
 Vue.use(VueRouter);
@@ -59,11 +58,6 @@ const routes = [
     path: "/add_supervisor",
     name: "add_supervisor",
     component: SupervisorAddView,
-  },
-  {
-    path: "/supervisor_email",
-    name: "supervisor_email",
-    component: SupervisorEmail
   },
   {
     path: "/course_list",
