@@ -1,0 +1,13 @@
+/********************************/
+/* Menu de navigation           */
+/********************************/
+
+    .v-app-bar__nav-icon,                   /* Bouton pour ouvrir le menu de gauche */
+    #disconnect_button                      /* Bouton de déconnexion */
+    { position: absolute; }                 /* Position par défaut du menu */
+
+    #disconnect_button                      /* Bouton de déconnexion */
+    { right: 5px;}                          /* Force la position à droite. */
+
+    .v-toolbar__title                       /* Titre du menu : "Service d'encadrement" */
+    { padding: 0px; }                       /* Marge interne */

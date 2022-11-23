@@ -1,0 +1,40 @@
+/********************************/
+/* Formulaires :                */
+/*  - Connexion                 */
+/*  - mot de passe oublié,      */
+/*  - réinitialisation du mot   */
+/*    de passe                  */
+/********************************/
+    #loginForm,                             /* Formulaire de connexion */
+    #recoverForm,                           /* Formulaire pour l'envoie d'un courriel si mot de passe oublié */
+    #resetPasswordForm                      /* Formulaire pour réinitialiser le mot de passe */
+    {
+        margin: auto;                       /* Marge */
+        width: 30%;                         /* Largeur */
+    }
+
+    #recoverForm div                        /* Contenu principal du formulaire */
+    {   
+        display: flex;                      /* Permet la maléabilité du formulaire */
+        justify-content: space-around;      /* Uniformité de la disposition du formulaire */
+    }
+
+    #recoverForm div button 
+    { margin: 5px; }
+
+
+/********************************/
+/* Messages d'alerte pour les   */
+/* différents formulaires       */
+/********************************/
+    #login_alert,                       /* Alerte de la page : LoginView.vue */
+    #recover_alert,                     /* Alerte de la page : RecoverPasswordAccessView.vue */
+    #resetPassword_alert                /* Alerte de la page : ResetPasswordView.vue */
+    {
+        position: absolute;             /* Position absolue pour ne pas tenir compte des contrainte de position */
+        visibility: hidden;             /* Cache l'alerte pour ne pas qu'elle soit visible en tout temps */
+        width: 450px;                   /* Largeur de l'alerte */
+        top: 50px;                      /* Hauteur de l'alerte par rapport au haut de la page */
+        left: calc(50% - (450px / 2));  /* Centre l'alerte */
+        z-index: 1;                     /* Assure que l'alerte se trouve au premier plan de la page */
+    }
