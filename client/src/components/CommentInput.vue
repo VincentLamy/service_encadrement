@@ -138,8 +138,8 @@ export default {
           rules: [
             (v) => !!v || "Une description est requise",
             (v) =>
-              v.length <= 255 ||
-              "La description doit contenir moins de 255 caractères",
+              v.length <= 3000 ||
+              "La description doit contenir moins de 3000 caractères",
           ],
         },
         remark_id: {
@@ -166,9 +166,8 @@ export default {
     async addComment() {
       this.submitComment(async () => {
         // Retrieve comment poster id
-        const no_employe = JSON.parse(
-          sessionStorage.getItem("authentication")
-        ).user.employe.no_employe;
+        const no_employe = JSON.parse(sessionStorage.getItem("authentication"))
+          .user.employe.no_employe;
 
         return await API.addComment({
           no_etudiant: this.noEtudiant,
