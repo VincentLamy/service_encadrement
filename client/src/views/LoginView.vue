@@ -35,19 +35,17 @@
                 @click:append="show1 = !show1"
               ></v-text-field>
             </v-col>
-            <v-col class="d-flex" cols="12" sm="6" xsm="12"> 
-              <v-btn @click="password_forgot">Mot de passe oublié</v-btn>
-            </v-col>
-            <v-col class="d-flex" cols="12" sm="6" xsm="12" align-end>
+            <v-col class="d-flex justify-center">
               <v-btn
-                x-large
-                block
-                :disabled="!valid"
-                color="success"
-                @click="validate"
+              x-large
+              block
+              :disabled="!valid"
+              color="success"
+              @click="validate"
               >Login</v-btn>
             </v-col>
           </v-row>
+          <v-btn @click="password_forgot" plain class="pa-0 mt-2">Mot de passe oublié</v-btn>
         </v-form>
       </v-card-text>
     </v-card>

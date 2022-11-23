@@ -104,8 +104,6 @@ module.exports = class Responsable {
 
             let recover_link = "http://localhost:8080/password_modif/reset/" + token;
             let text = "Vous avez récemment fait une demande pour réinitialiser votre mot de passe. Si ce n'est pas vous, veuillez ignorer ce message ou contacter votre administrateur. Sinon, veuillez cliquer sur le lien suivant pour procéder à la réinitialisation de votre mot de passe.\n\nLien : " + recover_link;
-          
-            console.log(req.body.courriel);
 
             // Création du courriel
             var mailOptions = {
@@ -144,7 +142,6 @@ module.exports = class Responsable {
 
     if (user) {
       try {
-        console.log(req.params.type)
         if (req.params.type == "reset") {
           await prisma.utilisateur.update({
             where: {
@@ -159,11 +156,14 @@ module.exports = class Responsable {
 
           res.status(200).json({ message: 1, type: "reset" });
         } else if (req.params.type == "activate") {
+          const today = new Date();
           await prisma.utilisateur.update({
             where: {
               token: req.params.token,
             },
             data: {
+              date_activation: today,
+              date_desactivation: today,
               mdp:  SHA256(req.body.password).toString(),
               actif: Boolean(1),
               token: undefined,
@@ -176,6 +176,6 @@ module.exports = class Responsable {
       } catch (error) {
         res.status(400).json({ message: 0 });
       }
-    }  
+    }
   }
 };
