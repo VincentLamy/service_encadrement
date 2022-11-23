@@ -330,31 +330,4 @@ module.exports = class Supervisor {
       res.status(404).json({ message: error.message });
     }
   }
-
-  static async updateSupervisorEmailAddress(req, res) {
-    try {
-      if (jwtVerification(req.token) === false) {
-        res.status(403).json();
-        return;
-      }
-      
-      const { id } = req.params;
-      const { courriel } = req.body;
-
-      await prisma.utilisateur.update({
-        where: {
-          id: Number(id),
-        },
-        data: {
-          courriel: courriel,
-        },
-      });
-
-      res.status(200).json({
-        message: "Le courriel du superviseur à été mis à jour avec succès",
-      });
-    } catch (error) {
-      res.status(400).json({ message: error.message });
-    }
-  }
 };

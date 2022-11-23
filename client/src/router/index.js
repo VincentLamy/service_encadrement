@@ -23,88 +23,76 @@ import CourseListView             from "../views/CourseListView";               
 import SupervisorListView         from "../views/SupervisorListView";               // Liste des responsables
 import SupervisorFormView         from "../views/SupervisorFormView";               // Fiche des responsables
 import SupervisorAddView          from "../views/SupervisorAddView";                // Formulaire d'ajout d'un responsable
-import SupervisorEmail            from "../views/SupervisorEmailView";              // 
 
+
+
+/********************************/
+/* Création du routeur          */
+/********************************/
 
 Vue.use(VueRouter);
 
 const routes = [
-  { path: "/",                            name: "login",            component: LoginView,                 },
-  { path: "/csv_import",                  name: "csv-import",       component: CSVImportView,             },
-  { path: "/student_list",                name: "student_list",     component: StudentListView,           },
-  { path: "/student_form/:id",            name: "student_form",     component: StudentFormView,           },
-  { path: "/supervisor_list",             name: "supervisor_list",  component: SupervisorListView,        },
-  { path: "/supervisor_form/:id",         name: "supervisor_form",  component: SupervisorFormView,        },
-  { path: "/add_supervisor",              name: "add_supervisor",   component: SupervisorAddView,         },
-  { path: "/supervisor_email",            name: "supervisor_email", component: SupervisorEmail            },
-  { path: "/course_list",                 name: "course_list",      component: CourseListView,            },
-  { path: "/recover_password",            name: "recover",          component: RecoverPasswordAccessView  },
-  { path: "/password_modif/:type/:token", name: "password_modif",   component: ResetPasswordView          }
+      // Chemin d'accès                     // Nom de la route          // Page qui sera affiché
+    { path: "/",                            name: "login",              component: LoginView,                 },    // Connexion
+    { path: "/csv_import",                  name: "csv-import",         component: CSVImportView,             },    // Importation des données
+    { path: "/student_list",                name: "student_list",       component: StudentListView,           },    // Liste des étudiants
+    { path: "/student_form/:id",            name: "student_form",       component: StudentFormView,           },    // Fiche des étudiants
+    { path: "/supervisor_list",             name: "supervisor_list",    component: SupervisorListView,        },    // Liste des responsables
+    { path: "/supervisor_form/:id",         name: "supervisor_form",    component: SupervisorFormView,        },    // Fiche des responsables
+    { path: "/add_supervisor",              name: "add_supervisor",     component: SupervisorAddView,         },    // Formulaire d'ajout d'un responsable
+    { path: "/course_list",                 name: "course_list",        component: CourseListView,            },    // Liste des cours
+    { path: "/recover_password",            name: "recover",            component: RecoverPasswordAccessView  },    // Demande pour réinitialiser son mot de passe
+    { path: "/password_modif/:type/:token", name: "password_modif",     component: ResetPasswordView          },    // Réinitialisation du mot de passe
 ];
 
+// Création d'un routeur
 const router = new VueRouter({
-  mode: "history",
-  base: process.env.BASE_URL,
-  routes,
+    mode: "history",            // 
+    base: process.env.BASE_URL, // URL du site 
+    routes,                     // Routes qui seront utilisés
 });
 
-function isAuthenticated() {
-  return sessionStorage.getItem("authentication");
+/**
+ * Vérifie si l'utilisateur à la permission d'accéder la page souhaité.
+ * 
+ * @param {string} nom Nom de la route de la page que l'utilisateur veut voir
+ * @returns un booléen
+ */
+function hasPermissionsNeeded(nom) {
+    if (nom == "login")                                 // Si la page visée est la page de connexion
+        return true;                                    // Autorise le passage
+
+    if (sessionStorage.getItem("authentication"))       // Si l'utilisateur est connecté
+        if (JSON.parse(sessionStorage.getItem("authentication")).user.type_utilisateur.nom != "Administrateur") // Si l'utilisateur n'est pas un administrateur
+            switch(nom) {
+                case "supervisor_list": return false;   // Empêche la connexion à la page à la page de la liste des responsables
+                case "supervisor_form": return false;   // Empêche la connexion à la page à la page de la fiche des responsables
+                case "add_supervisor":  return false;   // Empêche la connexion à la page à la page du formulaire d'ajout d'un responsable
+                case "course_list":     return false;   // Empêche la connexion à la page à la page de la liste des cours
+            }
+        else
+            return true;                                // Autorise le passage
+
+    return false;                                       // Refuse le passage
 }
 
-function hasPermissionsNeeded(to) {
-  if (to.name === "login") {
-    return true;
-  }
-
-  let type;
-  if  (sessionStorage.getItem("authentication") !== null) {
-    type = JSON.parse(sessionStorage.getItem("authentication")).user.type_utilisateur.nom;
-  } else {
-    return false;
-  }
-
-  switch(to.name) {
-    case "csv-import":
-      return true;
-    case "student_list":
-    case "student_form":
-      switch(type) {
-        case "Administrateur":
-          return false;
-        case "Responsable":
-          return true;
-        case "Dev":
-          return true;
-      }
-    case "supervisor_list":
-    case "supervisor_form":
-    case "supervisor_email":
-    case "add_supervisor":
-    case "course_list":
-      switch(type) {
-        case "Administrateur":
-          return true;
-        case "Responsable":
-          return false;
-        case "Dev":
-          return true;
-      }
-  }
-}
-
+// Avant chaque changement de route.
 router.beforeEach((to, from, next) => {
-  if (to.name == "recover" || to.name == "password_modif")
-    next();
-  else if (!isAuthenticated() && to.name !== "login")
-    next({ name: "login" });
-  else {
-    if (!hasPermissionsNeeded(to)) {
-      next(false);
-    } else {
-    next();
+    if (to.name == "recover" || to.name == "password_modif")                    // Si la route fait référence à une route pour modifier le mot de passe
+        next();                                                                 // Autorise le passage et envoie vers la page visée
+
+    else if (!sessionStorage.getItem("authentication") && to.name !== "login")  // Si l'utilisateur n'est pas connecté et que la page visée n'est pas la page de connexion
+        next({ name: "login" });                                                // Redirige l'utilisateur vers la page de connexion
+
+    else {
+
+        if (!hasPermissionsNeeded(to.name))                                     // Si l'utilisateur n'a pas les permission de se rendre à la page visée
+            next(false);                                                        // Refuse le passage et redirige vers la page précédente
+
+        else
+            next();                                                             // Autorise le passage et envoie vers la page visée
     }
-  }
 });
 
-export default router;
+export default router;  // Utilise le routeur comme routeur par défaut

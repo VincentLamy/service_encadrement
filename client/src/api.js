@@ -159,16 +159,6 @@ export default class API {
     }
   }
 
-  // Update supervisor email
-  static async updateSupervisorEmailAddress(id, email) {
-    try {
-      const res = await axios.patch(`${url}/supervisor_email/${id}`, {courriel: email}, config());
-      return res.data;
-    } catch (err) {
-      return err;
-    }
-  }
-
   // Update course name
   static async changeCourseName(course) {
     try {
