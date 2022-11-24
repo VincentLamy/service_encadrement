@@ -15,36 +15,6 @@ function config() {
 }
 
 export default class API {
-  // To insert a rapport d'encadrement
-  static async addRapportEncadrement(rapportEncadrement) {
-    try {
-      const res = await axios.post(`${url}/rapportEncadrement`, rapportEncadrement, config());
-      return res.data;
-    } catch (err) {
-      return err;
-    }
-  }
-
-  // To insert a sondage mathematiques
-  static async addSondageMathematiques(sondageMathematiques) {
-    try {
-      const res = await axios.post(`${url}/sondageMathematiques`, sondageMathematiques, config());
-      return res.data;
-    } catch (err) {
-      return err;
-    }
-  }
-
-  // To insert a étudiants internationaux list
-  static async addEtudiantsInternationaux(etudiantsInternationaux) {
-    try {
-      const res = await axios.post(`${url}/etudiantsInternationaux`, etudiantsInternationaux, config());
-      return res.data;
-    } catch (err) {
-      return err;
-    }
-  }
-
   // To insert a single rapport d'encadrement
   static async addOneRapportEncadrement(rapportEncadrement) {
     try {
@@ -69,6 +39,16 @@ export default class API {
   static async addOneEtudiantsInternationaux(etudiantsInternationaux) {
     try {
       const res = await axios.post(`${url}/oneEtudiantsInternationaux`, etudiantsInternationaux, config());
+      return res.data;
+    } catch (err) {
+      return err;
+    }
+  }
+
+  // To check if students need to be removed or not
+  static async removeInactiveStudents() {
+    try {
+      const res = await axios.delete(`${url}/removeInactiveStudents`, config());
       return res.data;
     } catch (err) {
       return err;

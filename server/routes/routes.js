@@ -39,6 +39,7 @@ router.get("/getRemarkCodes", verifyToken, RemarkCode.getRemarkCode);
 
 // Reports
 router.post("/oneRapportEncadrement", verifyToken, Importation.addOneRapportEncadrement);
+router.delete("/removeInactiveStudents", verifyToken, Importation.removeInactiveStudents);
 
 // Math form
 router.post("/oneSondageMathematiques", verifyToken, Importation.addOneSondageMathematiques);

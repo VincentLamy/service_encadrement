@@ -91,6 +91,8 @@ module.exports = class Importation {
                     session_actuelle: Number(file_line['Session du programme d\'études']),
                     code_programme: programme.code,
                     a_surveiller: false,
+                    etat: true,
+                    date_dernier_telechargement: new Date(),
                 },
                 create: {
                     no_etudiant: Number(file_line['Numéro de dossier']),
@@ -100,6 +102,8 @@ module.exports = class Importation {
                     session_actuelle: Number(file_line['Session du programme d\'études']),
                     code_programme: programme.code,
                     a_surveiller: false,
+                    etat: true,
+                    date_dernier_telechargement: new Date(),
                 },
             });
   
@@ -438,7 +442,7 @@ module.exports = class Importation {
         }
       };
       
-      static async addOneEtudiantsInternationaux(req, res) {
+    static async addOneEtudiantsInternationaux(req, res) {
         try {
             if (jwtVerification(req.token) === false) {
                 res.status(403).json();
@@ -501,7 +505,55 @@ module.exports = class Importation {
         } catch (err) {
             res.status(400).json({ ok: "false", message: 'Un problème est survenu lors de l\'importation de la liste d\'étudiants internationaux' });
         }
-      };
+    };
+
+    static async removeInactiveStudents(req, res) {
+        try {
+            let ONE_HOUR_BEFORE = new Date();
+            ONE_HOUR_BEFORE.setHours(ONE_HOUR_BEFORE.getHours() - 1);
+
+            let FIVE_YEARS_BEFORE = new Date();
+            FIVE_YEARS_BEFORE.setFullYear(FIVE_YEARS_BEFORE.getFullYear() - 5);
+
+            // Get all students
+            const etudiants = await prisma.etudiant.findMany({
+                select: {
+                    no_etudiant: true,
+                    date_dernier_telechargement: true,
+                    etat: true,
+                },
+            });
+
+            etudiants.forEach(async (etudiant, index) => {
+                // Make inactive students who weren't added to the last Rapport d'encadrement
+                if (etudiant.date_dernier_telechargement.getTime() < ONE_HOUR_BEFORE) {
+                    console.log("ONE HOUR: " + etudiant.no_etudiant);
+                    await prisma.etudiant.update({
+                        where: {
+                            no_etudiant: etudiant.no_etudiant,
+                        },
+                        data: {
+                            etat: false,
+                        },
+                    });
+                }
+
+                // Deletes students who were inactive for more than five years
+                if (etudiant.date_dernier_telechargement.getTime() < FIVE_YEARS_BEFORE) {
+                    console.log("FIVE YEARS: " + etudiant.no_etudiant);
+                    await prisma.etudiant.delete({
+                        where: {
+                            no_etudiant: etudiant.no_etudiant,
+                        },
+                    });
+                }
+            });
+
+            res.status(201).json({ message: 'La vérification des étudiants a bien été effectuée' });
+        } catch (err) {
+            res.status(400).json({ message: 'La vérification des étudiants a rencontrée un problème' });
+        }
+    };
   };
 
 // function to convert excel date to normal js date  

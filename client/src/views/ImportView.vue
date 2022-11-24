@@ -184,6 +184,9 @@ export default {
                 }
                 i++;
               } while (i < XL_row_object.length && ok === true);
+
+              // Check if students need to be removed
+              const statusResponse = await API.removeInactiveStudents();
             }
             // Sondage mathématiques
             else if (button_id === "sondage_mathematiques") {
