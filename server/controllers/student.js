@@ -29,6 +29,9 @@ module.exports = class Student {
           },
           a_surveiller: true,
         },
+        where: {
+          etat: true,
+        },
       });
 
       for (let index = 0; index < students.length; index++) {
@@ -154,6 +157,7 @@ module.exports = class Student {
           no_etudiant: {
             lt: Number(no_etudiant),
           },
+          etat: true,
         },
         include: {
           TA_EtudiantGroupe: {
@@ -221,6 +225,9 @@ module.exports = class Student {
               },
             },
           },
+          where: {
+            etat: true,
+          }
         });
       }
       res.status(200).json(prev);
@@ -244,6 +251,7 @@ module.exports = class Student {
           no_etudiant: {
             gt: Number(no_etudiant),
           },
+          etat: true,
         },
         include: {
           TA_EtudiantGroupe: {
@@ -311,6 +319,9 @@ module.exports = class Student {
               },
             },
           },
+          where: {
+            etat: true,
+          }
         });
       }
       res.status(200).json(next);

@@ -509,6 +509,11 @@ module.exports = class Importation {
 
     static async removeInactiveStudents(req, res) {
         try {
+            if (jwtVerification(req.token) === false) {
+                res.status(403).json();
+                return;
+            }
+
             let ONE_HOUR_BEFORE = new Date();
             ONE_HOUR_BEFORE.setHours(ONE_HOUR_BEFORE.getHours() - 1);
 
@@ -524,10 +529,10 @@ module.exports = class Importation {
                 },
             });
 
-            etudiants.forEach(async (etudiant, index) => {
+            // Loop over every students
+            etudiants.forEach(async (etudiant) => {
                 // Make inactive students who weren't added to the last Rapport d'encadrement
                 if (etudiant.date_dernier_telechargement.getTime() < ONE_HOUR_BEFORE) {
-                    console.log("ONE HOUR: " + etudiant.no_etudiant);
                     await prisma.etudiant.update({
                         where: {
                             no_etudiant: etudiant.no_etudiant,
@@ -536,16 +541,15 @@ module.exports = class Importation {
                             etat: false,
                         },
                     });
-                }
 
-                // Deletes students who were inactive for more than five years
-                if (etudiant.date_dernier_telechargement.getTime() < FIVE_YEARS_BEFORE) {
-                    console.log("FIVE YEARS: " + etudiant.no_etudiant);
-                    await prisma.etudiant.delete({
-                        where: {
-                            no_etudiant: etudiant.no_etudiant,
-                        },
-                    });
+                    // Deletes students who were inactive for more than five years
+                    if (etudiant.date_dernier_telechargement.getTime() < FIVE_YEARS_BEFORE) {
+                        await prisma.etudiant.delete({
+                            where: {
+                                no_etudiant: etudiant.no_etudiant,
+                            },
+                        });
+                    }
                 }
             });
 
