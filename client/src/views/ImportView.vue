@@ -7,6 +7,7 @@
       :type="alertType"
       text
       dark
+      dismissible
       v-if="alert"
     >
       {{ alertContent }}
