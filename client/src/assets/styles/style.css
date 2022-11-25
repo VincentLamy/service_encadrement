@@ -35,3 +35,9 @@
             1px                         /* Largeur */
             solid rgba(0,0,0,0.12);   /* Couleur */           
     }
+
+    .v-select__selection,
+    .v-select__selection--comma,
+    .v-select.v-text-field input {
+        color: black !important;
+    }

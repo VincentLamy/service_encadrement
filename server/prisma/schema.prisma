@@ -58,6 +58,7 @@ model Utilisateur {
   id_type_utilisateur Int
   courriel            String          @db.VarChar(255)
   mdp                 String          @db.VarChar(255)
+  sessions            String          @default("") @db.VarChar(25)
   date_activation     DateTime
   date_desactivation  DateTime
   actif               Boolean
