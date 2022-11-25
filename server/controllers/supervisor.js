@@ -153,13 +153,11 @@ module.exports = class Supervisor {
   }
 
   static async updateSupervisorFormInfo(req, res) {
-   // try {
+    try {
       if (jwtVerification(req.token) === false) {
         res.status(403).json();
         return;
       }
-
-      console.log(req.body.sessions);
 
       const id = req.params.id;
       const actif = req.body.actif === "true" ? 1 : 0;
@@ -189,9 +187,9 @@ module.exports = class Supervisor {
       res
         .status(200)
         .json({ message: "Le superviseur a été modifié avec succès" });
-   // } catch (error) {
-   //   res.status(404).json({ message: error.message });
-  //  }
+    } catch (error) {
+      res.status(404).json({ message: error.message });
+    }
   }
 
   static async getAllSupervisor(req, res) {
