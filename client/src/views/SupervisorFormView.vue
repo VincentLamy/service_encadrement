@@ -144,7 +144,10 @@
             </v-switch>
 
             <!-- Update -->
-            <v-btn type="submit" color="primary">Mettre à jour</v-btn>
+            <div>
+              <v-btn @click="makeAdmin" class="me-4">Léguer les droits administratifs</v-btn>
+              <v-btn type="submit" color="primary">Mettre à jour</v-btn>
+            </div>
           </v-card-actions>
         </v-card-text>
       </v-card>
@@ -343,6 +346,18 @@ export default {
       this.sessions_selected.sort((x, y) => {
         return x - y;
       });
+    },
+    async makeAdmin() {
+      const curr_user_id = JSON.parse(sessionStorage.getItem("authentication")).user.employe.no_employe;
+      const selected_user_id = this.supervisor.id;
+
+      // Switch administrative rights
+      await API.makeSupervisorAdmin(curr_user_id, selected_user_id);
+
+      // Logout
+      this.$router.push("/");
+      sessionStorage.clear();
+      sessionStorage.setItem("logout_reason", "admin_switch");
     },
   },
   async created() {
