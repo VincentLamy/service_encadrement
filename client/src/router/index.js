@@ -64,16 +64,18 @@ function hasPermissionsNeeded(nom) {
         return true;                                    // Autorise le passage
 
     if (sessionStorage.getItem("authentication"))       // Si l'utilisateur est connecté
-        if (JSON.parse(sessionStorage.getItem("authentication")).user.type_utilisateur.nom != "Administrateur") // Si l'utilisateur n'est pas un administrateur
+        if (JSON.parse(sessionStorage.getItem("authentication")).user.type_utilisateur.nom != "Administrateur") { // Si l'utilisateur n'est pas un administrateur
             switch(nom) {
                 case "supervisor_list": return false;   // Empêche la connexion à la page à la page de la liste des responsables
                 case "supervisor_form": return false;   // Empêche la connexion à la page à la page de la fiche des responsables
                 case "add_supervisor":  return false;   // Empêche la connexion à la page à la page du formulaire d'ajout d'un responsable
                 case "course_list":     return false;   // Empêche la connexion à la page à la page de la liste des cours
+                default:                return true;    // Si aucun de ces noms, retourne autorise le passage
             }
-        else
+        }
+        else {
             return true;                                // Autorise le passage
-
+        }                           
     return false;                                       // Refuse le passage
 }
 

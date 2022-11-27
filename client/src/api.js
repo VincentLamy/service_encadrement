@@ -57,8 +57,22 @@ export default class API {
 
   // Gets all students
   static async getAllStudent() {
-    const res = await axios.get(`${url}/student_list`, config());
-    return res.data;
+    try {
+      const res = await axios.get(`${url}/student_list`, config());
+      return res.data;
+    } catch (err) {
+      return err;
+    }
+  }
+
+  // Gets all students
+  static async getStudentsBySession(session) {
+    try {
+      const res = await axios.get(`${url}/students_by_session/${session}`, config());
+      return res.data;
+    } catch (err) {
+      return err;
+    }
   }
 
   // Gets student form info by ID
@@ -189,11 +203,31 @@ export default class API {
     }
   }
 
+  // Gets previous supervisor by numero etudiant and session
+  static async getPreviousStudentBySessions(numero_etudiant, data) {
+    try {
+      const res = await axios.post(`${url}/previous_student_form_by_sessions/${numero_etudiant}`, data, config());
+      return res.data;
+    } catch (err) {
+      return err;
+    }
+  }
+
 
   // Gets next supervisor by numero etudiant
   static async getNextStudent(numero_etudiant) {
     try {
       const res = await axios.get(`${url}/next_student_form/${numero_etudiant}`, config());
+      return res.data;
+    } catch (err) {
+      return err;
+    }
+  }
+
+  // Gets next supervisor by numero etudiant and session
+  static async getNextStudentBySessions(numero_etudiant, data) {
+    try {
+      const res = await axios.post(`${url}/next_student_form_by_sessions/${numero_etudiant}`, data, config());
       return res.data;
     } catch (err) {
       return err;

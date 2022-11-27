@@ -425,8 +425,15 @@ export default {
       // Get previous student info
       this.loading = true;
 
-      const previousStudent = await API.getPreviousStudent(
-        this.student.no_etudiant
+      const formData = new FormData();
+      formData.append(
+        "sessions",
+        JSON.parse(sessionStorage.getItem("authentication")).user.sessions
+      );
+
+      const previousStudent = await API.getPreviousStudentBySessions(
+        this.student.no_etudiant,
+        formData
       );
 
       if (this.student.no_etudiant === previousStudent[0].no_etudiant) {
@@ -445,7 +452,16 @@ export default {
       // Get next student info
       this.loading = true;
 
-      const nextStudent = await API.getNextStudent(this.student.no_etudiant);
+      const formData = new FormData();
+      formData.append(
+        "sessions",
+        JSON.parse(sessionStorage.getItem("authentication")).user.sessions
+      );
+
+      const nextStudent = await API.getNextStudentBySessions(
+        this.student.no_etudiant,
+        formData
+      );
 
       if (this.student.no_etudiant === nextStudent[0].no_etudiant) {
         this.loading = false;

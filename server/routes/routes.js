@@ -13,9 +13,12 @@ let upload = multer().single();
 
 // Students
 router.get("/student_list", verifyToken, Student.getAllStudent);
+router.get("/students_by_session/:session", verifyToken, Student.getStudentsBySession);
 router.get("/student_form/:no_etudiant", verifyToken, Student.getStudentFormInfo);
 router.get("/previous_student_form/:no_etudiant", verifyToken, Student.getPreviousStudent);
+router.post("/previous_student_form_by_sessions/:no_etudiant", upload, verifyToken, Student.getPreviousStudentBySessions);
 router.get("/next_student_form/:no_etudiant", verifyToken, Student.getNextStudent);
+router.post("/next_student_form_by_sessions/:no_etudiant", upload, verifyToken, Student.getNextStudentBySessions);
 router.patch("/flagStudent/:no_etudiant", verifyToken, Student.flagStudent);
 
 // Supervisor
@@ -23,8 +26,8 @@ router.get("/supervisor_list", verifyToken, Supervisor.getAllSupervisor);
 router.get("/supervisor_form/:id", verifyToken, Supervisor.getSupervisorFormInfo);
 router.patch("/supervisor_form/:id", upload, verifyToken, Supervisor.updateSupervisorFormInfo);
 router.post("/add_supervisor", upload, verifyToken, Supervisor.addSupervisor);
-router.get("/previous_supervisor_form/:id", upload, verifyToken, Supervisor.getPreviousSupervisor);
-router.get("/next_supervisor_form/:id", upload, verifyToken, Supervisor.getNextSupervisor);
+router.get("/previous_supervisor_form/:id", verifyToken, Supervisor.getPreviousSupervisor);
+router.get("/next_supervisor_form/:id", verifyToken, Supervisor.getNextSupervisor);
 
 // Courses
 router.get("/course_list", verifyToken, Course.getAllCourse);

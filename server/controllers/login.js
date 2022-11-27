@@ -21,6 +21,7 @@ module.exports = class Responsable {
         },
         select: {
           id: true,
+          sessions: true,
           employe: {
             select: {
               no_employe: true,
