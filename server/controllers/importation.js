@@ -514,8 +514,8 @@ module.exports = class Importation {
                 return;
             }
 
-            let ONE_HOUR_BEFORE = new Date();
-            ONE_HOUR_BEFORE.setHours(ONE_HOUR_BEFORE.getHours() - 1);
+            let SIX_MONTHS_BEFORE = new Date();
+            SIX_MONTHS_BEFORE.setHours(SIX_MONTHS_BEFORE.getMonth() - 6);
 
             let FIVE_YEARS_BEFORE = new Date();
             FIVE_YEARS_BEFORE.setFullYear(FIVE_YEARS_BEFORE.getFullYear() - 5);
@@ -529,10 +529,10 @@ module.exports = class Importation {
                 },
             });
 
-            // Loop over every students
+            // Loops over every students
             etudiants.forEach(async (etudiant) => {
-                // Make inactive students who weren't added to the last Rapport d'encadrement
-                if (etudiant.date_dernier_telechargement.getTime() < ONE_HOUR_BEFORE) {
+                // Makes inactive students who weren't added to the last Rapport d'encadrement
+                if (etudiant.date_dernier_telechargement.getTime() < SIX_MONTHS_BEFORE) {
                     await prisma.etudiant.update({
                         where: {
                             no_etudiant: etudiant.no_etudiant,
@@ -541,15 +541,15 @@ module.exports = class Importation {
                             etat: false,
                         },
                     });
+                }
 
-                    // Deletes students who were inactive for more than five years
-                    if (etudiant.date_dernier_telechargement.getTime() < FIVE_YEARS_BEFORE) {
-                        await prisma.etudiant.delete({
-                            where: {
-                                no_etudiant: etudiant.no_etudiant,
-                            },
-                        });
-                    }
+                // Deletes students who were inactive for more than five years
+                if (etudiant.date_dernier_telechargement.getTime() < FIVE_YEARS_BEFORE) {
+                    await prisma.etudiant.delete({
+                        where: {
+                            no_etudiant: etudiant.no_etudiant,
+                        },
+                    });
                 }
             });
 
