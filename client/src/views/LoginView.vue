@@ -10,8 +10,17 @@
     >
     </v-alert>
 
+    
     <v-card id="loginForm" class="px-4">
       <v-card-text>
+        <!-- Alert if admin is logged out after giving admin rights to a supervisor -->
+        <v-alert
+          v-model="admin_switch" 
+          type="success"
+          dismissible
+        >
+          Les droits d'administrateur ont été légués au responsable sélectionné avec succès!
+        </v-alert>
         <v-form ref="loginForm" v-model="valid" lazy-validation>
           <v-row>
             <v-col cols="12">
@@ -80,6 +89,8 @@ export default {
         (v && v.length >= 8) ||
         "Le mot de passe doit contenir au moins 8 caractères dont 1 majuscule, 1 minuscule, un nombre et un caractère spécial.",
     },
+
+    admin_switch: false,
   }),
   beforeCreate() {
     if (sessionStorage.getItem("authentication")) {
@@ -87,6 +98,10 @@ export default {
       sessionStorage.clear();
       this.name = "";
     }
+  },
+  created() {    
+    this.admin_switch = sessionStorage.getItem("logout_reason") == "admin_switch";
+    if (sessionStorage.getItem("logout_reason")) sessionStorage.clear();
   },
   methods: {
     async validate() {

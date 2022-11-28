@@ -153,6 +153,17 @@ export default class API {
     }
   }
 
+  // Give administrative rights to admin
+  static async makeSupervisorAdmin(curr_admin_id, supervisor_id) {
+    try {
+      const res = await axios.patch(`${url}/make_supervisor_admin/${supervisor_id}`, {curr_admin_id: curr_admin_id}, config());
+      return res.data;
+    }
+    catch (err) {
+      return err;
+    }
+  }
+
   // Update course name
   static async changeCourseName(course) {
     try {
