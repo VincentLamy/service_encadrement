@@ -133,7 +133,9 @@ export default {
     what_page(page) {
       switch (page) {
         case "login":
+          return false;
         case "recover":
+          return false;
         case "password_modif":
           return false;
         default:
@@ -163,7 +165,7 @@ export default {
             "/student_list"     : true,
             "/supervisor_list"  : false,
             "/course_list"      : false,
-            "/import"           : true,
+            "/import"           : false,
           };
           return accessRights[link];
         default:

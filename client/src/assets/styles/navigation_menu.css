@@ -10,4 +10,4 @@
     { right: 5px;}                          /* Force la position à droite. */
 
     .v-toolbar__title                       /* Titre du menu : "Service d'encadrement" */
-    { padding: 0px; }                       /* Marge interne */
+    { padding: 0 !important; }              /* Marge interne */
