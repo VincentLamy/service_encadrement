@@ -13,7 +13,7 @@
 
         <h2 style="color: #fc8d33" class="mb-5">Importation des données</h2>
     
-        <v-card>
+        <v-card id="import_card">
             <v-col class="text-center">
                 <p 
                     style="color: black" 
@@ -46,7 +46,7 @@
                         >Importer Sondage mathématiques</v-btn>
                     </v-row>
 
-                    <v-row class="text-center" style="padding-bottom: 5%">
+                    <v-row class="text-center">
                         <!-- Button for Etudiants Internationaux -->
                         <v-btn
                             color="primary"
@@ -113,6 +113,8 @@
         async created() {
             const response = await API.getAllSessions();
             let session_actuelle = this.getSessionActuelle();
+
+            this.session_choisie = session_actuelle;
 
             if (!response) {
                 this.sessions.push(session_actuelle);                
