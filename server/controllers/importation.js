@@ -8,7 +8,7 @@ const jwtVerification = require('../modules/jwt_verification');
 
 module.exports = class Importation {
     static async getAllSessions(req, res) {
-        // try {
+        try {
             const sessions = await prisma.session.findMany({
                 orderBy: { 
                     id: 'desc'
@@ -20,9 +20,9 @@ module.exports = class Importation {
             });
 
             res.status(200).json(sessions);
-        // } catch (error) {
-        //     res.status(400).json({ message: error.message });
-        // }
+        } catch (error) {
+            res.status(400).json({ message: error.message });
+        }
         
     }
 
