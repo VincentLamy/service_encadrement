@@ -13,6 +13,7 @@ module.exports = class Importation {
                 orderBy: { 
                     id: 'desc'
                 },
+                take: 5,
                 select: {
                     code: true,
                 }
