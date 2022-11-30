@@ -23,6 +23,7 @@ import CourseListView             from "../views/CourseListView";               
 import SupervisorListView         from "../views/SupervisorListView";               // Liste des responsables
 import SupervisorFormView         from "../views/SupervisorFormView";               // Fiche des responsables
 import SupervisorAddView          from "../views/SupervisorAddView";                // Formulaire d'ajout d'un responsable
+import ChangeAdmin                from "../views/ChangeAdminView";                  // Changer le responsable avec les droits admin
 
 
 
@@ -44,6 +45,7 @@ const routes = [
     { path: "/course_list",                 name: "course_list",        component: CourseListView,            },    // Liste des cours
     { path: "/recover_password",            name: "recover",            component: RecoverPasswordAccessView  },    // Demande pour réinitialiser son mot de passe
     { path: "/password_modif/:type/:token", name: "password_modif",     component: ResetPasswordView          },    // Réinitialisation du mot de passe
+    { path: "/admin_modif/:token",          name: "admin_modif",        component: ChangeAdmin                },    // Changer l'utilisateur avec le rôle d'admin
 ];
 
 // Création d'un routeur
@@ -81,7 +83,7 @@ function hasPermissionsNeeded(nom) {
 
 // Avant chaque changement de route.
 router.beforeEach((to, from, next) => {
-    if (to.name == "recover" || to.name == "password_modif")                    // Si la route fait référence à une route pour modifier le mot de passe
+    if (to.name == "recover" || to.name == "password_modif" || to.name == "admin_modif") // Si la route fait référence à une route pour modifier le mot de passe
         next();                                                                 // Autorise le passage et envoie vers la page visée
 
     else if (!sessionStorage.getItem("authentication") && to.name !== "login")  // Si l'utilisateur n'est pas connecté et que la page visée n'est pas la page de connexion

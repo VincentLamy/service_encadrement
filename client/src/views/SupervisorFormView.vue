@@ -44,6 +44,12 @@
       @submit.prevent="updateForm"
       enctype="multipart/form-data"
     >
+      <!-- Email sent to supervisor for admin change -->
+      <v-alert v-model="admin_switch_request" dense text type="success" dismissible>
+        Un courriel a été envoyé au superviseur. Lorsque le superviseur aurait cliqué le lien de
+        confirmation qui lui a été envoyé, les droits d'administration seront définitivement légués.
+      </v-alert>
+
       <!-- Alert on modification -->
       <v-alert v-model="success" dense text type="success" dismissible>
         Le superviseur a été mis à jour avec succès!
@@ -145,7 +151,7 @@
 
             <!-- Update -->
             <div>
-              <v-btn @click="makeAdmin" class="me-4">Léguer les droits administratifs</v-btn>
+              <v-btn @click="makeAdminRequest" class="me-4">Léguer les droits administratifs</v-btn>
               <v-btn type="submit" color="primary">Mettre à jour</v-btn>
             </div>
           </v-card-actions>
@@ -178,6 +184,7 @@ export default {
       activation_switch: true,
       success: false,
       loading: false,
+      admin_switch_request: false,
       sessions: [1, 2, 3, 4, 5, 6],
       sessions_selected: null,
     };
@@ -347,17 +354,9 @@ export default {
         return x - y;
       });
     },
-    async makeAdmin() {
-      const curr_user_id = JSON.parse(sessionStorage.getItem("authentication")).user.employe.no_employe;
-      const selected_user_id = this.supervisor.id;
-
-      // Switch administrative rights
-      await API.sendEmailNewAdmin(curr_user_id, selected_user_id);
-
-      // Logout
-      this.$router.push("/");
-      sessionStorage.clear();
-      sessionStorage.setItem("logout_reason", "admin_switch");
+    async makeAdminRequest() {
+      await API.requestAdminChange(this.supervisor.id);
+      this.admin_switch_request = true;
     },
   },
   async created() {
