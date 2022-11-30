@@ -52,6 +52,57 @@ module.exports = class Student {
     }
   }
 
+  static async getStudentsBySession(req, res) {
+    try {
+      if (jwtVerification(req.token) === false) {
+        res.status(403).json();
+        return;
+      }
+
+      const session = req.params.session;
+
+      const students = await prisma.Etudiant.findMany({
+        select: {
+          no_etudiant: true,
+          prenom: true,
+          nom: true,
+          TA_EtuStatut: {
+            select: {
+              statut_etudiant: true,
+            },
+          },
+          TA_EtudiantGroupe: {
+            select: {
+              note_ponderee: true,
+              pourcentage_note_cumulee: true,
+            },
+          },
+          a_surveiller: true,
+        },
+        where: {
+          etat: true,
+          session_actuelle: Number(session),
+        },
+      });
+
+      for (let index = 0; index < students.length; index++) {
+        const commentaire = await prisma.commentaire.findMany({
+          select: {
+            id: true,
+          },
+          where: {
+            no_etudiant: students[index].no_etudiant,
+          },
+        });
+
+        students[index].commentary_quantity = commentaire.length;
+      }
+      res.status(200).json(students);
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  }
+
   static async getStudentFormInfo(req, res) {
     try {
       if (jwtVerification(req.token) === false) {
@@ -236,6 +287,112 @@ module.exports = class Student {
     }
   }
 
+  static async getPreviousStudentBySessions(req, res) {
+    try {
+      if (jwtVerification(req.token) === false) {
+        res.status(403).json();
+        return;
+      }
+
+      const no_etudiant = req.params.no_etudiant;
+      let sessions = req.body.sessions;
+  
+      sessions = sessions.split(",").map(Number);
+
+      let findManyOrCondition = [];
+
+      for (let i = 0; i < sessions.length; i++) {
+        findManyOrCondition.push({ 
+          session_actuelle: sessions[i], 
+        });
+      }
+
+      let prev = await prisma.Etudiant.findMany({
+        take: 1,
+        where: {
+          OR: findManyOrCondition,
+          no_etudiant: {
+            lt: Number(no_etudiant),
+          },
+          etat: true,
+        },
+        include: {
+          TA_EtudiantGroupe: {
+            include: {
+              groupe: {
+                include: {
+                  cours: {
+                    include: {
+                      campus: true,
+                    },
+                  },
+                  session: true,
+                  Commentaire: {
+                    where: {
+                      no_etudiant: Number(no_etudiant),
+                    },
+                    orderBy: {
+                      date_creation: "desc",
+                    },
+                    include: {
+                      employe: true,
+                      code_remarque: true,
+                    },
+                  },
+                },
+              },
+              code_remarque_note_finale: true,
+            },
+          },
+        },
+        orderBy: {
+          no_etudiant: "desc",
+        },
+      });
+
+      if (prev === undefined || prev.length == 0) {
+        prev = await prisma.Etudiant.findMany({
+          take: -1,
+          include: {
+            TA_EtudiantGroupe: {
+              include: {
+                groupe: {
+                  include: {
+                    cours: {
+                      include: {
+                        campus: true,
+                      },
+                    },
+                    session: true,
+                    Commentaire: {
+                      where: {
+                        no_etudiant: Number(no_etudiant),
+                      },
+                      orderBy: {
+                        date_creation: "desc",
+                      },
+                      include: {
+                        employe: true,
+                        code_remarque: true,
+                      },
+                    },
+                  },
+                },
+                code_remarque_note_finale: true,
+              },
+            },
+          },
+          where: {
+            etat: true,
+          }
+        });
+      }
+      res.status(200).json(prev);
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  }
+
   static async getNextStudent(req, res) {
     try {
       if (jwtVerification(req.token) === false) {
@@ -248,6 +405,112 @@ module.exports = class Student {
       let next = await prisma.Etudiant.findMany({
         take: 1,
         where: {
+          no_etudiant: {
+            gt: Number(no_etudiant),
+          },
+          etat: true,
+        },
+        include: {
+          TA_EtudiantGroupe: {
+            include: {
+              groupe: {
+                include: {
+                  cours: {
+                    include: {
+                      campus: true,
+                    },
+                  },
+                  session: true,
+                  Commentaire: {
+                    where: {
+                      no_etudiant: Number(no_etudiant),
+                    },
+                    orderBy: {
+                      date_creation: "desc",
+                    },
+                    include: {
+                      employe: true,
+                      code_remarque: true,
+                    },
+                  },
+                },
+              },
+              code_remarque_note_finale: true,
+            },
+          },
+        },
+        orderBy: {
+          no_etudiant: "asc",
+        },
+      });
+
+      if (next === undefined || next.length == 0) {
+        next = await prisma.Etudiant.findMany({
+          take: 1,
+          include: {
+            TA_EtudiantGroupe: {
+              include: {
+                groupe: {
+                  include: {
+                    cours: {
+                      include: {
+                        campus: true,
+                      },
+                    },
+                    session: true,
+                    Commentaire: {
+                      where: {
+                        no_etudiant: Number(no_etudiant),
+                      },
+                      orderBy: {
+                        date_creation: "desc",
+                      },
+                      include: {
+                        employe: true,
+                        code_remarque: true,
+                      },
+                    },
+                  },
+                },
+                code_remarque_note_finale: true,
+              },
+            },
+          },
+          where: {
+            etat: true,
+          }
+        });
+      }
+      res.status(200).json(next);
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  }
+
+  static async getNextStudentBySessions(req, res) {
+    try {
+      if (jwtVerification(req.token) === false) {
+        res.status(403).json();
+        return;
+      }
+
+      const no_etudiant = req.params.no_etudiant;
+      let sessions = req.body.sessions;
+  
+      sessions = sessions.split(",").map(Number);
+
+      let findManyOrCondition = [];
+
+      for (let i = 0; i < sessions.length; i++) {
+        findManyOrCondition.push({ 
+          session_actuelle: sessions[i], 
+        });
+      }
+
+      let next = await prisma.Etudiant.findMany({
+        take: 1,
+        where: {
+          OR: findManyOrCondition,
           no_etudiant: {
             gt: Number(no_etudiant),
           },

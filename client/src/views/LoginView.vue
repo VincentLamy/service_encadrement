@@ -42,19 +42,23 @@
                 hint="Le mot de passe doit contenir au moins 8 caractères dont 1 majuscule, 1 minuscule, un nombre et un caractère spécial."
                 counter
                 @click:append="show1 = !show1"
+                @keyup.enter="validate"
               ></v-text-field>
             </v-col>
             <v-col class="d-flex justify-center">
               <v-btn
-              x-large
-              block
-              :disabled="!valid"
-              color="success"
-              @click="validate"
-              >Login</v-btn>
+                x-large
+                block
+                :disabled="!valid"
+                color="success"
+                @click="validate"
+                >Login</v-btn
+              >
             </v-col>
           </v-row>
-          <v-btn @click="password_forgot" plain class="pa-0 mt-2">Mot de passe oublié</v-btn>
+          <v-btn @click="password_forgot" plain class="pa-0 mt-2"
+            >Mot de passe oublié</v-btn
+          >
         </v-form>
       </v-card-text>
     </v-card>
@@ -72,12 +76,18 @@ export default {
 
     loginEmail: "",
     loginPassword: "",
-    
+
     show1: false,
     rules: {
-      required: (v) => !!v                  || "Champ obligatoire.",
-      email:    (v) => /.+@.+\..+/.test(v)  || "L'adresse courriel doit être valide.",
-      password: (v) => /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(v) || (v && v.length >= 8) || "Le mot de passe doit contenir au moins 8 caractères dont 1 majuscule, 1 minuscule, un nombre et un caractère spécial.",
+      required: (v) => !!v || "Champ obligatoire.",
+      email: (v) =>
+        /.+@.+\..+/.test(v) || "L'adresse courriel doit être valide.",
+      password: (v) =>
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
+          v
+        ) ||
+        (v && v.length >= 8) ||
+        "Le mot de passe doit contenir au moins 8 caractères dont 1 majuscule, 1 minuscule, un nombre et un caractère spécial.",
     },
 
     admin_switch: false,
@@ -133,10 +143,11 @@ export default {
       }
 
       if (sessionStorage.getItem("authentication")) {
-        let type = JSON.parse(sessionStorage.getItem("authentication")).user.type_utilisateur.nom;
-      
-        if      (type == "Administrateur")  this.$router.push("/student_list");
-        else if (type == "Responsable")     this.$router.push("/student_list");
+        let type = JSON.parse(sessionStorage.getItem("authentication")).user
+          .type_utilisateur.nom;
+
+        if (type == "Administrateur") this.$router.push("/student_list");
+        else if (type == "Responsable") this.$router.push("/student_list");
       }
     },
     reset() {
@@ -146,8 +157,8 @@ export default {
       this.$refs.form.resetValidation();
     },
     password_forgot() {
-      this.$router.push('/recover_password');
-    }
+      this.$router.push("/recover_password");
+    },
   },
 };
 </script>

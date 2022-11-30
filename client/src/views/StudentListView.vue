@@ -102,11 +102,21 @@ export default {
       hasComments: "",
       hasToBeChecked: false,
       nbClassesInDifficulty: 0,
+      sessions: null,
     };
   },
   async created() {
-    const response = await API.getAllStudent();
-    this.students = response;
+    this.sessions = JSON.parse(sessionStorage.getItem("authentication"))
+      .user.sessions.split(",")
+      .map(Number);
+
+    if (!this.sessions) return;
+
+    for (let i = 0; i < this.sessions.length; i++) {
+      this.students.push(await API.getStudentsBySession(this.sessions[i]));
+    }
+
+    this.students = this.students.flat();
 
     for (let index = 0; index < this.students.length; index++) {
       this.students[index].nom =
