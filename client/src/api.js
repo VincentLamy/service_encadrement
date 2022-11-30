@@ -16,9 +16,9 @@ function config() {
 
 export default class API {
   // To insert a single rapport d'encadrement
-  static async addOneRapportEncadrement(rapportEncadrement) {
+  static async addOneRapportEncadrement(rapportEncadrement, session_choisie) {
     try {
-      const res = await axios.post(`${url}/oneRapportEncadrement`, rapportEncadrement, config());
+      const res = await axios.post(`${url}/oneRapportEncadrement`, {rapportEncadrement, session_choisie}, config());
       return res.data;
     } catch (err) {
       return err;
@@ -26,7 +26,7 @@ export default class API {
   }
 
   // To insert a single sondage mathematiques
-  static async addOneSondageMathematiques(sondageMathematiques) {
+  static async addOneSondageMathematiques(sondageMathematiques, session_choisie) {
     try {
       const res = await axios.post(`${url}/oneSondageMathematiques`, sondageMathematiques, config());
       return res.data;
@@ -36,7 +36,7 @@ export default class API {
   }
 
   // To insert a single étudiants internationaux list
-  static async addOneEtudiantsInternationaux(etudiantsInternationaux) {
+  static async addOneEtudiantsInternationaux(etudiantsInternationaux, session_choisie) {
     try {
       const res = await axios.post(`${url}/oneEtudiantsInternationaux`, etudiantsInternationaux, config());
       return res.data;
@@ -49,6 +49,16 @@ export default class API {
   static async removeInactiveStudents() {
     try {
       const res = await axios.delete(`${url}/removeInactiveStudents`, config());
+      return res.data;
+    } catch (err) {
+      return err;
+    }
+   }
+
+  // Importe toute les sessions
+  static async getAllSessions() {
+    try {
+      const res = await axios.get(`${url}/sessions`, config());
       return res.data;
     } catch (err) {
       return err;
@@ -153,7 +163,12 @@ export default class API {
     }
   }
 
+<<<<<<< HEAD
   static async requestAdminChange(supervisor_id) {
+=======
+  // Give administrative rights to admin
+  static async sendEmailNewAdmin(curr_admin_id, supervisor_id) {
+>>>>>>> 8cac9e663dc144788f1efc56109cb700fc425f04
     try {
       const res = await axios.get(`${url}/request_admin_change/${supervisor_id}`, config());
       return res.data;

@@ -58,9 +58,8 @@ module.exports = class Responsable {
       // On va chercher le numéro de l'employé dans la BD pour voir s'il existe.
       const user = await prisma.utilisateur.findFirst({
           where: {
-              // courriel: "admin@admin.com"
               courriel: req.body.email,
-              // token: req.body.token
+              token: req.body.token
           },
           select: {
               employe: {

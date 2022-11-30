@@ -23,6 +23,7 @@
     @import './student_list.css';       /* Styles pour la liste étudiante */
     @import './navigation_menu.css';    /* Styles pour le menu de navigation */
     @import './login.css';              /* Styles pour le login, la réinitialisation du mot de passe */
+    @import './importation.css';        /* Styles pour l'importation */
 
 
 
@@ -38,6 +39,5 @@
 
     .v-select__selection,
     .v-select__selection--comma,
-    .v-select.v-text-field input {
-        color: black !important;
-    }
+    .v-select.v-text-field input 
+    { color: black !important; }    /* Couleur */

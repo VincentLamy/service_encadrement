@@ -6,9 +6,9 @@
     <v-container v-if="filter">
       <v-row no-gutters>
         <v-col>
-          <v-checkbox v-model="hasToBeChecked" label="À recontrer">
+          <v-checkbox v-model="hasToBeChecked" label="À rencontrer">
           </v-checkbox>
-          <v-checkbox v-model="hasStudentCode" label="A un statut etudiant">
+          <v-checkbox v-model="hasStudentCode" label="A un statut étudiant">
           </v-checkbox>
         </v-col>
 
@@ -63,11 +63,9 @@ export default {
             return true;
           },
         },
-        { text: "Numéro étudiant", value: "no_etudiant" },
-        { text: "Nom complet", value: "nom" },
-        {
-          text: "Statut étudiant",
-          value: "TA_EtuStatut.statut_etudiant",
+        { text: "Numéro étudiant",    value: "no_etudiant" },
+        { text: "Nom complet",        value: "nom" },
+        { text: "Statut étudiant",    value: "TA_EtuStatut.statut_etudiant",
           filter: (value) => {
             if (this.hasStudentCode) {
               if (!value) return false;

@@ -7,6 +7,24 @@ const prisma = new PrismaClient();
 const jwtVerification = require('../modules/jwt_verification');
 
 module.exports = class Importation {
+    static async getAllSessions(req, res) {
+        // try {
+            const sessions = await prisma.session.findMany({
+                orderBy: { 
+                    id: 'desc'
+                },
+                select: {
+                    code: true,
+                }
+            });
+
+            res.status(200).json(sessions);
+        // } catch (error) {
+        //     res.status(400).json({ message: error.message });
+        // }
+        
+    }
+
     static async addOneRapportEncadrement(req, res) {
         try {
             if (jwtVerification(req.token) === false) {
@@ -14,7 +32,7 @@ module.exports = class Importation {
                 return;
             }
 
-            const file_line = req.body;
+            const file_line = req.body['rapportEncadrement'];
 
             // Verifications
             if (
@@ -33,36 +51,12 @@ module.exports = class Importation {
                 return;
             }
 
-            // Traitement session
-            let codeSession = "";
-
-            const today = new Date();
-
-            const yy = today.getFullYear().toString().substring(2);
-            const mm = today.getMonth() + 1;
-            const dd = today.getDate();
-
-            // AUT
-            if ((mm == 8 && dd >= 1 || mm > 8) && (mm == 12 && dd <= 31 || mm < 12)) {
-                codeSession = "AUT" + yy;
-            }
-
-            // HIV
-            if ((mm == 1 && dd >= 1 || mm > 1) && (mm == 5 && dd <= 19 || mm < 5)) {
-                codeSession = "HIV" + yy;
-            }
-
-            // ETE
-            if ((mm == 5 && dd >= 20 || mm > 5) && (mm == 7 && dd <= 31 || mm < 7)) {
-                codeSession = "ETE" + yy;
-            }
-
             //Insert Session
             const session = await prisma.session.upsert({
-                where: { code: codeSession || '' },
+                where: { code: req.body['session_choisie'] || '' },
                 update: {},
                 create: {
-                    code: codeSession,
+                    code: req.body['session_choisie'],
                 },
             });
 
@@ -161,17 +155,17 @@ module.exports = class Importation {
             // Insert Groupe
             const groupe = await prisma.groupe.upsert({
                 where: {
-                    no_groupe_code_cours_code_session: {
+                    no_groupe_code_cours_id_session: {
                         no_groupe: Number(file_line['Numéro du groupe']) || 0,
                         code_cours: cours.code,
-                        code_session: session.code || 0,
+                        id_session: session.id || 0,
                     }
                 },
                 update: {},
                 create: {
                     no_groupe: Number(file_line['Numéro du groupe']),
                     code_cours: cours.code,
-                    code_session: session.code,
+                    id_session: session.id,
                     no_employe: employe.no_employe,
                 },
             });
@@ -514,8 +508,8 @@ module.exports = class Importation {
                 return;
             }
 
-            let ONE_HOUR_BEFORE = new Date();
-            ONE_HOUR_BEFORE.setHours(ONE_HOUR_BEFORE.getHours() - 1);
+            let SIX_MONTHS_BEFORE = new Date();
+            SIX_MONTHS_BEFORE.setHours(SIX_MONTHS_BEFORE.getMonth() - 6);
 
             let FIVE_YEARS_BEFORE = new Date();
             FIVE_YEARS_BEFORE.setFullYear(FIVE_YEARS_BEFORE.getFullYear() - 5);
@@ -529,10 +523,10 @@ module.exports = class Importation {
                 },
             });
 
-            // Loop over every students
+            // Loops over every students
             etudiants.forEach(async (etudiant) => {
-                // Make inactive students who weren't added to the last Rapport d'encadrement
-                if (etudiant.date_dernier_telechargement.getTime() < ONE_HOUR_BEFORE) {
+                // Makes inactive students who weren't added to the last Rapport d'encadrement
+                if (etudiant.date_dernier_telechargement.getTime() < SIX_MONTHS_BEFORE) {
                     await prisma.etudiant.update({
                         where: {
                             no_etudiant: etudiant.no_etudiant,
@@ -541,15 +535,15 @@ module.exports = class Importation {
                             etat: false,
                         },
                     });
+                }
 
-                    // Deletes students who were inactive for more than five years
-                    if (etudiant.date_dernier_telechargement.getTime() < FIVE_YEARS_BEFORE) {
-                        await prisma.etudiant.delete({
-                            where: {
-                                no_etudiant: etudiant.no_etudiant,
-                            },
-                        });
-                    }
+                // Deletes students who were inactive for more than five years
+                if (etudiant.date_dernier_telechargement.getTime() < FIVE_YEARS_BEFORE) {
+                    await prisma.etudiant.delete({
+                        where: {
+                            no_etudiant: etudiant.no_etudiant,
+                        },
+                    });
                 }
             });
 

@@ -332,6 +332,7 @@ module.exports = class Supervisor {
     }
   }
 
+<<<<<<< HEAD
   static async requestAdminChange(req, res) {    
     try {
       const supervisor_id = req.params.id;
@@ -437,9 +438,54 @@ module.exports = class Supervisor {
             gte: new Date() // Token end date hasn't been reached
           }
         },
-        data:  { id_type_utilisateur: 1, }, // Administrator user type id
+        data:  { 
+          id_type_utilisateur: 1, // Administrator user type id
+          sessions: "1,2,3,4,5,6",
+        },
       });
 
+=======
+  static async sendEmailNewAdmin(req, res) {
+    try {
+      // Création du token.
+      const token = crypto.lib.WordArray.random(64).toString();
+     
+      // Définit la date d'expiration du token
+      let date_expiration = new Date();
+      date_expiration.setDate(date_expiration.getDate() + 1);
+
+
+      const new_admin_id = req.params.id,
+          { curr_admin_id } = req.body;
+
+      // Give admin rights to selected supervisor
+      const new_admin = await prisma.utilisateur.update({
+        where: { id: Number(new_admin_id), },
+        data:  { 
+          id_type_utilisateur: 1, // Administrator user type id
+          sessions: "1,2,3,4,5,6"
+        }, 
+      });
+
+      if (user) {
+        // Ajoute le token et la date d'expiration dans la table.
+        await prisma.utilisateur.update({
+          where: {
+            no_employe: user.employe.no_employe
+          },
+          data: {
+            token: token,
+            token_end_date: date_expiration,
+          }
+        })
+      }
+      // Remove admin rights from current administrator
+      await prisma.utilisateur.update({
+        where: { id: Number(curr_admin_id), },
+        data: { id_type_utilisateur: 2 }, // Supervisor user type id
+      });
+      
+>>>>>>> 8cac9e663dc144788f1efc56109cb700fc425f04
       // Send email to notify new administrator
       const transporter = nodemailer.createTransport({
         host: 'smtp.office365.com',
@@ -462,8 +508,13 @@ module.exports = class Supervisor {
       // Création du courriel
       const mailOptions = {
         from: process.env.EMAIL_ID,    
+<<<<<<< HEAD
         to: old_admin.courriel,
         subject: 'Léguer les droits d\'administrateur - Demande acceptée',
+=======
+        to: new_admin.courriel,
+        subject: 'Modification des permissions de votre compte',
+>>>>>>> 8cac9e663dc144788f1efc56109cb700fc425f04
         text: text
       };
   

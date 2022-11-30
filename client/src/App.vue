@@ -73,23 +73,11 @@ export default {
   data: () => ({
     drawer: null,
 
-    items: [
-      {
-        title: "Liste des étudiants",
-        icon: "mdi-account-multiple",
-        link: "/student_list",
-      },
-      {
-        title: "Liste des responsables",
-        icon: "mdi-account-multiple",
-        link: "/supervisor_list",
-      },
-      { title: "Liste des cours", icon: "mdi-school", link: "/course_list" },
-      {
-        title: "Importer un fichier CSV",
-        icon: "mdi-attachment",
-        link: "/import",
-      },
+    items: [ 
+      { title: "Liste des étudiants",     icon: "mdi-account-multiple", link: "/student_list",    },
+      { title: "Liste des responsables",  icon: "mdi-account-multiple", link: "/supervisor_list", },
+      { title: "Liste des cours",         icon: "mdi-school",           link: "/course_list"      },
+      { title: "Importer un fichier CSV", icon: "mdi-attachment",       link: "/import",          },
     ],
 
     name: "",
@@ -160,7 +148,7 @@ export default {
      */
     canAccess(link) {
       let user, // Données sur l'utilisateur.
-        type; // Type d'utilisateur
+          type; // Type d'utilisateur
 
       if (sessionStorage.getItem("authentication")) {
         user = JSON.parse(sessionStorage.getItem("authentication")).user;
@@ -172,11 +160,10 @@ export default {
           return true;
         case "Responsable":
           const accessRights = {
-            "/student_list": true,
-            "/supervisor_list": false,
-            "/course_list": false,
-            "/import": true,
-            "/supervisor_email": false,
+            "/student_list"     : true,
+            "/supervisor_list"  : false,
+            "/course_list"      : false,
+            "/import"           : true,
           };
           return accessRights[link];
         default:
@@ -187,6 +174,4 @@ export default {
 };
 </script>
 
-<style>
-@import "./assets/styles/style.css";
-</style>
+<style>@import "./assets/styles/style.css";</style>

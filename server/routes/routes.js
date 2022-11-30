@@ -12,16 +12,17 @@ const multer = require('multer');
 let upload = multer().single();
 
 // Students
-router.get("/student_list", verifyToken, Student.getAllStudent);
-router.get("/students_by_session/:session", verifyToken, Student.getStudentsBySession);
-router.get("/student_form/:no_etudiant", verifyToken, Student.getStudentFormInfo);
-router.get("/previous_student_form/:no_etudiant", verifyToken, Student.getPreviousStudent);
-router.post("/previous_student_form_by_sessions/:no_etudiant", upload, verifyToken, Student.getPreviousStudentBySessions);
-router.get("/next_student_form/:no_etudiant", verifyToken, Student.getNextStudent);
-router.post("/next_student_form_by_sessions/:no_etudiant", upload, verifyToken, Student.getNextStudentBySessions);
-router.patch("/flagStudent/:no_etudiant", verifyToken, Student.flagStudent);
+router.get("/student_list",                                             verifyToken, Student.getAllStudent);
+router.get("/students_by_session/:session",                             verifyToken, Student.getStudentsBySession);
+router.get("/student_form/:no_etudiant",                                verifyToken, Student.getStudentFormInfo);
+router.get("/previous_student_form/:no_etudiant",                       verifyToken, Student.getPreviousStudent);
+router.post("/previous_student_form_by_sessions/:no_etudiant",  upload, verifyToken, Student.getPreviousStudentBySessions);
+router.get("/next_student_form/:no_etudiant",                           verifyToken, Student.getNextStudent);
+router.post("/next_student_form_by_sessions/:no_etudiant",      upload, verifyToken, Student.getNextStudentBySessions);
+router.patch("/flagStudent/:no_etudiant",                               verifyToken, Student.flagStudent);
 
 // Supervisor
+<<<<<<< HEAD
 router.get("/supervisor_list", verifyToken, Supervisor.getAllSupervisor);
 router.get("/supervisor_form/:id", verifyToken, Supervisor.getSupervisorFormInfo);
 router.patch("/supervisor_form/:id", upload, verifyToken, Supervisor.updateSupervisorFormInfo);
@@ -30,21 +31,31 @@ router.get("/previous_supervisor_form/:id", verifyToken, Supervisor.getPreviousS
 router.get("/next_supervisor_form/:id", verifyToken, Supervisor.getNextSupervisor);
 router.get("/request_admin_change/:id", upload, verifyToken, Supervisor.requestAdminChange);
 router.patch("/make_supervisor_admin/:token", upload, Supervisor.makeSupervisorAdmin);
+=======
+router.get("/supervisor_list",                      verifyToken, Supervisor.getAllSupervisor);
+router.get("/supervisor_form/:id",                  verifyToken, Supervisor.getSupervisorFormInfo);
+router.patch("/supervisor_form/:id",        upload, verifyToken, Supervisor.updateSupervisorFormInfo);
+router.post("/add_supervisor",              upload, verifyToken, Supervisor.addSupervisor);
+router.get("/previous_supervisor_form/:id", upload, verifyToken, Supervisor.getPreviousSupervisor);
+router.get("/next_supervisor_form/:id",     upload, verifyToken, Supervisor.getNextSupervisor);
+router.patch("/make_supervisor_admin/:id",  upload, verifyToken, Supervisor.sendEmailNewAdmin);
+>>>>>>> 8cac9e663dc144788f1efc56109cb700fc425f04
 
 // Courses
-router.get("/course_list", verifyToken, Course.getAllCourse);
+router.get("/course_list",        verifyToken, Course.getAllCourse);
 router.patch("/changeCourseName", verifyToken, Course.changeCourseName);
 
 // Comments
-router.post("/addComment", verifyToken, Comment.addComment);
-router.patch("/editComment", verifyToken, Comment.editComment);
+router.post("/addComment",    verifyToken, Comment.addComment);
+router.patch("/editComment",  verifyToken, Comment.editComment);
 
 // Remark codes
 router.get("/getRemarkCodes", verifyToken, RemarkCode.getRemarkCode);
 
-// Reports
-router.post("/oneRapportEncadrement", verifyToken, Importation.addOneRapportEncadrement);
-router.delete("/removeInactiveStudents", verifyToken, Importation.removeInactiveStudents);
+// Rapports
+router.post("/oneRapportEncadrement",     verifyToken, Importation.addOneRapportEncadrement);
+router.delete("/removeInactiveStudents",  verifyToken, Importation.removeInactiveStudents);
+router.get("/sessions",                   verifyToken, Importation.getAllSessions);
 
 // Math form
 router.post("/oneSondageMathematiques", verifyToken, Importation.addOneSondageMathematiques);
@@ -53,9 +64,9 @@ router.post("/oneSondageMathematiques", verifyToken, Importation.addOneSondageMa
 router.post("/oneEtudiantsInternationaux", verifyToken, Importation.addOneEtudiantsInternationaux);
 
 // Login
-router.post("/login", Login.login);
-router.post("/recover_password", Login.recover_password);
-router.patch("/password/:type/:token", Login.password_modif);
+router.post("/login",                   Login.login);
+router.post("/recover_password",        Login.recover_password);
+router.patch("/password/:type/:token",  Login.password_modif);
 
 
 // FORMAT OF TOKEN
