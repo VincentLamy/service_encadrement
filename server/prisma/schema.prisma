@@ -11,7 +11,8 @@ datasource db {
 }
 
 model Session {
-  code   String   @id @db.VarChar(5)
+  id     Int      @id @default(autoincrement())
+  code   String   @unique @db.VarChar(5)
   Groupe Groupe[]
 }
 
@@ -42,12 +43,12 @@ model Groupe {
   no_employe        Int?
   cours             Cours?              @relation(fields: [code_cours], references: [code])
   code_cours        String?             @db.VarChar(18)
-  session           Session             @relation(fields: [code_session], references: [code])
-  code_session      String              @db.VarChar(5)
+  session           Session             @relation(fields: [id_session], references: [id])
+  id_session        Int               
   Commentaire       Commentaire[]
   TA_EtudiantGroupe TA_EtudiantGroupe[]
 
-  @@unique([no_groupe, code_cours, code_session])
+  @@unique([no_groupe, code_cours, id_session])
 }
 
 model Utilisateur {

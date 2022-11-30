@@ -332,17 +332,40 @@ module.exports = class Supervisor {
     }
   }
 
-  static async makeSupervisorAdmin(req, res) {
+  static async sendEmailNewAdmin(req, res) {
     try {
+      // Création du token.
+      const token = crypto.lib.WordArray.random(64).toString();
+     
+      // Définit la date d'expiration du token
+      let date_expiration = new Date();
+      date_expiration.setDate(date_expiration.getDate() + 1);
+
+
       const new_admin_id = req.params.id,
           { curr_admin_id } = req.body;
 
       // Give admin rights to selected supervisor
       const new_admin = await prisma.utilisateur.update({
         where: { id: Number(new_admin_id), },
-        data:  { id_type_utilisateur: 1, }, // Administrator user type id
+        data:  { 
+          id_type_utilisateur: 1,              // Administrator user type id
+          
+        }, 
       });
 
+      if (user) {
+        // Ajoute le token et la date d'expiration dans la table.
+        await prisma.utilisateur.update({
+          where: {
+            no_employe: user.employe.no_employe
+          },
+          data: {
+            token: token,
+            token_end_date: date_expiration,
+          }
+        })
+      }
       // Remove admin rights from current administrator
       await prisma.utilisateur.update({
         where: { id: Number(curr_admin_id), },
@@ -372,7 +395,7 @@ module.exports = class Supervisor {
       const mailOptions = {
         from: process.env.EMAIL_ID,    
         to: new_admin.courriel,
-        subject: 'Activation de votre compte',
+        subject: 'Modification des permissions de votre compte',
         text: text
       };
   

@@ -352,7 +352,7 @@ export default {
       const selected_user_id = this.supervisor.id;
 
       // Switch administrative rights
-      await API.makeSupervisorAdmin(curr_user_id, selected_user_id);
+      await API.sendEmailNewAdmin(curr_user_id, selected_user_id);
 
       // Logout
       this.$router.push("/");

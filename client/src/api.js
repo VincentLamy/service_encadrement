@@ -16,9 +16,9 @@ function config() {
 
 export default class API {
   // To insert a single rapport d'encadrement
-  static async addOneRapportEncadrement(rapportEncadrement) {
+  static async addOneRapportEncadrement(rapportEncadrement, session_choisie) {
     try {
-      const res = await axios.post(`${url}/oneRapportEncadrement`, rapportEncadrement, config());
+      const res = await axios.post(`${url}/oneRapportEncadrement`, {rapportEncadrement, session_choisie}, config());
       return res.data;
     } catch (err) {
       return err;
@@ -26,7 +26,7 @@ export default class API {
   }
 
   // To insert a single sondage mathematiques
-  static async addOneSondageMathematiques(sondageMathematiques) {
+  static async addOneSondageMathematiques(sondageMathematiques, session_choisie) {
     try {
       const res = await axios.post(`${url}/oneSondageMathematiques`, sondageMathematiques, config());
       return res.data;
@@ -36,7 +36,7 @@ export default class API {
   }
 
   // To insert a single étudiants internationaux list
-  static async addOneEtudiantsInternationaux(etudiantsInternationaux) {
+  static async addOneEtudiantsInternationaux(etudiantsInternationaux, session_choisie) {
     try {
       const res = await axios.post(`${url}/oneEtudiantsInternationaux`, etudiantsInternationaux, config());
       return res.data;
@@ -49,6 +49,16 @@ export default class API {
   static async removeInactiveStudents() {
     try {
       const res = await axios.delete(`${url}/removeInactiveStudents`, config());
+      return res.data;
+    } catch (err) {
+      return err;
+    }
+   }
+
+  // Importe toute les sessions
+  static async getAllSessions() {
+    try {
+      const res = await axios.get(`${url}/sessions`, config());
       return res.data;
     } catch (err) {
       return err;
@@ -140,7 +150,7 @@ export default class API {
   }
 
   // Give administrative rights to admin
-  static async makeSupervisorAdmin(curr_admin_id, supervisor_id) {
+  static async sendEmailNewAdmin(curr_admin_id, supervisor_id) {
     try {
       const res = await axios.patch(`${url}/make_supervisor_admin/${supervisor_id}`, {curr_admin_id: curr_admin_id}, config());
       return res.data;
