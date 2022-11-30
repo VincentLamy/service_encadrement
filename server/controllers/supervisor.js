@@ -340,7 +340,10 @@ module.exports = class Supervisor {
       // Give admin rights to selected supervisor
       const new_admin = await prisma.utilisateur.update({
         where: { id: Number(new_admin_id), },
-        data:  { id_type_utilisateur: 1, }, // Administrator user type id
+        data:  { 
+          id_type_utilisateur: 1, // Administrator user type id
+          sessions: "1,2,3,4,5,6"
+        }, 
       });
 
       // Remove admin rights from current administrator
