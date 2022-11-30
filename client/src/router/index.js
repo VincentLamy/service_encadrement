@@ -83,7 +83,7 @@ function hasPermissionsNeeded(nom) {
 
 // Avant chaque changement de route.
 router.beforeEach((to, from, next) => {
-    if (to.name == "recover" || to.name == "password_modif")                    // Si la route fait référence à une route pour modifier le mot de passe
+    if (to.name == "recover" || to.name == "password_modif" || to.name == "admin_modif") // Si la route fait référence à une route pour modifier le mot de passe
         next();                                                                 // Autorise le passage et envoie vers la page visée
 
     else if (!sessionStorage.getItem("authentication") && to.name !== "login")  // Si l'utilisateur n'est pas connecté et que la page visée n'est pas la page de connexion

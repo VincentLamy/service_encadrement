@@ -354,23 +354,9 @@ export default {
         return x - y;
       });
     },
-<<<<<<< HEAD
     async makeAdminRequest() {
       await API.requestAdminChange(this.supervisor.id);
       this.admin_switch_request = true;
-=======
-    async makeAdmin() {
-      const curr_user_id = JSON.parse(sessionStorage.getItem("authentication")).user.employe.no_employe;
-      const selected_user_id = this.supervisor.id;
-
-      // Switch administrative rights
-      await API.sendEmailNewAdmin(curr_user_id, selected_user_id);
-
-      // Logout
-      this.$router.push("/");
-      sessionStorage.clear();
-      sessionStorage.setItem("logout_reason", "admin_switch");
->>>>>>> 8cac9e663dc144788f1efc56109cb700fc425f04
     },
   },
   async created() {

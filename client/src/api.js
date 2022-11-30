@@ -163,12 +163,7 @@ export default class API {
     }
   }
 
-<<<<<<< HEAD
   static async requestAdminChange(supervisor_id) {
-=======
-  // Give administrative rights to admin
-  static async sendEmailNewAdmin(curr_admin_id, supervisor_id) {
->>>>>>> 8cac9e663dc144788f1efc56109cb700fc425f04
     try {
       const res = await axios.get(`${url}/request_admin_change/${supervisor_id}`, config());
       return res.data;

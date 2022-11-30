@@ -124,7 +124,7 @@ module.exports = class Supervisor {
         }
     });
 
-    let link = "http://" + process.env.URL + ":" + process.env.PORT + "/password_modif/activate/" + token;
+    let link = process.env.URL + ":" + process.env.PORT + "/password_modif/activate/" + token;
     let text = "Bienvenu(e) dans l\'équipe du Service d'encadrement. Votre compte a récemment été créé. Pour accéder aux services, veuillez activez votre compte en cliquant sur le lien suivant.\n\nLien : " + link;
   
     // Création du courriel
@@ -332,14 +332,14 @@ module.exports = class Supervisor {
     }
   }
 
-<<<<<<< HEAD
   static async requestAdminChange(req, res) {    
     try {
       const supervisor_id = req.params.id;
 
       const token = crypto.lib.WordArray.random(64).toString();
       // TODO - Changer le lien pour qqchose de valide plus tard (port)
-      const lien = "localhost:8080/admin_modif/" + token;
+      
+      const lien = "http://" + process.env.URL + "/admin_modif/" + token;
       const text = 
         "L'administrateur de l'application du Service d'encadrement vous lègue les droits d'administration de la plateforme! " +
         "En tant qu'administrateur, vous avez accès à la liste des responsables ainsi qu'à la liste des différents cours du programme." +
@@ -398,15 +398,6 @@ module.exports = class Supervisor {
     try {
       const new_admin_token = req.params.token;
 
-      console.log(await prisma.utilisateur.findMany({
-        where: {
-          token: new_admin_token,
-          token_end_date: {
-            gte: new Date(),
-          },
-        },
-      }));
-
       const count = await prisma.utilisateur.count({
         where: { 
           token: new_admin_token,
@@ -422,13 +413,17 @@ module.exports = class Supervisor {
         return;
       }
 
+      // Store old admin to send email later
+      const admins = await prisma.utilisateur.findMany({
+        where: { id_type_utilisateur: 1, },
+      });
+      const old_admin = admins[0];
+      
       // Remove admin rights from current administrator
-      const old_admin = await prisma.utilisateur.updateMany({
+      await prisma.utilisateur.updateMany({
         where: { id_type_utilisateur: 1, },
         data: { id_type_utilisateur: 2 }, // Supervisor user type id
       });
-
-      console.log(old_admin);
 
       // Give admin rights to selected supervisor
       await prisma.utilisateur.updateMany({
@@ -444,48 +439,6 @@ module.exports = class Supervisor {
         },
       });
 
-=======
-  static async sendEmailNewAdmin(req, res) {
-    try {
-      // Création du token.
-      const token = crypto.lib.WordArray.random(64).toString();
-     
-      // Définit la date d'expiration du token
-      let date_expiration = new Date();
-      date_expiration.setDate(date_expiration.getDate() + 1);
-
-
-      const new_admin_id = req.params.id,
-          { curr_admin_id } = req.body;
-
-      // Give admin rights to selected supervisor
-      const new_admin = await prisma.utilisateur.update({
-        where: { id: Number(new_admin_id), },
-        data:  { 
-          id_type_utilisateur: 1, // Administrator user type id
-          sessions: "1,2,3,4,5,6"
-        }, 
-      });
-
-      if (user) {
-        // Ajoute le token et la date d'expiration dans la table.
-        await prisma.utilisateur.update({
-          where: {
-            no_employe: user.employe.no_employe
-          },
-          data: {
-            token: token,
-            token_end_date: date_expiration,
-          }
-        })
-      }
-      // Remove admin rights from current administrator
-      await prisma.utilisateur.update({
-        where: { id: Number(curr_admin_id), },
-        data: { id_type_utilisateur: 2 }, // Supervisor user type id
-      });
-      
->>>>>>> 8cac9e663dc144788f1efc56109cb700fc425f04
       // Send email to notify new administrator
       const transporter = nodemailer.createTransport({
         host: 'smtp.office365.com',
@@ -508,13 +461,8 @@ module.exports = class Supervisor {
       // Création du courriel
       const mailOptions = {
         from: process.env.EMAIL_ID,    
-<<<<<<< HEAD
         to: old_admin.courriel,
         subject: 'Léguer les droits d\'administrateur - Demande acceptée',
-=======
-        to: new_admin.courriel,
-        subject: 'Modification des permissions de votre compte',
->>>>>>> 8cac9e663dc144788f1efc56109cb700fc425f04
         text: text
       };
   

@@ -22,7 +22,6 @@ router.post("/next_student_form_by_sessions/:no_etudiant",      upload, verifyTo
 router.patch("/flagStudent/:no_etudiant",                               verifyToken, Student.flagStudent);
 
 // Supervisor
-<<<<<<< HEAD
 router.get("/supervisor_list", verifyToken, Supervisor.getAllSupervisor);
 router.get("/supervisor_form/:id", verifyToken, Supervisor.getSupervisorFormInfo);
 router.patch("/supervisor_form/:id", upload, verifyToken, Supervisor.updateSupervisorFormInfo);
@@ -31,15 +30,6 @@ router.get("/previous_supervisor_form/:id", verifyToken, Supervisor.getPreviousS
 router.get("/next_supervisor_form/:id", verifyToken, Supervisor.getNextSupervisor);
 router.get("/request_admin_change/:id", upload, verifyToken, Supervisor.requestAdminChange);
 router.patch("/make_supervisor_admin/:token", upload, Supervisor.makeSupervisorAdmin);
-=======
-router.get("/supervisor_list",                      verifyToken, Supervisor.getAllSupervisor);
-router.get("/supervisor_form/:id",                  verifyToken, Supervisor.getSupervisorFormInfo);
-router.patch("/supervisor_form/:id",        upload, verifyToken, Supervisor.updateSupervisorFormInfo);
-router.post("/add_supervisor",              upload, verifyToken, Supervisor.addSupervisor);
-router.get("/previous_supervisor_form/:id", upload, verifyToken, Supervisor.getPreviousSupervisor);
-router.get("/next_supervisor_form/:id",     upload, verifyToken, Supervisor.getNextSupervisor);
-router.patch("/make_supervisor_admin/:id",  upload, verifyToken, Supervisor.sendEmailNewAdmin);
->>>>>>> 8cac9e663dc144788f1efc56109cb700fc425f04
 
 // Courses
 router.get("/course_list",        verifyToken, Course.getAllCourse);
