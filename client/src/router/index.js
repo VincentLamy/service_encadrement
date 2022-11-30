@@ -23,6 +23,7 @@ import CourseListView             from "../views/CourseListView";               
 import SupervisorListView         from "../views/SupervisorListView";               // Liste des responsables
 import SupervisorFormView         from "../views/SupervisorFormView";               // Fiche des responsables
 import SupervisorAddView          from "../views/SupervisorAddView";                // Formulaire d'ajout d'un responsable
+import ChangeAdmin                from "../views/ChangeAdminView";                  // Changer le responsable avec les droits admin
 
 
 
@@ -44,6 +45,7 @@ const routes = [
     { path: "/course_list",                 name: "course_list",        component: CourseListView,            },    // Liste des cours
     { path: "/recover_password",            name: "recover",            component: RecoverPasswordAccessView  },    // Demande pour réinitialiser son mot de passe
     { path: "/password_modif/:type/:token", name: "password_modif",     component: ResetPasswordView          },    // Réinitialisation du mot de passe
+    { path: "/admin_modif/:token",          name: "admin_modif",        component: ChangeAdmin                },    // Changer l'utilisateur avec le rôle d'admin
 ];
 
 // Création d'un routeur

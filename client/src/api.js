@@ -153,10 +153,20 @@ export default class API {
     }
   }
 
-  // Give administrative rights to admin
-  static async makeSupervisorAdmin(curr_admin_id, supervisor_id) {
+  static async requestAdminChange(supervisor_id) {
     try {
-      const res = await axios.patch(`${url}/make_supervisor_admin/${supervisor_id}`, {curr_admin_id: curr_admin_id}, config());
+      const res = await axios.get(`${url}/request_admin_change/${supervisor_id}`, config());
+      return res.data;
+    }
+    catch (err) {
+      return err;
+    }
+  }
+
+  // Give administrative rights to supervisor
+  static async makeSupervisorAdmin(supervisor_token) {
+    try {
+      const res = await axios.patch(`${url}/make_supervisor_admin/${supervisor_token}`, config());
       return res.data;
     }
     catch (err) {

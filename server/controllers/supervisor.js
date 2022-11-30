@@ -332,23 +332,114 @@ module.exports = class Supervisor {
     }
   }
 
+  static async requestAdminChange(req, res) {    
+    try {
+      const supervisor_id = req.params.id;
+
+      const token = crypto.lib.WordArray.random(64).toString();
+      // TODO - Changer le lien pour qqchose de valide plus tard (port)
+      const lien = "localhost:8080/admin_modif/" + token;
+      const text = 
+        "L'administrateur de l'application du Service d'encadrement vous lègue les droits d'administration de la plateforme! " +
+        "En tant qu'administrateur, vous avez accès à la liste des responsables ainsi qu'à la liste des différents cours du programme." +
+        "\n\nPour confirmer votre changement de rôle, veuillez cliquer sur le lien de confirmation suivant: " + lien;
+
+      // Select target supervisor and update token
+      const date_expiration = new Date();
+      date_expiration.setDate(date_expiration.getDate() + 1);
+
+      const supervisor = await prisma.utilisateur.update({
+        where: {
+          id: Number(supervisor_id),
+        },
+        data: {
+          token: token,
+          token_end_date: date_expiration
+        },
+      });
+
+      // Send email to notify supervisor of admin change
+      const transporter = nodemailer.createTransport({
+        host: 'smtp.office365.com',
+        port: 587,
+        secureConnection: false,
+        tls: { 
+          ciphers: 'SSLv3',
+          rejectUnauthorized: false
+        },
+        auth: {
+            user: process.env.EMAIL_ID,
+            pass: process.env.EMAIL_PASSWORD
+        }
+      });
+
+      // Création du courriel
+      const mailOptions = {
+        from: process.env.EMAIL_ID,    
+        to: supervisor.courriel,
+        subject: 'Léguer les droits d\'administrateur - Demande envoyée',
+        text: text
+      };
+  
+      // Envoie du courriel
+      transporter.sendMail(mailOptions, function(error, info){ //TODO vérifier si on doit enlever les console.log()
+        if (error) console.log(error); 
+        else console.log('Email sent: ' + info.response);
+      });
+
+      res.status(200).json("Requête de changement d'administrateur effectuée avec succès!");
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    } 
+  }
+
   static async makeSupervisorAdmin(req, res) {
     try {
-      const new_admin_id = req.params.id,
-          { curr_admin_id } = req.body;
+      const new_admin_token = req.params.token;
+
+      console.log(await prisma.utilisateur.findMany({
+        where: {
+          token: new_admin_token,
+          token_end_date: {
+            gte: new Date(),
+          },
+        },
+      }));
+
+      const count = await prisma.utilisateur.count({
+        where: { 
+          token: new_admin_token,
+          token_end_date: {
+            gte: new Date() // Token end date hasn't been reached
+          }
+        },
+      });
+
+      // Error if token invalid/expired
+      if (!count) {
+        res.status(500).json({ message: "Token invalide ou expiré" });
+        return;
+      }
+
+      // Remove admin rights from current administrator
+      const old_admin = await prisma.utilisateur.updateMany({
+        where: { id_type_utilisateur: 1, },
+        data: { id_type_utilisateur: 2 }, // Supervisor user type id
+      });
+
+      console.log(old_admin);
 
       // Give admin rights to selected supervisor
-      const new_admin = await prisma.utilisateur.update({
-        where: { id: Number(new_admin_id), },
+      await prisma.utilisateur.updateMany({
+        where: { 
+          token: new_admin_token,
+          token_end_date: {
+            gte: new Date() // Token end date hasn't been reached
+          }
+        },
         data:  { id_type_utilisateur: 1, }, // Administrator user type id
       });
 
-      // Remove admin rights from current administrator
-      await prisma.utilisateur.update({
-        where: { id: Number(curr_admin_id), },
-        data: { id_type_utilisateur: 2 }, // Supervisor user type id
-      });
-      
       // Send email to notify new administrator
       const transporter = nodemailer.createTransport({
         host: 'smtp.office365.com',
@@ -365,14 +456,14 @@ module.exports = class Supervisor {
       });
 
       const text = 
-        "L'administrateur de l'application du Service d'encadrement vous à légué les droits d'administration de la plateforme! " +
-        "Vous devriez maintenant avoir accès à la liste des responsables ainsi qu'à la liste des différents cours du programme.";
+        "Le superviseur auquel vous avez légué vos droits d'administrateur a accepté votre requête! Ce dernier aura mainenant tous " + 
+        "les droits d'administration de l'application web. Votre compte aura désormais seulement les droits de responsable.";
   
       // Création du courriel
       const mailOptions = {
         from: process.env.EMAIL_ID,    
-        to: new_admin.courriel,
-        subject: 'Activation de votre compte',
+        to: old_admin.courriel,
+        subject: 'Léguer les droits d\'administrateur - Demande acceptée',
         text: text
       };
   
