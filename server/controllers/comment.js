@@ -19,12 +19,21 @@ module.exports = class Comment {
         contenu,
       } = req.body;
 
+      const id_session = await prisma.session.findUnique({
+        where: {
+          code: code_session
+        },
+        select: {
+          id: true
+        }
+      })
+
       // Sélectionner le groupe représentant une session s'il existe, sinon le créer.
       const groupe =
         (await prisma.groupe.findFirst({
           where: {
             no_groupe: 0,
-            code_session: code_session,
+            id_session: id_session.id,
           },
         })) ||
         (await prisma.groupe.create({

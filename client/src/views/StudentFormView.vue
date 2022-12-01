@@ -407,20 +407,21 @@ export default {
         (x) => x.groupe.session
       );
 
-      this.semesters = Array.from(
-        new Set(duplicate_semesters.map((s) => s.code))
-      ).map((code) => {
-        return {
-          code: code,
-          student_groups: this.student.TA_EtudiantGroupe.filter(
-            (g) => g.groupe.session.code === code
-          ),
-          comments: this.student.semester_comments.filter(
-            (s) => s.groupe.code_session === code
-          ),
-        };
-      });
-    },
+    const unique_semesters = [];
+
+    for (let i = 0; i < duplicate_semesters.length; i++) {
+      if (!unique_semesters.find((semester) => duplicate_semesters[i].code === semester.code)) {
+        const new_semester = duplicate_semesters[i];
+        new_semester.student_groups = this.student.TA_EtudiantGroupe.filter((g) => g.groupe.id_session === duplicate_semesters[i].id);
+        new_semester.comments = this.student.semester_comments.filter((comment) => comment.groupe.id_session === duplicate_semesters[i].id);
+        unique_semesters.push(new_semester);
+      }
+    }
+
+    this.semesters = unique_semesters;
+
+    
+  },
     async gotoPreviousStudent() {
       // Get previous student info
       this.loading = true;
