@@ -1,40 +1,40 @@
 /* Fonctionne seulement quand la bd est vide
 que aucune importation de CSV à été effectuer */
 
-DELETE FROM `session`;
-DELETE FROM `campus`;
-DELETE FROM `utilisateur`;
-DELETE FROM `employe`;
-DELETE FROM `typeemploye`;
-DELETE FROM `typeutilisateur`;
-DELETE FROM `coderemarque`;
-DELETE FROM `cours`;
+DELETE FROM `Session`;
+DELETE FROM `Campus`;
+DELETE FROM `Utilisateur`;
+DELETE FROM `Employe`;
+DELETE FROM `TypeEmploye`;
+DELETE FROM `TypeUtilisateur`;
+DELETE FROM `CodeRemarque`;
+DELETE FROM `Cours`;
 
-INSERT INTO `session` (`code`) 
+INSERT INTO `Session` (`code`) 
 VALUES ('AUT21'),
 	   ('HIV22'),
        ('ETE22'),
 	   ('AUT22');
 
-INSERT INTO `campus`(`ville`)
+INSERT INTO `Campus`(`ville`)
 VALUES ('Sherbrooke');
 
-INSERT INTO `typeemploye`(`nom`, `description`)
+INSERT INTO `TypeEmploye`(`nom`, `description`)
 VALUES ('Enseignant','Ceci est un enseignant'),
 	   ("Responsable d'encadrement", "Ceci est un responsable d\'encadrement");
 	
-INSERT INTO `typeutilisateur`(`nom`, `description`)
+INSERT INTO `TypeUtilisateur`(`nom`, `description`)
 VALUES ('Administrateur', 'Ceci est un administrateur'),
 	   ('Responsable', 'Ceci est un responsable');
 	   
-INSERT INTO `employe`(`id_type_employe`, `prenom`, `nom`)
+INSERT INTO `Employe`(`id_type_employe`, `prenom`, `nom`)
 VALUES ((SELECT id FROM typeemploye WHERE nom = "Responsable d'encadrement"), 'Jocelyn', 'Lapalme');
 
 -- Changer le no-employe selon la bd
-INSERT INTO `utilisateur`(`no_employe`, `id_type_utilisateur`, `courriel`, `mdp`, `sessions`,`date_activation`, `date_desactivation`, `actif`, `token`, `token_end_date`)
+INSERT INTO `Utilisateur`(`no_employe`, `id_type_utilisateur`, `courriel`, `mdp`, `sessions`,`date_activation`, `date_desactivation`, `actif`, `token`, `token_end_date`)
 VALUES ((SELECT no_employe FROM employe WHERE nom = "admin"),(SELECT id FROM typeutilisateur WHERE nom = "Administrateur"), 'Jocelyn.Lapalme@cegepsherbrooke.qc.ca', '6239b479b97a15a5a494351afcc22b5b85627f37250649713c0d6f4d1d10100a','1,2,3,4,5,6', CURRENT_TIMESTAMP() , CURRENT_TIMESTAMP(),'1', 'b', CURRENT_TIMESTAMP());
 
-INSERT INTO `coderemarque`(`code`, `nom`)
+INSERT INTO `CodeRemarque`(`code`, `nom`)
 VALUES ("1", "Arrive souvent en retard"),
 	   ("2", "Dort en classe" ),
 	   ("3", "N\'a pas le matériel requis pour le cours ou le laboratoire"),
@@ -61,7 +61,7 @@ VALUES ("1", "Arrive souvent en retard"),
 
 SET @CampusID = (SELECT c.id FROM campus c WHERE c.ville = 'Sherbrooke'); 
 
-INSERT INTO `cours`(`code`, `nom`, `id_campus`, `duree`)
+INSERT INTO `Cours`(`code`, `nom`, `id_campus`, `duree`)
 VALUES ("365-HCY-SH","Initiation à la relation d'aide en informatique",@CampusID,null),
 	   ("420-103-SH","Exploitation des technologies collaboratives",@CampusID,null),
 	   ("420-123-SH","Création de pages Web",@CampusID,null),
