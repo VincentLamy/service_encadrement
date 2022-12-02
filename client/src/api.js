@@ -276,12 +276,12 @@ export default class API {
   }
 
   static async recover_password(email) {
-    // try {
+    try {
       const res = await axios.post(`${url}/recover_password`, { "courriel": email });  
       return res.data;
-    // } catch (err) {
-    //   return err;
-    // }
+    } catch (err) {
+      return err;
+    }
   }
 
   static async password_modif(type, token, password) {
