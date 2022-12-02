@@ -109,39 +109,21 @@ module.exports = class Supervisor {
         },
       });
 
-      // Création des options de connexion
-      var transporter = nodemailer.createTransport({
-        host: 'smtp.office365.com',
-        port: 587,
-        secureConnection: false,
-        tls: { 
-          ciphers: 'SSLv3',
-          rejectUnauthorized: false
-        },
-        auth: {
-            user: process.env.EMAIL_ID,
-            pass: process.env.EMAIL_PASSWORD
-        }
-    });
 
     let link = process.env.URL + "/password_modif/activate/" + token;
     let text = "Bienvenu(e) dans l\'équipe du Service d'encadrement. Votre compte a récemment été créé. Pour accéder aux services, veuillez activez votre compte en cliquant sur le lien suivant.\n\nLien : " + link;
   
     // Création du courriel
-    var mailOptions = {
-      from: process.env.EMAIL_ID,    
-      to: req.body.courriel,
-      subject: 'Activation de votre compte',
-      text: text
-    };
-  
-    // Envoie du courriel
-    transporter.sendMail(mailOptions, function(error, info){ //TODO vérifier si on doit enlever les console.log()
-      if (error) {
-          console.log(error);       
-      } else {
-          console.log('Email sent: ' + info.response);
-      }
+    const sendmail = require('sendmail')();
+
+    sendmail({
+        from: 'InfoEncadrement@cegepsherbrooke.qc.ca',
+        to: req.body.courriel,
+        subject: 'Activation de votre compte',
+        text: text,
+      }, function(err, reply) {
+        console.log(err && err.stack);
+        console.dir(reply);
     });
 
       res
@@ -337,7 +319,6 @@ module.exports = class Supervisor {
       const supervisor_id = req.params.id;
 
       const token = crypto.lib.WordArray.random(64).toString();
-      // TODO - Changer le lien pour qqchose de valide plus tard (port)
       
       const lien = process.env.URL + "/admin_modif/" + token;
       const text = 
@@ -358,35 +339,19 @@ module.exports = class Supervisor {
           token_end_date: date_expiration
         },
       });
-
-      // Send email to notify supervisor of admin change
-      const transporter = nodemailer.createTransport({
-        host: 'smtp.office365.com',
-        port: 587,
-        secureConnection: false,
-        tls: { 
-          ciphers: 'SSLv3',
-          rejectUnauthorized: false
-        },
-        auth: {
-            user: process.env.EMAIL_ID,
-            pass: process.env.EMAIL_PASSWORD
-        }
-      });
-
-      // Création du courriel
-      const mailOptions = {
-        from: process.env.EMAIL_ID,    
-        to: supervisor.courriel,
-        subject: 'Léguer les droits d\'administrateur - Demande envoyée',
-        text: text
-      };
   
       // Envoie du courriel
-      transporter.sendMail(mailOptions, function(error, info){ //TODO vérifier si on doit enlever les console.log()
-        if (error) console.log(error); 
-        else console.log('Email sent: ' + info.response);
-      });
+      const sendmail = require('sendmail')();
+
+        sendmail({
+            from: 'InfoEncadrement@cegepsherbrooke.qc.ca',
+            to: req.body.courriel,
+            subject: 'Léguer les droits d\'administrateur - Demande envoyée',
+            text: text,
+          }, function(err, reply) {
+            console.log(err && err.stack);
+            console.dir(reply);
+        });
 
       res.status(200).json("Requête de changement d'administrateur effectuée avec succès!");
     } catch (error) {
@@ -439,37 +404,21 @@ module.exports = class Supervisor {
         },
       });
 
-      // Send email to notify new administrator
-      const transporter = nodemailer.createTransport({
-        host: 'smtp.office365.com',
-        port: 587,
-        secureConnection: false,
-        tls: { 
-          ciphers: 'SSLv3',
-          rejectUnauthorized: false
-        },
-        auth: {
-            user: process.env.EMAIL_ID,
-            pass: process.env.EMAIL_PASSWORD
-        }
-      });
-
       const text = 
         "Le superviseur auquel vous avez légué vos droits d'administrateur a accepté votre requête! Ce dernier aura mainenant tous " + 
         "les droits d'administration de l'application web. Votre compte aura désormais seulement les droits de responsable.";
   
-      // Création du courriel
-      const mailOptions = {
-        from: process.env.EMAIL_ID,    
-        to: old_admin.courriel,
-        subject: 'Léguer les droits d\'administrateur - Demande acceptée',
-        text: text
-      };
-  
       // Envoie du courriel
-      transporter.sendMail(mailOptions, function(error, info){ //TODO vérifier si on doit enlever les console.log()
-        if (error) console.log(error); 
-        else console.log('Email sent: ' + info.response);
+      const sendmail = require('sendmail')();
+
+      sendmail({
+          from: 'InfoEncadrement@cegepsherbrooke.qc.ca',
+          to: req.body.courriel,
+          subject: 'Léguer les droits d\'administrateur - Demande acceptée',
+          text: text,
+        }, function(err, reply) {
+          console.log(err && err.stack);
+          console.dir(reply);
       });
 
       res.status(200).json("Droits administratifs légués avec succès!");

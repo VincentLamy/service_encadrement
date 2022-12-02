@@ -87,42 +87,21 @@ module.exports = class Responsable {
           }
         })
 
-        // Création des options de connexion
-        var transporter = nodemailer.createTransport({
-            host: 'smtp.office365.com',
-            port: 587,
-            secureConnection: false,
-            tls: { 
-              ciphers: 'SSLv3',
-              rejectUnauthorized: false
-            },
-            auth: {
-                user: process.env.EMAIL_ID,
-                pass: process.env.EMAIL_PASSWORD
-            }
-        });
-
         let recover_link = process.env.URL + "/password_modif/reset/" + token;
         let text = "Vous avez récemment fait une demande pour réinitialiser votre mot de passe. Si ce n'est pas vous, veuillez ignorer ce message ou contacter votre administrateur. Sinon, veuillez cliquer sur le lien suivant pour procéder à la réinitialisation de votre mot de passe.\n\nLien : " + recover_link;
 
-        // Création du courriel
-        var mailOptions = {
-            from: process.env.EMAIL_ID,    
+        // Envoie du courriel      
+        const sendmail = require('sendmail')();
+
+        sendmail({
+            from: 'InfoEncadrement@cegepsherbrooke.qc.ca',
             to: req.body.courriel,
             subject: 'Demande de réinitialisation de mot de passe',
-            text: text
-        };
-      
-          // Envoie du courriel
-
-
-          transporter.sendMail(mailOptions, function(error, info){
-              if (error) {
-                res.status(400).json({ message: "Erreur lors de l\'envoie du courriel" });   
-              } else {
-                res.status(200).json({ message: "Courriel envoyé" });
-              }
-          });
+            text: text,
+          }, function(err, reply) {
+            console.log(err && err.stack);
+            console.dir(reply);
+        });
       }
     }
     catch (error) {
