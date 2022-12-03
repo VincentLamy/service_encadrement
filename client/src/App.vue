@@ -77,7 +77,7 @@ export default {
       { title: "Liste des étudiants",     icon: "mdi-account-multiple", link: "/student_list",    },
       { title: "Liste des responsables",  icon: "mdi-account-multiple", link: "/supervisor_list", },
       { title: "Liste des cours",         icon: "mdi-school",           link: "/course_list"      },
-      { title: "Importer un fichier CSV", icon: "mdi-attachment",       link: "/import",          },
+      { title: "Importer un fichier",     icon: "mdi-attachment",       link: "/import",          },
     ],
 
     name: "",
