@@ -110,27 +110,28 @@ module.exports = class Supervisor {
       });
 
 
-    let link = process.env.URL + "/password_modif/activate/" + token;
-    let text = "Bienvenu(e) dans l\'équipe du Service d'encadrement. Votre compte a récemment été créé. Pour accéder aux services, veuillez activez votre compte en cliquant sur le lien suivant.\n\nLien : " + link;
-  
-    // Création du courriel
-    const sendmail = require('sendmail')();
+      let link = process.env.URL + "/password_modif/activate/" + token;
+      let text = "Bienvenu(e) dans l\'équipe du Service d'encadrement. Votre compte a récemment été créé. Pour accéder aux services, veuillez activez votre compte en cliquant sur le lien suivant.\n\nLien : " + link;
 
-    sendmail({
+      // Création du courriel
+      const sendmail = require('sendmail')();
+
+      sendmail({
         from: 'InfoEncadrement@cegepsherbrooke.qc.ca',
         to: req.body.courriel,
         subject: 'Activation de votre compte',
         text: text,
-      }, function(err, reply) {
+      }, function (err, reply) {
         console.log(err && err.stack);
         console.dir(reply);
-    });
+      });
 
       res
         .status(200)
         .json({ message: "Le responsable d'encadrement à été créer" });
     } catch (error) {
       res.status(404).json({ message: error.message });
+      console.log(error.message);
     }
   }
 
@@ -314,14 +315,14 @@ module.exports = class Supervisor {
     }
   }
 
-  static async requestAdminChange(req, res) {    
+  static async requestAdminChange(req, res) {
     try {
       const supervisor_id = req.params.id;
 
       const token = crypto.lib.WordArray.random(64).toString();
-      
+
       const lien = process.env.URL + "/admin_modif/" + token;
-      const text = 
+      const text =
         "L'administrateur de l'application du Service d'encadrement vous lègue les droits d'administration de la plateforme! " +
         "En tant qu'administrateur, vous avez accès à la liste des responsables ainsi qu'à la liste des différents cours du programme." +
         "\n\nPour confirmer votre changement de rôle, veuillez cliquer sur le lien de confirmation suivant: " + lien;
@@ -339,24 +340,24 @@ module.exports = class Supervisor {
           token_end_date: date_expiration
         },
       });
-  
+
       // Envoie du courriel
       const sendmail = require('sendmail')();
 
-        sendmail({
-            from: 'InfoEncadrement@cegepsherbrooke.qc.ca',
-            to: req.body.courriel,
-            subject: 'Léguer les droits d\'administrateur - Demande envoyée',
-            text: text,
-          }, function(err, reply) {
-            console.log(err && err.stack);
-            console.dir(reply);
-        });
+      sendmail({
+        from: 'InfoEncadrement@cegepsherbrooke.qc.ca',
+        to: req.body.courriel,
+        subject: 'Léguer les droits d\'administrateur - Demande envoyée',
+        text: text,
+      }, function (err, reply) {
+        console.log(err && err.stack);
+        console.dir(reply);
+      });
 
       res.status(200).json("Requête de changement d'administrateur effectuée avec succès!");
     } catch (error) {
       res.status(500).json({ message: error.message });
-    } 
+    }
   }
 
   static async makeSupervisorAdmin(req, res) {
@@ -364,7 +365,7 @@ module.exports = class Supervisor {
       const new_admin_token = req.params.token;
 
       const count = await prisma.utilisateur.count({
-        where: { 
+        where: {
           token: new_admin_token,
           token_end_date: {
             gte: new Date() // Token end date hasn't been reached
@@ -383,7 +384,7 @@ module.exports = class Supervisor {
         where: { id_type_utilisateur: 1, },
       });
       const old_admin = admins[0];
-      
+
       // Remove admin rights from current administrator
       await prisma.utilisateur.updateMany({
         where: { id_type_utilisateur: 1, },
@@ -392,33 +393,33 @@ module.exports = class Supervisor {
 
       // Give admin rights to selected supervisor
       await prisma.utilisateur.updateMany({
-        where: { 
+        where: {
           token: new_admin_token,
           token_end_date: {
             gte: new Date() // Token end date hasn't been reached
           }
         },
-        data:  { 
+        data: {
           id_type_utilisateur: 1, // Administrator user type id
           sessions: "1,2,3,4,5,6",
         },
       });
 
-      const text = 
-        "Le superviseur auquel vous avez légué vos droits d'administrateur a accepté votre requête! Ce dernier aura mainenant tous " + 
+      const text =
+        "Le superviseur auquel vous avez légué vos droits d'administrateur a accepté votre requête! Ce dernier aura mainenant tous " +
         "les droits d'administration de l'application web. Votre compte aura désormais seulement les droits de responsable.";
-  
+
       // Envoie du courriel
       const sendmail = require('sendmail')();
 
       sendmail({
-          from: 'InfoEncadrement@cegepsherbrooke.qc.ca',
-          to: req.body.courriel,
-          subject: 'Léguer les droits d\'administrateur - Demande acceptée',
-          text: text,
-        }, function(err, reply) {
-          console.log(err && err.stack);
-          console.dir(reply);
+        from: 'InfoEncadrement@cegepsherbrooke.qc.ca',
+        to: req.body.courriel,
+        subject: 'Léguer les droits d\'administrateur - Demande acceptée',
+        text: text,
+      }, function (err, reply) {
+        console.log(err && err.stack);
+        console.dir(reply);
       });
 
       res.status(200).json("Droits administratifs légués avec succès!");
