@@ -59,7 +59,6 @@ module.exports = class Responsable {
       const user = await prisma.utilisateur.findFirst({
           where: {
               courriel: req.body.email,
-              token: req.body.token
           },
           select: {
               employe: {
@@ -102,7 +101,7 @@ module.exports = class Responsable {
             }
         });
 
-        let recover_link = process.env.URL + "/password_modif/reset/" + token;
+        let recover_link = "http://" + process.env.URL + "/password/reset/" + token;
         let text = "Vous avez récemment fait une demande pour réinitialiser votre mot de passe. Si ce n'est pas vous, veuillez ignorer ce message ou contacter votre administrateur. Sinon, veuillez cliquer sur le lien suivant pour procéder à la réinitialisation de votre mot de passe.\n\nLien : " + recover_link;
 
         // Création du courriel

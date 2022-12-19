@@ -136,7 +136,7 @@ export default {
           return false;
         case "recover":
           return false;
-        case "password_modif":
+        case "password":
           return false;
         default:
           return true;
