@@ -109,9 +109,11 @@ module.exports = class Supervisor {
         },
       });
 
-
-      let link = process.env.URL + "/password_modif/activate/" + token;
-      let text = "Bienvenu(e) dans l\'équipe du Service d'encadrement. Votre compte a récemment été créé. Pour accéder aux services, veuillez activez votre compte en cliquant sur le lien suivant.\n\nLien : " + link;
+    let link = "http://" + process.env.URL + "/password/activate/" + token;
+    let text = "Bienvenu(e) dans l\'équipe du Service d'encadrement. Votre compte a récemment été créé. Pour accéder aux services, veuillez activez votre compte en cliquant sur le lien suivant.\n\nLien : " + link;
+  
+    // Création du courriel
+    const sendmail = require('sendmail')();
 
       // Création du courriel
       const sendmail = require('sendmail')();
@@ -321,8 +323,8 @@ module.exports = class Supervisor {
 
       const token = crypto.lib.WordArray.random(64).toString();
 
-      const lien = process.env.URL + "/admin_modif/" + token;
-      const text =
+      const lien = "http://" + process.env.URL + "/admin_modif/" + token;
+      const text = 
         "L'administrateur de l'application du Service d'encadrement vous lègue les droits d'administration de la plateforme! " +
         "En tant qu'administrateur, vous avez accès à la liste des responsables ainsi qu'à la liste des différents cours du programme." +
         "\n\nPour confirmer votre changement de rôle, veuillez cliquer sur le lien de confirmation suivant: " + lien;
@@ -340,19 +342,35 @@ module.exports = class Supervisor {
           token_end_date: date_expiration
         },
       });
-
-      // Envoie du courriel
-      const sendmail = require('sendmail')();
-
-      sendmail({
-        from: 'InfoEncadrement@cegepsherbrooke.qc.ca',
+  
+      // Création du courriel
+      var mailOptions = {
+        from: process.env.EMAIL_ID,    
         to: req.body.courriel,
         subject: 'Léguer les droits d\'administrateur - Demande envoyée',
-        text: text,
-      }, function (err, reply) {
-        console.log(err && err.stack);
-        console.dir(reply);
-      });
+        text: text
+    };
+  
+      // Envoie du courriel
+      transporter.sendMail(mailOptions, function(error, info){
+          if (error) {
+            res.status(400).json({ message: "Erreur lors de l\'envoie du courriel" });   
+          } else {
+            res.status(200).json({ message: "Courriel envoyé" });
+          }
+          
+//      // Envoie du courriel
+//      const sendmail = require('sendmail')();
+
+//      sendmail({
+//        from: 'InfoEncadrement@cegepsherbrooke.qc.ca',
+//        to: req.body.courriel,
+//        subject: 'Léguer les droits d\'administrateur - Demande envoyée',
+//        text: text,
+//      }, function (err, reply) {
+//        console.log(err && err.stack);
+//        console.dir(reply);
+//      });
 
       res.status(200).json("Requête de changement d'administrateur effectuée avec succès!");
     } catch (error) {

@@ -44,15 +44,14 @@ const routes = [
     { path: "/add_supervisor",              name: "add_supervisor",     component: SupervisorAddView,         },    // Formulaire d'ajout d'un responsable
     { path: "/course_list",                 name: "course_list",        component: CourseListView,            },    // Liste des cours
     { path: "/recover_password",            name: "recover",            component: RecoverPasswordAccessView  },    // Demande pour réinitialiser son mot de passe
-    { path: "/password_modif/:type/:token", name: "password_modif",     component: ResetPasswordView          },    // Réinitialisation du mot de passe
+    { path: "/password/:type/:token",       name: "password",           component: ResetPasswordView          },    // Réinitialisation du mot de passe
     { path: "/admin_modif/:token",          name: "admin_modif",        component: ChangeAdmin                },    // Changer l'utilisateur avec le rôle d'admin
 ];
 
 // Création d'un routeur
 const router = new VueRouter({
-    mode: "history",            // Permet de naviguer entre les pages sans devoir recharger le navigateur
-    base: process.env.BASE_URL, // URL du site 
-    routes,                     // Routes qui seront utilisés
+    mode: "history",                                    // Permet de naviguer entre les pages sans devoir recharger le navigateur
+    routes,                                             // Routes qui seront utilisés
 });
 
 /**
@@ -62,9 +61,6 @@ const router = new VueRouter({
  * @returns un booléen
  */
 function hasPermissionsNeeded(nom) {
-    if (nom == "login")                                 // Si la page visée est la page de connexion
-        return true;                                    // Autorise le passage
-
     if (sessionStorage.getItem("authentication"))       // Si l'utilisateur est connecté
         if (JSON.parse(sessionStorage.getItem("authentication")).user.type_utilisateur.nom != "Administrateur") { // Si l'utilisateur n'est pas un administrateur
             switch(nom) {
@@ -83,19 +79,20 @@ function hasPermissionsNeeded(nom) {
 
 // Avant chaque changement de route.
 router.beforeEach((to, from, next) => {
-    if (to.name == "recover" || to.name == "password_modif" || to.name == "admin_modif") // Si la route fait référence à une route pour modifier le mot de passe
-        next();                                                                 // Autorise le passage et envoie vers la page visée
+    if (to.name == "recover" || to.name == "password" || to.name == "admin_modif") {        // Si la route fait référence à une route pour modifier le mot de passe
+        next();                                                                             // Autorise le passage et envoie vers la page visée
+    }
 
-    else if (!sessionStorage.getItem("authentication") && to.name !== "login")  // Si l'utilisateur n'est pas connecté et que la page visée n'est pas la page de connexion
-        next({ name: "login" });                                                // Redirige l'utilisateur vers la page de connexion
+    else if (!sessionStorage.getItem("authentication") && to.name !== "login")              // Si l'utilisateur n'est pas connecté et que la page visée n'est pas la page de connexion
+        next({ name: "login" });                                                            // Redirige l'utilisateur vers la page de connexion
 
     else {
 
-        if (!hasPermissionsNeeded(to.name))                                     // Si l'utilisateur n'a pas les permission de se rendre à la page visée
-            next(false);                                                        // Refuse le passage et redirige vers la page précédente
+        if (!hasPermissionsNeeded(to.name))                                                 // Si l'utilisateur n'a pas les permission de se rendre à la page visée
+            next(false);                                                                    // Refuse le passage et redirige vers la page précédente
 
         else
-            next();                                                             // Autorise le passage et envoie vers la page visée
+            next();                                                                         // Autorise le passage et envoie vers la page visée
     }
 });
 
