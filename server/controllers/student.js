@@ -127,11 +127,8 @@ module.exports = class Student {
             include: {
               groupe: {
                 include: {
-                  cours: {
-                    include: {
-                      campus: true,
-                    },
-                  },
+                  employe: true,
+                  cours: true,
                   session: true,
                   Commentaire: {
                     where: {

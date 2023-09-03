@@ -4,7 +4,7 @@
 
     <h3 id="filter" @click="filter = !filter">Filtrer</h3>
     <v-container v-if="filter">
-      <v-row no-gutters>
+      <v-row>
         <v-col>
           <v-checkbox v-model="hasToBeChecked" label="À rencontrer">
           </v-checkbox>
@@ -35,7 +35,10 @@
       id="list_student"
       :headers="headers"
       :items="students"
-      :sort-desc="[false, true]"
+      :footer-props="{'items-per-page-options':[10, -1]}"
+      :items-per-page="-1"
+      :sort-by.sync="columnName"
+      :sort-desc.sync="isDescending"
       class="elevation-1"
       @click:row="rowClick"
       :search="search"
@@ -51,6 +54,8 @@ export default {
   name: "student_list",
   data() {
     return {
+      columnName: 'nom',
+      isDescending: false,
       headers: [
         {
           text: "À rencontrer",

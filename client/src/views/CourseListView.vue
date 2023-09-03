@@ -28,7 +28,7 @@ export default {
       headers: [
         { text: "Code", value: "code" },
         { text: "Nom", value: "nom" },
-        { text: "Campus", value: "campus.ville" },
+        { text: "Enseignant", value: "employe.prenom" },
         { text: "Durée (h)", value: "duree" },
       ],
       courses: [],

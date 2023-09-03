@@ -115,22 +115,19 @@ module.exports = class Supervisor {
     // Création du courriel
     const sendmail = require('sendmail')();
 
-      // Création du courriel
-      const sendmail = require('sendmail')();
+    sendmail({
+      from: 'InfoEncadrement@cegepsherbrooke.qc.ca',
+      to: req.body.courriel,
+      subject: 'Activation de votre compte',
+      text: text,
+    }, function (err, reply) {
+      console.log(err && err.stack);
+      console.dir(reply);
+    });
 
-      sendmail({
-        from: 'InfoEncadrement@cegepsherbrooke.qc.ca',
-        to: req.body.courriel,
-        subject: 'Activation de votre compte',
-        text: text,
-      }, function (err, reply) {
-        console.log(err && err.stack);
-        console.dir(reply);
-      });
-
-      res
-        .status(200)
-        .json({ message: "Le responsable d'encadrement à été créer" });
+    res
+      .status(200)
+      .json({ message: "Le responsable d'encadrement à été créer" });
     } catch (error) {
       res.status(404).json({ message: error.message });
       console.log(error.message);
@@ -373,6 +370,7 @@ module.exports = class Supervisor {
 //      });
 
       res.status(200).json("Requête de changement d'administrateur effectuée avec succès!");
+      });
     } catch (error) {
       res.status(500).json({ message: error.message });
     }

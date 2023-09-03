@@ -73,8 +73,13 @@ function hasPermissionsNeeded(nom) {
         }
         else {
             return true;                                // Autorise le passage
-        }                           
-    return false;                                       // Refuse le passage
+        } 
+    else {
+        switch(nom) {
+            case "login":           return true;
+            default:                return false;   // Si aucun de ces noms, retourne autorise le passage
+        }
+    }
 }
 
 // Avant chaque changement de route.

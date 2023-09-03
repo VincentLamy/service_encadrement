@@ -24,7 +24,7 @@
     @import './navigation_menu.css';    /* Styles pour le menu de navigation */
     @import './login.css';              /* Styles pour le login, la réinitialisation du mot de passe */
     @import './importation.css';        /* Styles pour l'importation */
-
+    @import './student_form.css';       /* Styles pour les fiches étudiantes
 
 
 /********************************/

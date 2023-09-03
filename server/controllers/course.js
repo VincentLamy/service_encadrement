@@ -8,6 +8,15 @@ module.exports = class Course {
       const courses = await prisma.Cours.findMany({
         include: {
           campus: true,
+          employe: {
+            where: {
+              no_employe: Number(no_employe)
+            },
+            include: {
+              prenom: true, 
+              nom: true,
+            }
+          },
         },
       });
 

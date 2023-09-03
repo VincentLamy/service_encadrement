@@ -13,7 +13,7 @@
       </div>
 
       <h2 class="my-2 d-flex justify-center" style="flex-grow: 1">
-        {{ student.prenom }} {{ student.nom }}
+        {{ student.nom }}, {{ student.prenom }} 
       </h2>
 
       <!-- Next -->
@@ -35,8 +35,21 @@
       -->
     <v-card class="py-2 px-3 mb-5" outlined>
       <v-card-text>
-        <h3 class="d-flex justify-center mb-4">Informations de l'étudiant</h3>
-        <v-row no-gutters>
+        <v-row id="studentInfoRow"> 
+          <!-- Switch pour déterminer si l'étudiant est à surveiller -->
+          <v-switch
+            v-model="student.a_surveiller"
+            color="red"
+            hide-details
+            label="À rencontrer"
+            :disabled="student.a_surveiller === undefined"
+            :loading="flag_loading"
+            @change="setFlag"
+          />
+          <h3 class="d-flex justify-center mb-4">Informations de l'étudiant</h3>
+        </v-row>
+
+        <v-row>
           <!-- Numéro de dossier -->
           <v-col class="px-3" lg="3" sm="6" cols="12">
             <v-text-field
@@ -44,16 +57,6 @@
               :value="student.no_etudiant"
               type="number"
               hide-spin-buttons
-              outlined
-              readonly
-            />
-          </v-col>
-
-          <!-- Code permanent -->
-          <v-col class="px-3" lg="3" sm="6" cols="12">
-            <v-text-field
-              label="Code permanent"
-              :value="student.code_permanent"
               outlined
               readonly
             />
@@ -78,22 +81,6 @@
               readonly
             />
           </v-col>
-        </v-row>
-        <v-row no-gutters>
-          <!-- Prénom de l'étudiant -->
-          <v-col class="px-3" lg="3" sm="6" cols="12">
-            <v-text-field
-              label="Prénom"
-              :value="student.prenom"
-              outlined
-              readonly
-            />
-          </v-col>
-
-          <!-- Nom de l'étudiant -->
-          <v-col class="px-3" lg="3" sm="6" cols="12">
-            <v-text-field label="Nom" :value="student.nom" outlined readonly />
-          </v-col>
 
           <!-- Numéro de la session -->
           <v-col class="px-3" lg="3" sm="6" cols="12">
@@ -107,7 +94,8 @@
               readonly
             />
           </v-col>
-
+        </v-row>
+        <v-row no-gutters>
           <!-- Statut de étudiant (ex. SA)-->
           <v-col
             class="px-3"
@@ -124,17 +112,6 @@
             />
           </v-col>
         </v-row>
-
-        <!-- Switch pour déterminer si l'étudiant est à surveiller -->
-        <v-switch
-          v-model="student.a_surveiller"
-          color="red"
-          hide-details
-          label="À rencontrer"
-          :disabled="student.a_surveiller === undefined"
-          :loading="flag_loading"
-          @change="setFlag"
-        />
       </v-card-text>
     </v-card>
 
@@ -307,24 +284,6 @@
           <!-- Cours & Commentaires des sessions -->
           <v-tabs-items v-model="semester_tab" v-if="semesters.length !== 0">
             <v-tab-item v-for="semester in semesters" :key="semester.code">
-              <!-- Ajouter un commentaire -->
-              <v-btn
-                block
-                color="primary my-3"
-                @click="show_add_comment = !show_add_comment"
-              >
-                Ajouter un commentaire
-              </v-btn>
-              <v-comment-input
-                :show="show_add_comment"
-                :no-etudiant="student.no_etudiant"
-                :remark-codes="remark_codes"
-                :code-session="semester.code"
-                method="publish"
-                @cancel="show_add_comment = false"
-                @published="getData"
-              />
-
               <!-- Commentaires de la session -->
               <h4 class="d-flex justify-center my-4">
                 Commentaires de la session
@@ -345,6 +304,23 @@
                   @update-data="getData"
                 />
               </v-card>
+              <!-- Ajouter un commentaire -->
+              <v-btn
+                block
+                color="primary my-3"
+                @click="show_add_comment = !show_add_comment"
+              >
+                Ajouter un commentaire
+              </v-btn>
+              <v-comment-input  
+                :show="show_add_comment"
+                :no-etudiant="student.no_etudiant"
+                :remark-codes="remark_codes"
+                :code-session="semester.code"
+                method="publish"
+                @cancel="show_add_comment = false"
+                @published="getData"
+              />  
               <!-- Commentaires d'un cours -->
               <h4 class="d-flex justify-center my-4">
                 Commentaires sur les cours de l'étudiant
@@ -401,7 +377,7 @@ export default {
 
       // Get all remark codes
       this.remark_codes = await API.getRemarkCode();
-
+      
       // Get all semesters the student is in
       let duplicate_semesters = this.student.TA_EtudiantGroupe.map(
         (x) => x.groupe.session
@@ -419,7 +395,6 @@ export default {
     }
 
     this.semesters = unique_semesters;
-
     
   },
     async gotoPreviousStudent() {

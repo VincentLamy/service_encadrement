@@ -181,154 +181,160 @@
                 this.$refs.uploader.id = button;
             },
             onFileChanged(e) {
-                this.selectedFile = e.target.files[0];
-                this.loading = true;
-
-                let reader = new FileReader();
                 let session_choisie = this.session_choisie;
 
                 if(!session_choisie) {
                     session_choisie = this.getSessionActuelle();
                 }
 
-                reader.onload = (function (id, outsideRouter, file) {
-                    const button_id = id;
-                    const router = outsideRouter;
+                if(!confirm(`Êtes-vous sûr d'importer le fichier "${e.target.files[0].name}" pour la session ${this.session_choisie}?`)) {
+                    e.preventDefault();
+                }
+                else {
+                    this.selectedFile = e.target.files[0];
+                    this.loading = true;
 
-                    return function (e) {
-                        let data = e.target.result;
-                        let workbook = XLSX.read(data, { type: "binary" });
+                    let reader = new FileReader();
 
-                        workbook.SheetNames.forEach(async function (sheetName) {
-                            // File to object
-                            let XL_row_object = XLSX.utils.sheet_to_json(
-                                workbook.Sheets[sheetName], 
-                                { defval: "" }
-                            );
+                    reader.onload = (function (id, outsideRouter, file) {
+                        const button_id = id;
+                        const router = outsideRouter;
 
-                            let response;
+                        return function (e) {
+                            let data = e.target.result;
+                            let workbook = XLSX.read(data, { type: "binary" });
 
-                            let ok = true;
-                            let i = 0;
-                            let bypassed = [];
+                            workbook.SheetNames.forEach(async function (sheetName) {
+                                // File to object
+                                let XL_row_object = XLSX.utils.sheet_to_json(
+                                    workbook.Sheets[sheetName], 
+                                    { defval: "" }
+                                );
 
-                            // Rapport encadrement
-                            if (button_id === "rapport_encadrement") {
-                                do {
-                                    response = await API.addOneRapportEncadrement(XL_row_object[i], session_choisie);
-                                    // If it works
-                                    if (response.ok === "true") {
-                                        file.loadingValue = (i / XL_row_object.length) * 100;
-                                        file.alertContent = 
-                                            i + 
-                                            1 + 
-                                            " lignes entrées sur " + 
-                                            XL_row_object.length +
-                                            ". Veuillez rester sur cette page.";
-                                        file.alertColor = "green";
-                                        file.alertType = "success";
-                                        file.alert = true;
+                                let response;
 
-                                        if (response.bypassed === "true")
-                                            bypassed.push(i + 2);
-                                    } else {                                          // If error
-                                        ok = false;
-                                    }
-                                    i++;
-                                } while (i < XL_row_object.length && ok === true);
+                                let ok = true;
+                                let i = 0;
+                                let bypassed = [];
 
-                                // Check if students need to be removed
-                                const statusResponse = await API.removeInactiveStudents();
-                            }
-                            else if (button_id === "sondage_mathematiques") { // Sondage mathématiques
-                                do {
-                                    response = await API.addOneSondageMathematiques(XL_row_object[i], session_choisie);
+                                // Rapport encadrement
+                                if (button_id === "rapport_encadrement") {
+                                    do {
+                                        response = await API.addOneRapportEncadrement(XL_row_object[i], session_choisie);
+                                        // If it works
+                                        if (response.ok === "true") {
+                                            file.loadingValue = (i / XL_row_object.length) * 100;
+                                            file.alertContent = 
+                                                i + 
+                                                1 + 
+                                                " lignes entrées sur " + 
+                                                XL_row_object.length +
+                                                ". Veuillez rester sur cette page.";
+                                            file.alertColor = "green";
+                                            file.alertType = "success";
+                                            file.alert = true;
 
-                                    // If it works
-                                    if (response.ok === "true") {
-                                        file.loadingValue = (i / XL_row_object.length) * 100;
-
-                                        file.alertContent =
-                                            i +
-                                            1 +
-                                            " lignes entrées sur " +
-                                            XL_row_object.length +
-                                            ". Veuillez rester sur cette page.";
-                                        file.alertColor = "green";
-                                        file.alertType = "success";
-                                        file.alert = true;
-
-                                        if (response.bypassed === "true") {
-                                            bypassed.push(i + 1);
+                                            if (response.bypassed === "true")
+                                                bypassed.push(i + 2);
+                                        } else {                                          // If error
+                                            ok = false;
                                         }
-                                    } else {              // If error
-                                        ok = false;
-                                    }
                                         i++;
-                                } while (i < XL_row_object.length && ok === true);
-                            }       
-                            // Etudiants internationaux
-                            else if (button_id === "etudiants_internationaux") {
-                                do {
-                                    response = await API.addOneEtudiantsInternationaux(XL_row_object[i], session_choisie);
+                                    } while (i < XL_row_object.length && ok === true);
 
-                                    // If it works
-                                    if (response.ok === "true") {
-                                        file.loadingValue = (i / XL_row_object.length) * 100;
-
-                                        file.alertContent =
-                                            i +
-                                            1 +
-                                            " lignes entrées sur " +
-                                            XL_row_object.length +
-                                            ". Veuillez rester sur cette page.";
-                                        file.alertColor = "green";
-                                        file.alertType = "success";
-                                        file.alert = true;
-
-                                        if (response.bypassed === "true") {
-                                            bypassed.push(i + 2);
-                                        }
-                                    } else { // If error
-                                        ok = false;
-                                    }
-                                    i++;
-                                } while (i < XL_row_object.length && ok === true);
-                            }
-
-                            // If it works (end)
-                            if (response.ok === "true") {
-                                file.alertContent = "Le fichier a bien été importé. ";
-                                file.alertColor = "green";
-                                file.alertType = "success";
-
-                                //TODO simplifier?
-                                // If lines were bypassed
-                                if (bypassed.length > 0) {
-                                    file.alertContent += "Les lignes ";
-                                    bypassed.forEach((value) => {
-                                    file.alertContent += value + ", ";
-                                    });
-                                    file.alertContent = file.alertContent.slice(0, -2);
-                                    file.alertContent +=
-                                    " n'ont pas été ajouté parce qu'elles contenaient des erreurs.";
+                                    // Check if students need to be removed
+                                    const statusResponse = await API.removeInactiveStudents();
                                 }
-                            } else {  // If error (end)
-                                if (i > 1)  file.alertContent = "Un problème est survenu à la ligne " + (i + 1);
-                                else        file.alertContent = "Un problème est survenu dès la première ligne ";
-                            
-                                file.alertColor = "red";
-                                file.alertType = "error";
-                            }
+                                else if (button_id === "sondage_mathematiques") { // Sondage mathématiques
+                                    do {
+                                        response = await API.addOneSondageMathematiques(XL_row_object[i], session_choisie);
 
-                            file.value = 0;
-                            file.alert = true;
-                            file.loading = false;
-                        });
-                    };
-                })(e.target.id, this.$router, this);
-                
-                reader.readAsBinaryString(this.selectedFile);
+                                        // If it works
+                                        if (response.ok === "true") {
+                                            file.loadingValue = (i / XL_row_object.length) * 100;
+
+                                            file.alertContent =
+                                                i +
+                                                1 +
+                                                " lignes entrées sur " +
+                                                XL_row_object.length +
+                                                ". Veuillez rester sur cette page.";
+                                            file.alertColor = "green";
+                                            file.alertType = "success";
+                                            file.alert = true;
+
+                                            if (response.bypassed === "true") {
+                                                bypassed.push(i + 1);
+                                            }
+                                        } else {              // If error
+                                            ok = false;
+                                        }
+                                            i++;
+                                    } while (i < XL_row_object.length && ok === true);
+                                }       
+                                // Etudiants internationaux
+                                else if (button_id === "etudiants_internationaux") {
+                                    do {
+                                        response = await API.addOneEtudiantsInternationaux(XL_row_object[i], session_choisie);
+
+                                        // If it works
+                                        if (response.ok === "true") {
+                                            file.loadingValue = (i / XL_row_object.length) * 100;
+
+                                            file.alertContent =
+                                                i +
+                                                1 +
+                                                " lignes entrées sur " +
+                                                XL_row_object.length +
+                                                ". Veuillez rester sur cette page.";
+                                            file.alertColor = "green";
+                                            file.alertType = "success";
+                                            file.alert = true;
+
+                                            if (response.bypassed === "true") {
+                                                bypassed.push(i + 2);
+                                            }
+                                        } else { // If error
+                                            ok = false;
+                                        }
+                                        i++;
+                                    } while (i < XL_row_object.length && ok === true);
+                                }
+
+                                // If it works (end)
+                                if (response.ok === "true") {
+                                    file.alertContent = "Le fichier a bien été importé. ";
+                                    file.alertColor = "green";
+                                    file.alertType = "success";
+
+                                    //TODO simplifier?
+                                    // If lines were bypassed
+                                    if (bypassed.length > 0) {
+                                        file.alertContent += "Les lignes ";
+                                        bypassed.forEach((value) => {
+                                        file.alertContent += value + ", ";
+                                        });
+                                        file.alertContent = file.alertContent.slice(0, -2);
+                                        file.alertContent +=
+                                        " n'ont pas été ajouté parce qu'elles contenaient des erreurs.";
+                                    }
+                                } else {  // If error (end)
+                                    if (i > 1)  file.alertContent = "Un problème est survenu à la ligne " + (i + 1);
+                                    else        file.alertContent = "Un problème est survenu dès la première ligne ";
+                                
+                                    file.alertColor = "red";
+                                    file.alertType = "error";
+                                }
+
+                                file.value = 0;
+                                file.alert = true;
+                                file.loading = false;
+                            });
+                        };
+                    })(e.target.id, this.$router, this);
+                    
+                    reader.readAsBinaryString(this.selectedFile);
+                }
             },
         },
     };

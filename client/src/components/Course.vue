@@ -24,13 +24,14 @@
             <div>Durée : {{ data.groupe.cours.duree }}</div>
             <div>Durée absence : {{ data.duree_absence }}</div>
           </div>
-          <!-- Campus -->
+          <!-- Enseignant -->
           <div class="d-flex flex-column col-md">
-            <div>
-              Campus :
-              {{ data.groupe.cours.campus.ville }}
-            </div>
+            <div> Enseignant : {{ data.groupe.employe.prenom }} {{ data.groupe.employe.nom }}</div>
           </div>
+          <!-- Indicateur s'il y a des commentaires -->
+          <v-badge v-if="data.groupe.Commentaire.length > 0" :content="data.groupe.Commentaire.length" inline>
+            <v-icon icon="$vuetify" size="x-large"></v-icon>
+          </v-badge>
         </div>
         <v-divider></v-divider>
         <div
